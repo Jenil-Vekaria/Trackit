@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import logo from "../assests/bug_tracker_logo.png";
+import logo from "../../assests/bug_tracker_logo.png";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { Row, Col, Alert, Modal, Table } from "react-bootstrap";
-import AuthService from "../services/auth-service";
+import { useNavigate } from "react-router-dom";
+import AuthService from "../../services/auth-service";
 
 import "./auth.css";
 
 export const Auth = () => {
+	let navigate = useNavigate();
+
 	const [isLoginView, setIsLoginView] = useState(true);
 	const [formErrorMsg, setFormErrorMsg] = useState("");
 	const [showModal, setShowModal] = useState(false);
@@ -43,8 +46,7 @@ export const Auth = () => {
 					password: user.password,
 				}).then(
 					(response) => {
-						console.log("Logged In");
-						console.table(response);
+						navigate("/dashboard");
 					},
 					(error) => {
 						if (error.response.data.message) {
@@ -59,8 +61,7 @@ export const Auth = () => {
 			else {
 				await AuthService.signup(user).then(
 					(response) => {
-						console.log("Signed up");
-						console.table(response);
+						navigate("/dashboard");
 					},
 					(error) => {
 						if (error.response.data.message) {
