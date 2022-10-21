@@ -40,6 +40,7 @@ const login = (user) => {
 
 const logout = () => {
     localStorage.removeItem("user");
+    window.location.replace("/");
 };
 
 const getCurrentUser = () => {

@@ -12,10 +12,10 @@ const theme = extendTheme({
   styles: {
     global: {
       'html, body': {
-        background: "gray.50"
+        background: "gray.100"
       }
     },
-  },
+  }
 });
 
 root.render(

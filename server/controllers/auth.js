@@ -19,13 +19,13 @@ export const login = async (req, res) => {
         const existingUser = await User.findOne({ email });
 
         if (!existingUser) {
-            return res.status(404).json({ message: "The email or password you've entered doesn't match any account" });
+            return res.status(404).json({ message: "Please provide a valid email address and password" });
         }
 
         const isPasswordCorrect = await bcrypt.compare(password, existingUser.password);
 
         if (!isPasswordCorrect) {
-            return res.status(400).json({ message: "The email or password you've entered is incorrect" });
+            return res.status(400).json({ message: "Please provide a valid email address and password" });
         }
 
         const accessToken = jwt.sign({ email: existingUser.email, id: existingUser._id }, SECERET_KEY, { expiresIn: EXPIRATION });
