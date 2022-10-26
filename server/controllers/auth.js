@@ -7,7 +7,7 @@ import { validationResult } from "express-validator";
     400 - Bad Request
     200 - OK
 */
-const SECERET_KEY = "bug-tracker";
+
 const EXPIRATION = "1h";
 const PASSWORD_SALT = 12;
 
@@ -28,7 +28,7 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "Please provide a valid email address and password" });
         }
 
-        const accessToken = jwt.sign({ email: existingUser.email, id: existingUser._id }, SECERET_KEY, { expiresIn: EXPIRATION });
+        const accessToken = jwt.sign({ email: existingUser.email, id: existingUser._id }, process.env.SECRET_KEY, { expiresIn: EXPIRATION });
 
         return res.status(200).json({
             firstName: existingUser.firstName,
@@ -40,7 +40,7 @@ export const login = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ message: "Login - Something went wrong" });
+        return res.status(500).json({ error: error.message });
     }
 };
 
@@ -74,7 +74,7 @@ export const signup = async (req, res) => {
         //Create user in database
         const newUser = await User.create({ firstName, lastName, email, password: hashedPassword });
 
-        const accessToken = jwt.sign({ email: newUser.email, id: newUser._id }, SECERET_KEY, { expiresIn: EXPIRATION });
+        const accessToken = jwt.sign({ email: newUser.email, id: newUser._id }, SECRET_KEY, { expiresIn: EXPIRATION });
 
         return res.status(200).json({
             firstName: newUser.firstName,

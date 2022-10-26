@@ -3,6 +3,9 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
+import roleRoutes from './routes/role.js';
+import middlware from './middleware/middleware.js';
+import middleware from './middleware/middleware.js';
 
 dotenv.config();
 
@@ -17,9 +20,10 @@ app.use(cors());
 
 //Middleware
 app.use('/auth', authRoutes);
-app.get("/", (req, res) => {
-    res.send("*** Welcome to Bug Tracker API ***");
-});
+app.use('/role', middlware.authMiddleware, roleRoutes);
+
+app.use(middleware.handleError);
+app.use(middleware.routeNotFound);
 
 //Connect to DB
 mongoose.connect(MONGO_DB_CONNECTION,
