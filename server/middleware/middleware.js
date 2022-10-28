@@ -8,11 +8,8 @@ const authMiddleware = async (req, res, next) => {
             if (error) {
                 return res.sendStatus(500);
             }
-
             //Check if the user exists
-            User.findOne({
-                where: { id: decoded.id }
-            }).then((user) => {
+            User.findOne({ _id: decoded.id }).then((user) => {
                 if (user) {
                     req.user = user.toJSON();
                     return next();

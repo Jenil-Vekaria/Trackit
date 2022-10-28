@@ -1,5 +1,4 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
@@ -10,8 +9,6 @@ import middleware from './middleware/middleware.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
-const MONGO_DB_CONNECTION = process.env.MONGO_DB_CONNECTION;
 
 //preconfigure express app
 app.use(express.json());
@@ -25,15 +22,4 @@ app.use('/role', middlware.authMiddleware, roleRoutes);
 app.use(middleware.handleError);
 app.use(middleware.routeNotFound);
 
-//Connect to DB
-mongoose.connect(MONGO_DB_CONNECTION,
-    { useNewUrlParser: true, useUnifiedTopology: true },
-    (error) => {
-        if (error) {
-            console.error(error);
-        }
-        else {
-            app.listen(PORT, () => console.log(`Successfully Connected to MongoDB\n Running on http://localhost:${PORT}`));
-        }
-    }
-);
+export default app;
