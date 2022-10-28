@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from '../models/user.js';
 
-const authMiddleware = async (req, res, next) => {
+export const authMiddleware = async (req, res, next) => {
     const token = req.headers['x-access-token'];
     if (token) {
         jwt.verify(token, process.env.SECRET_KEY, (error, decoded) => {
@@ -25,7 +25,8 @@ const authMiddleware = async (req, res, next) => {
     }
 };
 
-const handleError = async (error, req, res, next) => {
+
+export const handleError = async (error, req, res, next) => {
     const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
     res.status(statusCode);
     res.json({
@@ -33,9 +34,21 @@ const handleError = async (error, req, res, next) => {
     });
 };
 
-const routeNotFound = async (req, res) => {
+
+export const routeNotFound = async (req, res) => {
     res.status(404).json({ error: "Route not found" });
 };
 
-export default { routeNotFound, authMiddleware, handleError }
+
+export const validateResource = (resourceSchema) => {
+    return (req, res, next) => {
+        resourceSchema.validate(req.body)
+            .then((valid) => {
+                next();
+            })
+            .catch((err) => {
+                res.status(400).json({ error: err.errors[0] });
+            });
+    };
+}
 

@@ -44,3 +44,18 @@ export const sampleRoles = [
         permissions: ["PERMISSION_ADD_TICKET", "PERMISSION_ADD_COMMENT"]
     },
 ];
+
+export const projectPayload = [
+    {
+        title: "Sample project #1",
+        description: "This is a sample project #1 description"
+    },
+    {
+        title: "Sample project #2",
+        description: "This is a sample project #2 description"
+    },
+    {
+        title: "Sample project #3",
+        description: "This is a sample project #3 description"
+    },
+];

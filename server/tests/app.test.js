@@ -62,8 +62,8 @@ afterAll(async () => {
     await removeAllCollections();
 });
 
-describe("run test", () => {
-    it("test", () => { });
+describe("App Test", () => {
+    it("Run Test", () => { });
 });
 
 export default request;

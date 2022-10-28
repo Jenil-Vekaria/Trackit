@@ -3,8 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
 import roleRoutes from './routes/role.js';
-import middlware from './middleware/middleware.js';
-import middleware from './middleware/middleware.js';
+import projectRoutes from './routes/project.js';
+import { handleError, routeNotFound, authMiddleware } from './middleware/middleware.js';
 
 dotenv.config();
 
@@ -17,9 +17,10 @@ app.use(cors());
 
 //Middleware
 app.use('/auth', authRoutes);
-app.use('/role', middlware.authMiddleware, roleRoutes);
+app.use('/role', authMiddleware, roleRoutes);
+app.use('/project', authMiddleware, projectRoutes);
 
-app.use(middleware.handleError);
-app.use(middleware.routeNotFound);
+app.use(handleError);
+app.use(routeNotFound);
 
 export default app;

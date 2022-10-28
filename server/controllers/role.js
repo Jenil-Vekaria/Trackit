@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import Role from "../models/role.js";
-import UserRole from "../models/userRole.js";
 import * as permissionCheck from "../util/permissionCheck.js";
 import { getUserRole } from "../util/utils.js";
 
