@@ -1,9 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import authRoutes from './routes/auth.js';
-import roleRoutes from './routes/role.js';
-import projectRoutes from './routes/project.js';
+import authRoutes from './routes/auth.route';
+import roleRoutes from './routes/role.route';
+import projectRoutes from './routes/project.route';
 import { handleError, routeNotFound, authMiddleware } from './middleware/middleware.js';
 
 dotenv.config();

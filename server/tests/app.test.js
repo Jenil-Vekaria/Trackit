@@ -1,10 +1,10 @@
 import supertest from "supertest";
 import app from "../app";
 import mongoose from "mongoose";
-import User from "../models/user.js";
-import Role from "../models/role";
+import User from "../models/user.model";
+import Role from "../models/role.model";
 import bcrypt from 'bcrypt';
-import UserRole from "../models/userRole";
+import UserRole from "../models/userRole.model";
 
 import { sampleRoles, sampleUsers } from "./data";
 

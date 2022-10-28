@@ -1,9 +1,10 @@
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
-import User from "../models/user.js";
+import User from "../models/user.model";
+import UserRole from '../models/userRole.model';
+import Role from '../models/role.model';
 import { validationResult } from "express-validator";
-import UserRole from '../models/userRole.js';
-import Role from '../models/role.js';
+
 /*
     404 - Not found
     400 - Bad Request

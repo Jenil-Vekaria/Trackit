@@ -1,7 +1,4 @@
-import supertest from "supertest";
-import app from "../app";
 import request from './app.test.js';
-
 
 describe("Authentication", () => {
 

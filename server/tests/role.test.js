@@ -1,8 +1,8 @@
 import { generateAccessToken } from "./utils";
 import * as permission from "../util/permissions";
 import request from './app.test.js';
-import User from "../models/user";
-import Role from "../models/role";
+import User from "../models/user.model";
+import Role from "../models/role.model";
 
 const getUser = async (email) => {
     return await User.findOne({ email });

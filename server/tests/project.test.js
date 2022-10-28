@@ -1,8 +1,6 @@
 import { generateAccessToken } from "./utils";
 import request from './app.test.js';
-import Project from "../models/project";
-import ProjectAssignee from "../models/projectAssignee";
-import User from "../models/user";
+import User from "../models/user.model";
 import { projectPayload } from "./data";
 
 const getUser = async (email) => {

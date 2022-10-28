@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import * as permissionCheck from "../util/permissionCheck.js";
-import Project from "../models/project.js";
-import ProjectAssignee from "../models/projectAssignee.js";
+import Project from "../models/project.model";
+import ProjectAssignee from "../models/projectAssignee.model.js";
 import { getUserRole } from "../util/utils.js";
 
 export const addProject = async (req, res) => {
