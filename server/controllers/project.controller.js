@@ -52,8 +52,6 @@ export const getUserProjects = async (req, res) => {
     try {
         const userId = req.user._id;
 
-        console.log("Fetching project of user: ", userId);
-
         //Use userId to get all user's project ID (distinct will only get projectID field and put it into a list)
         const projectIds = await ProjectAssignee.distinct("projectId", { userId });
 
