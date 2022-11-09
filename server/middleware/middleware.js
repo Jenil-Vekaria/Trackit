@@ -6,7 +6,7 @@ export const authMiddleware = async (req, res, next) => {
     if (token) {
         jwt.verify(token, process.env.SECRET_KEY, (error, decoded) => {
             if (error) {
-                return res.sendStatus(500);
+                return res.status(500).json({ error });
             }
             //Check if the user exists
             User.findOne({ _id: decoded.id }).then((user) => {

@@ -6,7 +6,8 @@ import Role from "../models/role.model";
 import bcrypt from 'bcrypt';
 import UserRole from "../models/userRole.model";
 
-import { sampleRoles, sampleUsers } from "./data";
+import { projectPayload, sampleRoles, sampleUsers } from "./data";
+import Project from "../models/project.model";
 
 
 const request = supertest(app);
@@ -39,6 +40,8 @@ const seedDatabase = async () => {
         index++;
     }
 
+    //Seed Project
+    await Project.insertMany(projectPayload);
 
 };
 

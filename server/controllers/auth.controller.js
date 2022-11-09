@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
-import User from "../models/user.model";
-import UserRole from '../models/userRole.model';
-import Role from '../models/role.model';
+import User from "../models/user.model.js";
+import UserRole from '../models/userRole.model.js';
+import Role from '../models/role.model.js';
 import { validationResult } from "express-validator";
 
 /*
@@ -70,7 +70,7 @@ export const signup = async (req, res) => {
         }
 
         //Hash the password
-        const hashedPassword = await bcrypt.hash(password, process.env.PASSWORD_SALT);
+        const hashedPassword = await bcrypt.hash(password, +process.env.PASSWORD_SALT);
 
         //Create user in database
         const newUser = await User.create({ firstName, lastName, email, password: hashedPassword });

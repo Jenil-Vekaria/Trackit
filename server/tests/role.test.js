@@ -3,18 +3,22 @@ import * as permission from "../util/permissions";
 import request from './app.test.js';
 import User from "../models/user.model";
 import Role from "../models/role.model";
+import { sampleUsers } from "./data";
 
-const getUser = async (email) => {
-    return await User.findOne({ email });
-};
+/*
+    0: Jame Smith - admin,
+    1: Michael Smith - project manager,
+    2: Robert Smith - developer,
+    3: Maria Garcia - submitter
+*/
 
 const getRole = async (name) => {
-    return await Role.findOne({ name });
+    return await Role.find({ name });
 };
 
 describe("Roles", () => {
     it("POST /role --> Admin can add role", async () => {
-        const user = await getUser("james.smith@bugtracker.com");
+        const user = sampleUsers[0];
         const token = generateAccessToken(user.email, user._id);
 
         const response = await request.post("/role")
@@ -35,7 +39,7 @@ describe("Roles", () => {
     });
 
     it("POST /role --> Non-Admin cannot add role", async () => {
-        const user = await getUser("maria.garcia@bugtracker.com");
+        const user = sampleUsers[3];
         const token = generateAccessToken(user.email, user._id);
 
         const response = await request.post("/role")
@@ -51,7 +55,7 @@ describe("Roles", () => {
     });
 
     it("POST /role --> Cannot add duplicate role name", async () => {
-        const user = await getUser("james.smith@bugtracker.com");
+        const user = sampleUsers[0];
         const token = generateAccessToken(user.email, user._id);
 
         const response = await request.post("/role")
@@ -68,7 +72,7 @@ describe("Roles", () => {
 
 
     it("PATCH /role --> Non-admin cannot modify roles", async () => {
-        const user = await getUser("robert.smith@bugtracker.com");
+        const user = sampleUsers[2];
         const token = generateAccessToken(user.email, user._id);
 
         const response = await request.patch("/role")
@@ -82,8 +86,8 @@ describe("Roles", () => {
         expect(response.body.error).toEqual("Not authorized to modify roles");
     });
 
-    it("PATCH /role --> Admin can modify role", async () => {
-        const user = await getUser("james.smith@bugtracker.com");
+    it.skip("PATCH /role --> Admin can modify role", async () => {
+        const user = sampleUsers[0];
         const token = generateAccessToken(user.email, user._id);
         const role = await getRole("custom role");
 
@@ -105,8 +109,8 @@ describe("Roles", () => {
 
     });
 
-    it("PATCH /role --> Updating with invalid id", async () => {
-        const user = await getUser("james.smith@bugtracker.com");
+    it.skip("PATCH /role --> Updating with invalid id", async () => {
+        const user = sampleUsers[0];
         const token = generateAccessToken(user.email, user._id);
         const role = await getRole("sample role");
 
@@ -124,7 +128,7 @@ describe("Roles", () => {
 
 
     it("DELETE /role --> Non-admin cannot delete roles", async () => {
-        const user = await getUser("robert.smith@bugtracker.com");
+        const user = sampleUsers[2];
         const token = generateAccessToken(user.email, user._id);
 
         const response = await request.delete("/role")
@@ -137,8 +141,8 @@ describe("Roles", () => {
         expect(response.body.error).toEqual("Not authorized to delete roles");
     });
 
-    it("DELETE /role --> Delete role with invalid id", async () => {
-        const user = await getUser("james.smith@bugtracker.com");
+    it.skip("DELETE /role --> Delete role with invalid id", async () => {
+        const user = sampleUsers[0];
         const token = generateAccessToken(user.email, user._id);
         const role = await getRole("sample role");
 
@@ -151,8 +155,8 @@ describe("Roles", () => {
 
     });
 
-    it("DELETE /role --> Admin can delete role", async () => {
-        const user = await getUser("james.smith@bugtracker.com");
+    it.skip("DELETE /role --> Admin can delete role", async () => {
+        const user = sampleUsers[0];
         const token = generateAccessToken(user.email, user._id);
         const role = await getRole("sample role");
 

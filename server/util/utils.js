@@ -1,5 +1,5 @@
-import Role from "../models/role.model";
-import UserRole from "../models/userRole.model";
+import Role from "../models/role.model.js";
+import UserRole from "../models/userRole.model.js";
 
 export const getUserRole = async (userId) => {
 
