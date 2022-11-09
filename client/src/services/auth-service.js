@@ -1,4 +1,5 @@
 import axios from "axios";
+import decode from 'jwt-decode';
 
 const API_URL = process.env.REACT_APP_API_ENDPOINT + "/auth";
 
@@ -47,11 +48,30 @@ const getCurrentUser = () => {
     return JSON.parse(localStorage.getItem("user"));
 };
 
+const isAuthorized = () => {
+    const user = getCurrentUser();
+
+    const token = user?.accessToken;
+    let isAuthorized = false;
+
+    if (token) {
+        const decodeToken = decode(token);
+
+        if (decodeToken.exp * 1000 < new Date().getTime())
+            isAuthorized = false;
+        else
+            isAuthorized = true;
+    }
+
+    return isAuthorized;
+};
+
 const AuthService = {
     signup,
     login,
     logout,
-    getCurrentUser
+    getCurrentUser,
+    isAuthorized
 };
 
 export default AuthService;

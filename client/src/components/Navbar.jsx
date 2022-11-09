@@ -7,7 +7,6 @@ import {
 	Flex,
 	Heading,
 	IconButton,
-	Link,
 	Popover,
 	PopoverArrow,
 	PopoverBody,
@@ -77,6 +76,7 @@ const Navbar = () => {
 
 				{menuItems.map((item, index) => (
 					<NavItem
+						key={index}
 						navSize={navSize}
 						icon={item.icon}
 						name={item.name}
