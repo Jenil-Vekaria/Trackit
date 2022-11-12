@@ -1,5 +1,6 @@
 import * as permissionCheck from "../util/permissionCheck.js";
 import Project from "../models/project.model.js";
+import User from "../models/user.model.js";
 import ProjectAssignee from "../models/projectAssignee.model.js";
 import { getUserRole } from "../util/utils.js";
 import mongoose from "mongoose";
@@ -13,7 +14,8 @@ import mongoose from "mongoose";
  */
 
 export const addProject = async (req, res) => {
-    const { title, description } = req.body;
+    const { title } = req.body;
+    const description = req.body.description || "";
 
     try {
         //Get user permssion
@@ -40,7 +42,7 @@ export const addProject = async (req, res) => {
         return res.sendStatus(200);
 
     } catch (error) {
-        return res.staus(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     };
 };
 
@@ -56,13 +58,37 @@ export const getUserProjects = async (req, res) => {
         const projectIds = await ProjectAssignee.distinct("projectId", { userId });
 
         //Use projectId from each ProjectAssignee object to the get Project object
-        const projects = await Project.find({
-            _id: { $in: projectIds }
-        });
+        const projects = await Project.aggregate([
+            {
+                //Get all the project that match from list of ProjectIds
+                $match: {
+                    _id: { $in: projectIds }
+                }
+            },
+            {
+                //For each project, get the user object by matching _id from User and authorId from Project
+                $lookup: {
+                    from: "users",
+                    localField: "authorId",
+                    foreignField: "_id",
+                    as: "authorName",
+                    pipeline: [
+                        {
+                            $project: {
+                                fullName: { $concat: ["$firstName", " ", "$lastName"] },
+                                _id: 0
+                            }
+                        }
+                    ]
+                }
+            },
+            { $set: { authorName: { $arrayElemAt: ["$authorName.fullName", 0] } } },
+        ]);
 
         return res.status(200).json({ projects });
 
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: error.message });
     }
 };

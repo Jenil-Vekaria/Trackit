@@ -21,6 +21,7 @@ import AuthService from "../services/auth-service";
 const Navbar = () => {
 	const [navSize, setNavSize] = useState("large");
 	const location = useLocation();
+	const user = AuthService.getCurrentUser();
 
 	const menuItems = [
 		{
@@ -107,7 +108,7 @@ const Navbar = () => {
 								display={navSize === "small" ? "none" : "flex"}
 							>
 								<Heading as="h3" size="xs">
-									Dan Abrahmov
+									{user.firstName} {user.lastName}
 								</Heading>
 								<Text fontSize="sm">Admin</Text>
 							</Flex>
