@@ -14,7 +14,8 @@ import Tickets from './pages/Tickets';
 import Administration from './pages/Administration';
 import { Flex } from '@chakra-ui/react';
 import AddProject from './components/projects/AddProject';
-import ViewProjects from './components/projects/ViewProjects';
+import ViewAllProjects from './components/projects/ViewAllProjects';
+import ViewProject from './components/projects/ViewProject';
 
 export const App = () => {
   const [isAuthorized, setIsAuthorized] = useState(AuthService.isAuthorized());
@@ -35,7 +36,8 @@ export const App = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/projects" element={<Projects />}>
                   <Route path='add' element={<AddProject />} />
-                  <Route path='' element={<ViewProjects />} />
+                  <Route path=':projectID' element={<ViewProject />} />
+                  <Route path='' element={<ViewAllProjects />} />
                 </Route>
                 <Route path="/tickets" element={<Tickets />} />
                 <Route path="/administration" element={<Administration />} />

@@ -24,15 +24,6 @@ const theme = extendTheme({
       },
 
     },
-  },
-  components: {
-    Modal: {
-      sizes: {
-        "2xl": {
-          dialog: { minHeight: "32rem", maxHeight: "32rem" }
-        }
-      }
-    }
   }
 });
 

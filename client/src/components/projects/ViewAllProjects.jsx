@@ -1,16 +1,17 @@
 import { Flex, Heading, Button, Spacer, useDisclosure } from "@chakra-ui/react";
 import { getProjects } from "../../features/projectSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, Link as ReachLink } from "react-router-dom";
+import { Link, Link as ReachLink, useNavigate } from "react-router-dom";
 import { PROJECT_COLUMNS } from "../../util/TableDataDisplay";
 import React, { useEffect } from "react";
 import ProjectService from "../../services/project-service";
 import DataTable from "../others/DataTable";
 
-const ViewProjects = () => {
+const ViewAllProjects = () => {
 	const projects = useSelector(getProjects);
 	const dispatch = useDispatch();
 	const disclosure = useDisclosure();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		dispatch(ProjectService.getMyProjects());
@@ -18,6 +19,7 @@ const ViewProjects = () => {
 
 	const handleRowClick = (rowData) => {
 		//TODO
+		navigate(`/projects/${rowData._id}`);
 	};
 
 	return (
@@ -51,4 +53,4 @@ const ViewProjects = () => {
 	);
 };
 
-export default ViewProjects;
+export default ViewAllProjects;

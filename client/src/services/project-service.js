@@ -31,10 +31,20 @@ const addProject = async (data) => {
     }
 };
 
+const getProjectInfo = async (projectId) => {
+    try {
+        const response = await API.get(`/${projectId}`);
+        return response.data.project[0];
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 
 const ProjectService = {
     getMyProjects,
-    addProject
+    addProject,
+    getProjectInfo
 };
 
 export default ProjectService;
