@@ -25,5 +25,9 @@ export const USER_COLUMNS = [
     {
         name: "Name",
         field: "fullName"
+    },
+    {
+        name: "Role",
+        field: "role"
     }
 ];

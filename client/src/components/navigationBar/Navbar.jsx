@@ -13,10 +13,11 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 	Text,
+	useColorModeValue,
 } from "@chakra-ui/react";
 import NavItem from "./NavItem";
 import { useLocation } from "react-router-dom";
-import AuthService from "../services/auth-service";
+import AuthService from "../../services/auth-service";
 
 const Navbar = () => {
 	const [navSize, setNavSize] = useState("large");
@@ -50,11 +51,12 @@ const Navbar = () => {
 		<Flex
 			pos="sticky"
 			h="100vh"
-			boxShadow="lg"
+			// boxShadow="lg"
 			direction="column"
 			justifyContent="space-between"
 			w={navSize === "small" ? "75px" : "250px"}
-			background="gray.50"
+			background="white"
+			boxShadow="xl"
 		>
 			<Flex
 				p={5}
@@ -82,7 +84,7 @@ const Navbar = () => {
 						icon={item.icon}
 						name={item.name}
 						path={item.path}
-						active={location.pathname === item.path}
+						active={location.pathname.includes(item.path)}
 					/>
 				))}
 			</Flex>

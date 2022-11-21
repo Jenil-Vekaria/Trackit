@@ -12,7 +12,12 @@ import { SearchIcon, RepeatIcon } from "@chakra-ui/icons";
 import React from "react";
 import SearchBarFilter from "./SearchBarFilter";
 
-const SearchBar = ({ children, placeholder, variant }) => {
+const SearchBar = ({
+	children,
+	placeholder,
+	variant,
+	handleSearchInputChange,
+}) => {
 	return (
 		<Flex
 			direction="column"
@@ -30,22 +35,11 @@ const SearchBar = ({ children, placeholder, variant }) => {
 					variant={variant || "filled"}
 					placeholder={placeholder}
 					border="2px"
+					onChange={handleSearchInputChange}
 				/>
 			</InputGroup>
 
-			<Flex justifyContent="space-between" w="100%">
-				<Flex gap={3}>
-					{children}
-					{/* <Button colorScheme="teal" variant="solid">
-						<RepeatIcon mr={2} /> Filter
-					</Button> */}
-				</Flex>
-				{/* <SearchBarFilter
-					name="Sort By"
-					multiSelect={false}
-					options={["Created Date: asc to desc", "Created Date: desc to asc"]}
-				/> */}
-			</Flex>
+			{children}
 		</Flex>
 	);
 };

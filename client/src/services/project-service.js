@@ -1,5 +1,6 @@
 import axios from "axios";
 import AuthService from "./auth-service";
+import { setProjects } from "../features/projectSlice";
 
 const API = axios.create({ baseURL: process.env.REACT_APP_API_ENDPOINT + "/project" });
 
@@ -12,18 +13,28 @@ API.interceptors.request.use((req) => {
     return req;
 });
 
-const getMyProjects = async () => {
+const getMyProjects = () => async (dispatch) => {
     try {
         const response = await API.get("/");
-        return response.data.projects;
+        dispatch(setProjects(response.data.projects));
     } catch (error) {
         console.error(error);
     }
 };
 
+const addProject = async (data) => {
+    try {
+        const response = await API.post("/", data);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 const ProjectService = {
-    getMyProjects
+    getMyProjects,
+    addProject
 };
 
 export default ProjectService;

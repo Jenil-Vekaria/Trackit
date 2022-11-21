@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button, HStack } from "@chakra-ui/react";
 import { Text, Heading, VStack, Image } from "@chakra-ui/react";
-import { Login } from "../components/Login";
-import { SignUp } from "../components/SignUp";
+import { Login } from "../components/authentication/Login";
+import { SignUp } from "../components/authentication/SignUp";
 
 export const Auth = () => {
 	const [isLogin, setisLogin] = useState(true);

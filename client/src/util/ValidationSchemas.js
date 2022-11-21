@@ -31,3 +31,15 @@ export const LoginData = {
     email: "",
     password: "",
 };
+
+
+export const CreateProjectSchema = Yup.object().shape({
+    title: Yup.string().required("Required"),
+    description: Yup.string()
+});
+
+export const CreateProjectData = {
+    title: "",
+    description: "",
+    contributors: ""
+};

@@ -4,6 +4,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.route.js';
 import roleRoutes from './routes/role.route.js';
 import projectRoutes from './routes/project.route.js';
+import userRoutes from "./routes/user.route.js";
 import { handleError, routeNotFound, authMiddleware } from './middleware/middleware.js';
 
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(cors());
 
 //Middleware
 app.use('/auth', authRoutes);
+app.use('/user', authMiddleware, userRoutes);
 app.use('/role', authMiddleware, roleRoutes);
 app.use('/project', authMiddleware, projectRoutes);
 

@@ -11,10 +11,28 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = extendTheme({
   styles: {
     global: {
+      "*": {
+        boxSizing: "border-box",
+        margin: 0,
+        padding: 0,
+        overflow: "none"
+      },
       'html, body': {
-        background: "gray.100"
-      }
+        background: "white",
+        maxHeight: "100vh",
+        height: "100vh"
+      },
+
     },
+  },
+  components: {
+    Modal: {
+      sizes: {
+        "2xl": {
+          dialog: { minHeight: "32rem", maxHeight: "32rem" }
+        }
+      }
+    }
   }
 });
 

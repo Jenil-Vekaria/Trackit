@@ -9,12 +9,11 @@ import {
 	Input,
 	Flex,
 	FormErrorMessage,
-	useToast,
 	Alert,
 } from "@chakra-ui/react";
-import { LoginData, LoginSchema } from "../util/ValidationSchemas";
+import { LoginData, LoginSchema } from "../../util/ValidationSchemas";
 import { useNavigate } from "react-router-dom";
-import AuthService from "../services/auth-service";
+import AuthService from "../../services/auth-service";
 
 export const Login = () => {
 	const [error, seterror] = useState("");

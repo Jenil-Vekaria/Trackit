@@ -14,7 +14,7 @@ import mongoose from "mongoose";
  */
 
 export const addProject = async (req, res) => {
-    const { title } = req.body;
+    const { title, contributors } = req.body;
     const description = req.body.description || "";
 
     try {
@@ -23,14 +23,14 @@ export const addProject = async (req, res) => {
         const userRole = await getUserRole(userId);
 
         if (!permissionCheck.canManageProject(userRole.permissions)) {
-            return res.status(403).json({ error: "Not authorized to add projects" });
+            return res.status(403).json({ message: "Not authorized to add projects" });
         }
 
         //Verify if duplicate project exist with same project title
-        const existingProject = await Project.findOne({ title });
+        const existingProject = await Project.findOne({ title, authorId: userId });
 
         if (existingProject) {
-            return res.status(400).json({ error: "Project already exist with that title" });
+            return res.status(400).json({ message: "Project already exist with that title" });
         }
 
         //Create project
@@ -39,10 +39,20 @@ export const addProject = async (req, res) => {
         //Assign author to the project using ProjectAssignee object
         await ProjectAssignee.create({ projectId: project._id, userId });
 
+        const projectAssignees = [];
+
+        if (contributors) {
+            contributors.forEach((contributor) => {
+                projectAssignees.push(ProjectAssignee.create({ projectId: project._id, userId: contributor }));
+            });
+        }
+
+        await Promise.all(projectAssignees);
+
         return res.sendStatus(200);
 
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     };
 };
 
@@ -89,7 +99,7 @@ export const getUserProjects = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -112,14 +122,14 @@ export const updateProject = async (req, res) => {
         const userRole = await getUserRole(userId);
 
         if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
-            return res.status(403).json({ error: "Not authorized to modify projects" });
+            return res.status(403).json({ message: "Not authorized to modify projects" });
         }
 
         //Authorize - ensure signed in user is the project author
         const project = await Project.findOne({ _id: projectId, authorId: userId });
 
         if (!project) {
-            return res.status(403).json({ error: "Not authorized to modify projects" });
+            return res.status(403).json({ message: "Not authorized to modify projects" });
         }
 
         project.title = title;
@@ -129,7 +139,7 @@ export const updateProject = async (req, res) => {
 
         return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
 
     }
 };
@@ -151,21 +161,21 @@ export const addAssignee = async (req, res) => {
         const userRole = await getUserRole(userId);
 
         if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
-            return res.status(403).json({ error: "Not authorized to add users to projects" });
+            return res.status(403).json({ message: "Not authorized to add users to projects" });
         }
 
         //Authorize - ensure signed in user is the project author
         const project = await Project.findOne({ _id: projectId, authorId: userId });
 
         if (!project) {
-            return res.status(403).json({ error: "Not authorized to add users to projects" });
+            return res.status(403).json({ message: "Not authorized to add users to projects" });
         }
 
         //Verify that assignee doesn't belong to the project (only add new user to project)
         const existingAssignee = await ProjectAssignee.findOne({ userId: assigneeId });
 
         if (existingAssignee) {
-            return res.status(400).json({ error: "User already exist in the project" });
+            return res.status(400).json({ message: "User already exist in the project" });
         }
 
         //Create ProjectAssignee object
@@ -174,7 +184,7 @@ export const addAssignee = async (req, res) => {
         return res.sendStatus(200);
 
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -195,25 +205,25 @@ export const removeAssignee = async (req, res) => {
         const userRole = await getUserRole(userId);
 
         if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
-            return res.status(403).json({ error: "Not authorized to remove users from the project" });
+            return res.status(403).json({ message: "Not authorized to remove users from the project" });
         }
 
         //Authorize - ensure signed in user is the project author
         const project = await Project.findOne({ _id: projectId, authorId: userId });
 
         if (!project) {
-            return res.status(403).json({ error: "Not authorized to remove users from the project" });
+            return res.status(403).json({ message: "Not authorized to remove users from the project" });
         }
 
         if (!mongoose.Types.ObjectId.isValid(projectId)) {
-            return res.status(400).json({ error: "Invalid project id" });
+            return res.status(400).json({ message: "Invalid project id" });
         }
 
         //Verify that the assignee belongs to the project before removing them
         const existingAssignee = await ProjectAssignee.findOne({ projectId, userId: assigneeId });
 
         if (!existingAssignee) {
-            return res.status(400).json({ error: "User not found in the project" });
+            return res.status(400).json({ message: "User not found in the project" });
         }
 
         //Delete ProjectAssignee object
@@ -222,7 +232,7 @@ export const removeAssignee = async (req, res) => {
         return res.sendStatus(200);
 
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -241,11 +251,11 @@ export const deleteProject = async (req, res) => {
         const userRole = await getUserRole(userId);
 
         if (!permissionCheck.canManageProject(userRole.permissions)) {
-            return res.status(403).json({ error: "Not authorized to delete projects" });
+            return res.status(403).json({ message: "Not authorized to delete projects" });
         }
 
         if (!mongoose.Types.ObjectId.isValid(projectId)) {
-            return res.status(400).json({ error: "Invalid project id" });
+            return res.status(400).json({ message: "Invalid project id" });
         }
 
         //Delete all the project assignee
@@ -256,6 +266,6 @@ export const deleteProject = async (req, res) => {
 
         return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };

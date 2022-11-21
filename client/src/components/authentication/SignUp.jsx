@@ -13,8 +13,8 @@ import {
 	useToast,
 	Alert,
 } from "@chakra-ui/react";
-import { SignUpData, SignupSchema } from "../util/ValidationSchemas";
-import AuthService from "../services/auth-service";
+import { SignUpData, SignupSchema } from "../../util/ValidationSchemas";
+import AuthService from "../../services/auth-service";
 
 export const SignUp = () => {
 	const toast = useToast();
