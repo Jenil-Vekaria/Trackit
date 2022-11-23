@@ -167,6 +167,7 @@ export const updateProject = async (req, res) => {
 
         project.title = title;
         project.description = description;
+        project.updatedOn = Date.now();
 
         await project.save();
 
