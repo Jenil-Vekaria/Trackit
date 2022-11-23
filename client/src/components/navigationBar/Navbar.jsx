@@ -84,7 +84,10 @@ const Navbar = () => {
 						icon={item.icon}
 						name={item.name}
 						path={item.path}
-						active={location.pathname.includes(item.path)}
+						active={
+							location.pathname.includes(item.path) ||
+							(item.path === "/dashboard" && location.pathname === "/")
+						}
 					/>
 				))}
 			</Flex>
