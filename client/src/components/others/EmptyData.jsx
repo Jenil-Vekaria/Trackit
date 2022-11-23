@@ -1,4 +1,4 @@
-import { Center, Heading, Image, Text } from "@chakra-ui/react";
+import { Center, Image, Text } from "@chakra-ui/react";
 import React from "react";
 import empty from "../../assests/empty.svg";
 
