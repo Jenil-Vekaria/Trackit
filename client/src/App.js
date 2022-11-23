@@ -17,6 +17,7 @@ import { Flex } from '@chakra-ui/react';
 import AddProject from './components/projects/AddProject';
 import ViewAllProjects from './components/projects/ViewAllProjects';
 import ViewProject from './components/projects/ViewProject';
+import PageNotFound from './components/others/PageNotFound';
 
 export const App = () => {
   const [isAuthorized, setIsAuthorized] = useState(AuthService.isAuthorized());
@@ -49,7 +50,7 @@ export const App = () => {
                 <Route path="/tickets" element={<Tickets />} />
 
                 <Route path="/administration" element={<Administration />} />
-                <Route path='*' element={<Navigate to="/dashboard" replace />} />
+                <Route path='*' element={<PageNotFound />} />
               </Routes>
             </Flex>
           ) : (
