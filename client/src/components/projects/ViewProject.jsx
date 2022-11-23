@@ -15,7 +15,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import ProjectService from "../../services/project-service";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import AuthService from "../../services/auth-service";
-
 const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
 	const { projectID } = useParams();
@@ -28,7 +27,11 @@ const ViewProject = () => {
 
 	const getProjectInfo = async () => {
 		const project = await ProjectService.getProjectInfo(projectID);
-		setProjectInfo(project);
+		if (project) {
+			setProjectInfo(project);
+		} else {
+			navigate(-1);
+		}
 	};
 
 	useEffect(() => {

@@ -29,6 +29,7 @@ import { useDispatch } from "react-redux";
 import UserService from "../../services/user-service";
 import DataTable from "../others/DataTable";
 import ProjectService from "../../services/project-service";
+import AlertModal from "../others/AlertModal";
 
 const AddProject = () => {
 	const navigate = useNavigate();
@@ -42,12 +43,11 @@ const AddProject = () => {
 	const toast = useToast();
 	const dispatch = useDispatch();
 
-	const onCTA = (onClose) => {
+	const onProjectDelete = async (onClose) => {
 		onClose();
-		navigate(-1);
+		await ProjectService.deleteProject(projectInfo._id);
+		navigate(-2);
 	};
-
-	const onProjectDelete = () => {};
 
 	const getAllUsers = async () => {
 		const users = await UserService.getUsers();
@@ -219,7 +219,7 @@ const AddProject = () => {
 				</Button>
 
 				{projectID ? (
-					<Button colorScheme="red" onClick={onProjectDelete}>
+					<Button colorScheme="red" onClick={() => onOpen()}>
 						Delete Project
 					</Button>
 				) : (
@@ -227,13 +227,13 @@ const AddProject = () => {
 				)}
 			</Flex>
 
-			{/* <AlertModal
+			<AlertModal
 				title={"Delete project"}
 				body="Are you sure you to delete project?"
 				isOpen={isOpen}
 				onClose={onClose}
-				onCTA={onCTA}
-			/> */}
+				onCTA={onProjectDelete}
+			/>
 		</Flex>
 	);
 };

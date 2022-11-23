@@ -3,7 +3,8 @@ import { Auth } from "./pages/Auth";
 import {
   BrowserRouter,
   Routes,
-  Route
+  Route,
+  Navigate
 } from "react-router-dom";
 
 import AuthService from './services/auth-service';
@@ -33,7 +34,9 @@ export const App = () => {
               <Navbar />
               <Routes>
                 <Route extact path="/" element={<Dashboard />} />
+
                 <Route path="/dashboard" element={<Dashboard />} />
+
                 <Route path="/projects" element={<Projects />}>
                   <Route path='add' element={<AddProject />} />
                   <Route path=':projectID'>
@@ -42,8 +45,11 @@ export const App = () => {
                   </Route>
                   <Route path='' element={<ViewAllProjects />} />
                 </Route>
+
                 <Route path="/tickets" element={<Tickets />} />
+
                 <Route path="/administration" element={<Administration />} />
+                <Route path='*' element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </Flex>
           ) : (

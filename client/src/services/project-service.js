@@ -49,12 +49,21 @@ const getProjectInfo = async (projectId) => {
     }
 };
 
+const deleteProject = async (projectId) => {
+    try {
+        await API.delete(`/${projectId}`);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 
 const ProjectService = {
     getMyProjects,
     addProject,
     getProjectInfo,
-    updateProject
+    updateProject,
+    deleteProject
 };
 
 export default ProjectService;
