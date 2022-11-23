@@ -3,8 +3,9 @@ import { Table, Column, HeaderCell, Cell } from "rsuite-table";
 import "rsuite-table/dist/css/rsuite-table.css";
 import SearchBar from "./SearchBar";
 import moment from "moment";
-import { Icon, IconButton } from "@chakra-ui/react";
+import { IconButton } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
+import EmptyData from "./EmptyData";
 
 const BaseCell = React.forwardRef((props, ref) => {
 	const { children, rowData, ...rest } = props;
@@ -130,6 +131,9 @@ const DataTable = ({
 				onSortColumn={handleSortColumn}
 				onRowClick={handleRowClick}
 				height={height ? height : 300}
+				renderEmpty={() => {
+					return <EmptyData />;
+				}}
 			>
 				{hasSelect ? (
 					<Column width={50} align="center">
