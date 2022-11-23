@@ -20,7 +20,7 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect, useRef } from "react";
 import { CreateProjectSchema } from "../../util/ValidationSchemas";
@@ -29,15 +29,15 @@ import { useDispatch } from "react-redux";
 import UserService from "../../services/user-service";
 import DataTable from "../others/DataTable";
 import ProjectService from "../../services/project-service";
-import AlertModal from "../others/AlertModal";
 
 const AddProject = () => {
 	const navigate = useNavigate();
 	const [allUsers, setallUsers] = useState([]);
 	const [projectContributors, setprojectContributors] = useState([]);
+	const [projectInfo, setProjectInfo] = useState(CreateProjectSchema);
 	const [error, seterror] = useState("");
 	const { isOpen, onOpen, onClose } = useDisclosure();
-
+	const { projectID } = useParams();
 	const formRef = useRef();
 	const toast = useToast();
 	const dispatch = useDispatch();
@@ -47,31 +47,72 @@ const AddProject = () => {
 		navigate(-1);
 	};
 
+	const onProjectDelete = () => {};
+
 	const getAllUsers = async () => {
 		const users = await UserService.getUsers();
 		setallUsers(users);
 	};
 
+	const getProjectInfo = async () => {
+		const { _id, title, description, projectAssignees } =
+			await ProjectService.getProjectInfo(projectID);
+		// console.table(response);
+		setProjectInfo({
+			_id,
+			title,
+			description,
+			contributors: projectAssignees,
+		});
+
+		const assigneesId = [];
+		projectAssignees?.forEach((assignee) => {
+			assigneesId.push(assignee._id);
+		});
+		setprojectContributors(assigneesId);
+	};
+
 	const onHandleFormSubmit = (values, action) => {
 		values.contributors = projectContributors;
-		ProjectService.addProject(values)
-			.then((result) => {
-				toast({
-					title: "Project created",
-					status: "success",
-					duration: 4000,
-					isClosable: true,
-				});
 
-				dispatch(ProjectService.getMyProjects());
-				navigate(-1);
-			})
-			.catch((error) => {
-				seterror(error.response.data.message);
-			});
+		if (projectID) {
+			ProjectService.updateProject(values)
+				.then((result) => {
+					toast({
+						title: "Project Updated",
+						status: "success",
+						duration: 4000,
+						isClosable: true,
+					});
+
+					navigate(-1);
+				})
+				.catch((error) => {
+					console.info(error.response.data.message);
+				});
+		} else {
+			ProjectService.addProject(values)
+				.then((result) => {
+					toast({
+						title: "Project created",
+						status: "success",
+						duration: 4000,
+						isClosable: true,
+					});
+
+					dispatch(ProjectService.getMyProjects());
+					navigate(-1);
+				})
+				.catch((error) => {
+					seterror(error.response.data.message);
+				});
+		}
 	};
 
 	useEffect(() => {
+		if (projectID) {
+			getProjectInfo();
+		}
 		getAllUsers();
 	}, []);
 
@@ -79,13 +120,13 @@ const AddProject = () => {
 		<Flex w="100%" h="100%" direction="column">
 			<Flex w="100%" h="fit-content">
 				<Heading as="h1" size="lg">
-					Add Project
+					{projectID ? "Edit" : "Add"} Project
 				</Heading>
 				<Spacer />
 				<IconButton
 					icon={<CloseIcon />}
 					variant="ghost"
-					onClick={() => onOpen()}
+					onClick={() => navigate(-1)}
 				/>
 			</Flex>
 
@@ -98,10 +139,11 @@ const AddProject = () => {
 				<TabPanels maxHeight="100%" height="100%">
 					<TabPanel>
 						<Formik
-							initialValues={CreateProjectSchema}
+							initialValues={projectInfo}
 							validationSchema={CreateProjectSchema}
 							onSubmit={onHandleFormSubmit}
 							innerRef={formRef}
+							enableReinitialize
 						>
 							{({ errors, touched }) => (
 								<Flex direction="column" justify="space-between">
@@ -161,6 +203,7 @@ const AddProject = () => {
 							searchbarVariant="outline"
 							hasSelect={true}
 							setSelectValues={setprojectContributors}
+							selectedValues={projectContributors}
 							height={340}
 						/>
 					</TabPanel>
@@ -172,18 +215,25 @@ const AddProject = () => {
 					colorScheme="purple"
 					onClick={() => formRef.current?.handleSubmit()}
 				>
-					Create Project
+					{projectID ? "Save" : "Create"} Project
 				</Button>
-				<Button onClick={() => onOpen()}>Cancel</Button>
+
+				{projectID ? (
+					<Button colorScheme="red" onClick={onProjectDelete}>
+						Delete Project
+					</Button>
+				) : (
+					<Button onClick={() => navigate(-1)}>Cancel</Button>
+				)}
 			</Flex>
 
-			<AlertModal
+			{/* <AlertModal
 				title={"Delete project"}
 				body="Are you sure you to delete project?"
 				isOpen={isOpen}
 				onClose={onClose}
 				onCTA={onCTA}
-			/>
+			/> */}
 		</Flex>
 	);
 };

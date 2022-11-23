@@ -31,10 +31,19 @@ const addProject = async (data) => {
     }
 };
 
+const updateProject = async (data) => {
+    try {
+        const response = await API.patch(`/${data._id}`, data);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 const getProjectInfo = async (projectId) => {
     try {
         const response = await API.get(`/${projectId}`);
-        return response.data.project[0];
+        return response.data.project;
     } catch (error) {
         console.error(error);
     }
@@ -44,7 +53,8 @@ const getProjectInfo = async (projectId) => {
 const ProjectService = {
     getMyProjects,
     addProject,
-    getProjectInfo
+    getProjectInfo,
+    updateProject
 };
 
 export default ProjectService;

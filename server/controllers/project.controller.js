@@ -4,6 +4,9 @@ import User from "../models/user.model.js";
 import ProjectAssignee from "../models/projectAssignee.model.js";
 import { getUserRole } from "../util/utils.js";
 import mongoose from "mongoose";
+import UserRole from "../models/userRole.model.js";
+import Role from "../models/role.model.js";
+import { getUsers } from "./user.controller.js";
 
 /**
  * @description: Creates a project
@@ -108,7 +111,6 @@ export const getUserProjects = async (req, res) => {
  */
 export const getProject = async (req, res) => {
     const { projectId } = req.params;
-    const ObjectId = mongoose.Types.ObjectId;
     try {
         //Get user permssion
         const userId = req.user._id;
@@ -118,63 +120,21 @@ export const getProject = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to view project" });
         }
 
-        //Use projectId from each ProjectAssignee object to the get Project object
-        const project = await Project.aggregate([
-            {
-                //Get all the project that match from list of ProjectIds
-                $match: {
-                    _id: ObjectId(projectId)
-                }
-            },
-            {
-                //For each project, get the user object by matching _id from User and authorId from Project
-                $lookup: {
-                    from: "project assignees",
-                    localField: "_id",
-                    foreignField: "projectId",
-                    as: "projectAssignee",
-                    pipeline: [
-                        {
-                            $lookup: {
-                                from: "users",
-                                localField: "userId",
-                                foreignField: "_id",
-                                as: "user",
-                                pipeline: [
-                                    {
-                                        $project: {
-                                            fullName: { $concat: ["$firstName", " ", "$lastName"] },
-                                            _id: 0
-                                        }
-                                    }
-                                ]
-                            }
-                        },
-                        {
-                            $set: { fullName: { $arrayElemAt: ["$user.fullName", 0] } }
-                        },
-                        {
-                            $project: {
-                                userId: 1,
-                                fullName: 1,
-                                _id: 0
-                            }
-                        }
-                    ]
-                }
-            },
+        const projectInfo = await Project.findById(projectId);
 
-        ]);
+        //Get all the project assignees ID - ""userId"
+        const projectAssigneesID = await ProjectAssignee.distinct("userId", { projectId });
 
-        return res.status(200).json({ project });
+        const projectAssigneesInfo = await getUsers(projectAssigneesID);
+
+
+        return res.status(200).json({ project: { ...projectInfo.toObject(), projectAssignees: projectAssigneesInfo } });
 
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: error.message });
     }
 };
-
-
 
 /**
  * @description: Update Project
@@ -185,7 +145,7 @@ export const getProject = async (req, res) => {
  * @return status 200
 */
 export const updateProject = async (req, res) => {
-    const { title } = req.body;
+    const { title, contributors } = req.body;
     const description = req.body.description || "";
     const { projectId } = req.params;
 
@@ -195,20 +155,38 @@ export const updateProject = async (req, res) => {
         const userRole = await getUserRole(userId);
 
         if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
-            return res.status(403).json({ message: "Not authorized to modify projects" });
+            return res.status(403).json({ message: "Not authorized to modify projects 1" });
         }
 
         //Authorize - ensure signed in user is the project author
         const project = await Project.findOne({ _id: projectId, authorId: userId });
 
         if (!project) {
-            return res.status(403).json({ message: "Not authorized to modify projects" });
+            return res.status(403).json({ message: "Not authorized to modify projects 2" });
         }
 
         project.title = title;
         project.description = description;
 
         await project.save();
+
+        const projectAssignees = await ProjectAssignee.distinct("userId", { projectId, userId: { $ne: userId } });
+
+        //Project assignee to remove and to add
+        const toRemove = projectAssignees.filter(projectAssigneeId => !contributors.includes(projectAssigneeId));
+        const toAdd = contributors.filter(projectAssigneeId => !projectAssignees.includes(projectAssigneeId) && projectAssigneeId != userId);
+
+
+        await ProjectAssignee.deleteMany({ userId: { $in: toRemove }, projectId });
+
+        const toAddPromises = [];
+
+        toAdd.forEach((userId) => {
+            toAddPromises.push(ProjectAssignee.create({ projectId: project._id, userId }));
+        });
+
+        await Promise.all(toAddPromises);
+
 
         return res.sendStatus(200);
     } catch (error) {

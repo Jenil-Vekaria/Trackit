@@ -3,7 +3,8 @@ import { Table, Column, HeaderCell, Cell } from "rsuite-table";
 import "rsuite-table/dist/css/rsuite-table.css";
 import SearchBar from "./SearchBar";
 import moment from "moment";
-import { Box, Flex } from "@chakra-ui/react";
+import { Icon, IconButton } from "@chakra-ui/react";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 const BaseCell = React.forwardRef((props, ref) => {
 	const { children, rowData, ...rest } = props;
@@ -29,6 +30,22 @@ const CheckCell = ({ rowData, onChange, checkedKeys, dataKey, ...props }) => {
 	);
 };
 
+const ActionCell = ({ rowData, dataKey, onActionHandle, ...props }) => {
+	function handleAction() {
+		onActionHandle(rowData);
+	}
+
+	return (
+		<BaseCell {...props}>
+			<IconButton
+				variant="ghost"
+				icon={<DeleteIcon />}
+				onClick={handleAction}
+			/>
+		</BaseCell>
+	);
+};
+
 const DataTable = ({
 	columns,
 	data,
@@ -38,16 +55,17 @@ const DataTable = ({
 	handleRowClick,
 	hasSelect,
 	setSelectValues,
+	selectedValues,
+	hasAction,
+	onActionHandle,
 }) => {
 	const [sortColumn, setSortColumn] = useState(columns[0].field);
 	const [sortType, setSortType] = useState("asc");
 	const [searchInput, setsearchInput] = useState("");
-	const [checkedKeys, setCheckedKeys] = useState([]);
 
 	const handleCheckAll = React.useCallback((event) => {
 		const checked = event.target.checked;
 		const keys = checked ? data.map((item) => item._id) : [];
-		setCheckedKeys(keys);
 		setSelectValues(keys);
 	}, []);
 
@@ -56,13 +74,12 @@ const DataTable = ({
 			const checked = event.target.checked;
 			const value = event.target.value;
 			const keys = checked
-				? [...checkedKeys, value]
-				: checkedKeys.filter((item) => item !== value);
+				? [...selectedValues, value]
+				: selectedValues.filter((item) => item !== value);
 
-			setCheckedKeys(keys);
 			setSelectValues(keys);
 		},
-		[checkedKeys],
+		[selectedValues],
 	);
 
 	const handleSearchInputChange = (e) => {
@@ -121,13 +138,13 @@ const DataTable = ({
 								<input
 									type="checkbox"
 									onChange={handleCheckAll}
-									checked={checkedKeys.length === data.length}
+									checked={selectedValues.length === data.length}
 								/>
 							</div>
 						</HeaderCell>
 						<CheckCell
 							dataKey="_id"
-							checkedKeys={checkedKeys}
+							checkedKeys={selectedValues}
 							onChange={handleCheck}
 						/>
 					</Column>
@@ -156,6 +173,13 @@ const DataTable = ({
 						)}
 					</Column>
 				))}
+
+				{hasAction ? (
+					<Column width={50}>
+						<HeaderCell>Action</HeaderCell>
+						<ActionCell dataKey="_id" onActionHandle={onActionHandle} />
+					</Column>
+				) : null}
 			</Table>
 		</>
 	);
