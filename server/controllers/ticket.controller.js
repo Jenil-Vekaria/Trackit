@@ -5,6 +5,66 @@ import * as permissionCheck from "../util/permissionCheck.js";
 import { getUserRole } from "../util/utils.js";
 
 export const getUserTickets = async (req, res) => {
+
+    const { userId } = req.params;
+
+    try {
+        // Verify the permissions
+        if (!req.user._id.equals(userId)) {
+            return res.status(403).json({ error: "Not authorized to view the tickets" });
+        }
+
+        const tickets = await Ticket.aggregate([
+            // Check the signed in user id belongs in the assignees array 
+            {
+                $match: {
+                    $expr: { $in: [req.user._id, "$assignees"] }
+                }
+            },
+            //Do a lookup to get assignee information (id and fullname)
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "assignees",
+                    foreignField: "_id",
+                    as: "assignees",
+                    pipeline: [
+                        {
+                            $project: {
+                                _id: 1,
+                                fullName: { $concat: ["$firstName", " ", "$lastName"] }
+                            }
+                        }
+                    ]
+                }
+            },
+            //Do a lookup to get the ticket type information
+            {
+                $lookup: {
+                    from: "tickettypes",
+                    localField: "type",
+                    foreignField: "_id",
+                    as: "type",
+                    pipeline: [
+                        {
+                            $project: {
+                                _id: 0,
+                                name: 1,
+                                colour: 1,
+                                iconName: 1
+                            }
+                        }
+                    ]
+                }
+            }
+        ]);
+
+        return res.json({ tickets });
+
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+
 };
 
 export const getProjectTickets = async (req, res) => {
