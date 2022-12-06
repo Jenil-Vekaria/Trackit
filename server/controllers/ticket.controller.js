@@ -32,6 +32,7 @@ export const getProjectTickets = async (req, res) => {
                     projectId: mongoose.Types.ObjectId(projectId)
                 }
             },
+            //Do a lookup to get assignee information (id and fullname)
             {
                 $lookup: {
                     from: "users",
@@ -48,6 +49,7 @@ export const getProjectTickets = async (req, res) => {
                     ]
                 }
             },
+            //Do a lookup to get the ticket type information
             {
                 $lookup: {
                     from: "tickettypes",
