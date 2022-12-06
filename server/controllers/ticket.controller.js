@@ -231,7 +231,6 @@ export const updateTicket = async (req, res) => {
         // Ensure the ticket exist
         const ticket = await Ticket.findOne({ _id: ticketId });
 
-
         // Ensure the user belongs to the project
         const projectAssingee = await ProjectAssginee.findOne({ projectId: ticket.projectId, userId });
 
@@ -263,5 +262,34 @@ export const updateTicket = async (req, res) => {
 };
 
 export const deleteTicket = async (req, res) => {
+    const { ticketId } = req.params;
 
+    try {
+        //Get user permssion
+        const userId = req.user._id;
+        const userRole = await getUserRole(userId);
+
+        if (!permissionCheck.canManageTicket(userRole.permissions)) {
+            return res.status(403).json({ message: "Not authorized to delete the ticket" });
+        }
+
+        const ticket = await Ticket.findOne({ _id: ticketId });
+
+        // Ensure the user belongs to the project
+        const projectAssingee = await ProjectAssginee.findOne({ projectId: ticket.projectId, userId });
+
+        if (!projectAssingee) {
+            return res.status(403).json({ error: "Not authorized to delete the tickets" });
+        }
+
+        if (!ticket) {
+            return res.status(403).json({ message: "Ticket does not exist" });
+        }
+
+        await ticket.delete();
+
+        return res.sendStatus(200);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
 };
