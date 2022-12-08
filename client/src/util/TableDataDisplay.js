@@ -21,6 +21,29 @@ export const PROJECT_COLUMNS = [
     },
 ];
 
+export const TICKET_COLUMNS = [
+    {
+        name: "Title",
+        type: "string",
+        field: "title"
+    },
+    {
+        name: "Description",
+        type: "string",
+        field: "description"
+    },
+    {
+        name: "Status",
+        type: "string",
+        field: "status"
+    },
+    {
+        name: "Created On",
+        type: "date",
+        field: "createdOn"
+    }
+];
+
 export const USER_COLUMNS = [
     {
         name: "Name",

@@ -200,8 +200,6 @@ export const createTicket = async (req, res) => {
         const ticket = await Ticket.create({ projectId, type, title, description, status, tags, assignees });
 
         return res.json({ ticket });
-
-
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }

@@ -22,6 +22,15 @@ const TicketSchema = mongoose.Schema({
         enum: ["open", "in-progress", "completed", "archived"],
         default: "open"
     },
+    estimatedTime: {
+        type: Number,
+        required: true
+    },
+    estimatedTimeUnit: {
+        type: String,
+        enum: ["h", "d"],
+        default: "h"
+    },
     tags: {
         type: [String],
         default: []

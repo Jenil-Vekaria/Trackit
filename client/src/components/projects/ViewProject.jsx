@@ -9,16 +9,21 @@ import {
 	TabPanel,
 	TabPanels,
 	Tabs,
+	Text,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ProjectService from "../../services/project-service";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import AuthService from "../../services/auth-service";
+import TicketService from "../../services/ticket-service";
+import DataTable from "../others/DataTable";
+import { TICKET_COLUMNS } from "../../util/TableDataDisplay";
 
 const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
 	const { projectID } = useParams();
+	const [projectTickets, setProjectTickets] = useState([]);
 	const navigate = useNavigate();
 
 	const isProjectAuthor = () => {
@@ -35,8 +40,17 @@ const ViewProject = () => {
 		}
 	};
 
+	const getProjectTickets = async () => {
+		const tickets = await TicketService.getProjectTickets(projectID);
+		console.table(tickets);
+		setProjectTickets(tickets);
+	};
+
+	const onTicketClick = (ticket) => {};
+
 	useEffect(() => {
 		getProjectInfo();
+		getProjectTickets();
 	}, []);
 
 	return (
@@ -75,7 +89,14 @@ const ViewProject = () => {
 				</TabList>
 
 				<TabPanels h="100%">
-					<TabPanel>Ticket Panel</TabPanel>
+					<TabPanel>
+						<DataTable
+							columns={TICKET_COLUMNS}
+							data={projectTickets}
+							searchPlaceholder="Search for tickets"
+							handleRowClick={onTicketClick}
+						/>
+					</TabPanel>
 				</TabPanels>
 			</Tabs>
 		</Flex>
