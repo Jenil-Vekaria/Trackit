@@ -4,7 +4,6 @@ import User from "../models/user.model.js";
 import ProjectAssignee from "../models/projectAssignee.model.js";
 import { getUserRole } from "../util/utils.js";
 import mongoose from "mongoose";
-import UserRole from "../models/userRole.model.js";
 import Role from "../models/role.model.js";
 import { getUsers } from "./user.controller.js";
 
@@ -17,7 +16,7 @@ import { getUsers } from "./user.controller.js";
  */
 
 export const addProject = async (req, res) => {
-    const { title, contributors } = req.body;
+    const { title, assignees } = req.body;
     const description = req.body.description || "";
 
     try {
@@ -37,28 +36,30 @@ export const addProject = async (req, res) => {
         }
 
         //Create project
-        const project = await Project.create({ title, description, authorId: userId });
+        const newProject = await Project.create({ title, description, authorId: userId, assignees });
 
-        //Assign author to the project using ProjectAssignee object
-        await ProjectAssignee.create({ projectId: project._id, userId });
+        //Add the new project id to User object's project list
+        const updateAssigneeProjectList = [];
 
-        const projectAssignees = [];
+        assignees.forEach(userId => {
+            //append new project id to the User.projects array
+            const updateUser = User.updateOne(
+                { _id: userId },
+                { $push: { projects: newProject._id } }
+            );
 
-        if (contributors) {
-            contributors.forEach((contributor) => {
-                projectAssignees.push(ProjectAssignee.create({ projectId: project._id, userId: contributor }));
-            });
-        }
+            updateAssigneeProjectList.push(updateUser);
+        });
 
-        await Promise.all(projectAssignees);
 
-        return res.sendStatus(200);
+        await Promise.all(updateAssigneeProjectList);
+
+        return res.json({ newProject });
 
     } catch (error) {
         return res.status(500).json({ message: error.message });
     };
 };
-
 
 /**
  * @returns Signed in user's project
@@ -67,36 +68,9 @@ export const getUserProjects = async (req, res) => {
     try {
         const userId = req.user._id;
 
-        //Use userId to get all user's project ID (distinct will only get projectID field and put it into a list)
-        const projectIds = await ProjectAssignee.distinct("projectId", { userId });
-
-        //Use projectId from each ProjectAssignee object to the get Project object
-        const projects = await Project.aggregate([
-            {
-                //Get all the project that match from list of ProjectIds
-                $match: {
-                    _id: { $in: projectIds }
-                }
-            },
-            {
-                //For each project, get the user object by matching _id from User and authorId from Project
-                $lookup: {
-                    from: "users",
-                    localField: "authorId",
-                    foreignField: "_id",
-                    as: "authorName",
-                    pipeline: [
-                        {
-                            $project: {
-                                fullName: { $concat: ["$firstName", " ", "$lastName"] },
-                                _id: 0
-                            }
-                        }
-                    ]
-                }
-            },
-            { $set: { authorName: { $arrayElemAt: ["$authorName.fullName", 0] } } },
-        ]);
+        // * Get all the user's projects
+        // ? To find documents with array that contains specfic value, you can simply do "assginees: userId", it will return all documents with array containing userId
+        const projects = await Project.find({ assignees: userId });
 
         return res.status(200).json({ projects });
 
@@ -109,7 +83,7 @@ export const getUserProjects = async (req, res) => {
 /**
  * @returns get project information
  */
-export const getProject = async (req, res) => {
+export const getProjectInfo = async (req, res) => {
     const { projectId } = req.params;
     try {
         //Get user permssion
@@ -120,15 +94,13 @@ export const getProject = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to view project" });
         }
 
-        const projectInfo = await Project.findById(projectId);
+        const project = await Project.findById(projectId);
 
-        //Get all the project assignees ID - ""userId"
-        const projectAssigneesID = await ProjectAssignee.distinct("userId", { projectId });
+        if (!project) {
+            return res.status(403).json({ message: "Project not found" });
+        }
 
-        const projectAssigneesInfo = await getUsers(projectAssigneesID);
-
-
-        return res.status(200).json({ project: { ...projectInfo.toObject(), projectAssignees: projectAssigneesInfo } });
+        return res.status(200).json({ project });
 
     } catch (error) {
         console.log(error);
@@ -145,7 +117,7 @@ export const getProject = async (req, res) => {
  * @return status 200
 */
 export const updateProject = async (req, res) => {
-    const { title, contributors } = req.body;
+    const { title, assignees } = req.body;
     const description = req.body.description || "";
     const { projectId } = req.params;
 
@@ -155,136 +127,28 @@ export const updateProject = async (req, res) => {
         const userRole = await getUserRole(userId);
 
         if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
-            return res.status(403).json({ message: "Not authorized to modify projects 1" });
+            return res.status(403).json({ message: "Not authorized to modify projects" });
         }
 
         //Authorize - ensure signed in user is the project author
         const project = await Project.findOne({ _id: projectId, authorId: userId });
 
         if (!project) {
-            return res.status(403).json({ message: "Not authorized to modify projects 2" });
+            return res.status(403).json({ message: "Not authorized to modify projects" });
         }
 
         project.title = title;
         project.description = description;
+        project.assignees = assignees;
         project.updatedOn = Date.now();
 
-        await project.save();
-
-        const projectAssignees = await ProjectAssignee.distinct("userId", { projectId, userId: { $ne: userId } });
-
-        //Project assignee to remove and to add
-        const toRemove = projectAssignees.filter(projectAssigneeId => !contributors.includes(projectAssigneeId));
-        const toAdd = contributors.filter(projectAssigneeId => !projectAssignees.includes(projectAssigneeId) && projectAssigneeId != userId);
+        const updatedProject = await project.save({ new: true });
 
 
-        await ProjectAssignee.deleteMany({ userId: { $in: toRemove }, projectId });
-
-        const toAddPromises = [];
-
-        toAdd.forEach((userId) => {
-            toAddPromises.push(ProjectAssignee.create({ projectId: project._id, userId }));
-        });
-
-        await Promise.all(toAddPromises);
-
-
-        return res.sendStatus(200);
+        return res.json({ project: updatedProject });
     } catch (error) {
         return res.status(500).json({ message: error.message });
 
-    }
-};
-
-/**
- * @description: Add Assignee
- * @param {assigneeId} string
- * @param {projectId} string
- * 
- * @return status 200
-*/
-export const addAssignee = async (req, res) => {
-    const { assigneeId } = req.body;
-    const { projectId } = req.params;
-
-    try {
-        //Get user permssion
-        const userId = req.user._id;
-        const userRole = await getUserRole(userId);
-
-        if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
-            return res.status(403).json({ message: "Not authorized to add users to projects" });
-        }
-
-        //Authorize - ensure signed in user is the project author
-        const project = await Project.findOne({ _id: projectId, authorId: userId });
-
-        if (!project) {
-            return res.status(403).json({ message: "Not authorized to add users to projects" });
-        }
-
-        //Verify that assignee doesn't belong to the project (only add new user to project)
-        const existingAssignee = await ProjectAssignee.findOne({ userId: assigneeId });
-
-        if (existingAssignee) {
-            return res.status(400).json({ message: "User already exist in the project" });
-        }
-
-        //Create ProjectAssignee object
-        await ProjectAssignee.create({ projectId, userId: assigneeId });
-
-        return res.sendStatus(200);
-
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
-
-/**
- * @description: Remove Assignee
- * @param {assigneeId} string
- * @param {projectId} string
- * 
- * @return status 200
-*/
-export const removeAssignee = async (req, res) => {
-    const { assigneeId } = req.body;
-    const { projectId } = req.params;
-
-    try {
-        //Get user permssion
-        const userId = req.user._id;
-        const userRole = await getUserRole(userId);
-
-        if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
-            return res.status(403).json({ message: "Not authorized to remove users from the project" });
-        }
-
-        //Authorize - ensure signed in user is the project author
-        const project = await Project.findOne({ _id: projectId, authorId: userId });
-
-        if (!project) {
-            return res.status(403).json({ message: "Not authorized to remove users from the project" });
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(projectId)) {
-            return res.status(400).json({ message: "Invalid project id" });
-        }
-
-        //Verify that the assignee belongs to the project before removing them
-        const existingAssignee = await ProjectAssignee.findOne({ projectId, userId: assigneeId });
-
-        if (!existingAssignee) {
-            return res.status(400).json({ message: "User not found in the project" });
-        }
-
-        //Delete ProjectAssignee object
-        await ProjectAssignee.deleteOne({ projectId, userId: assigneeId });
-
-        return res.sendStatus(200);
-
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -306,12 +170,12 @@ export const deleteProject = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to delete projects" });
         }
 
-        if (!mongoose.Types.ObjectId.isValid(projectId)) {
-            return res.status(400).json({ message: "Invalid project id" });
-        }
+        //Authorize - ensure signed in user is the project author
+        const project = await Project.findOne({ _id: projectId, authorId: userId });
 
-        //Delete all the project assignee
-        await ProjectAssignee.deleteMany({ projectId });
+        if (!project) {
+            return res.status(403).json({ message: "Not authorized to delete project" });
+        }
 
         //Delete project
         await Project.deleteOne({ _id: projectId });

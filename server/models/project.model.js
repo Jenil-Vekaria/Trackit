@@ -5,10 +5,18 @@ const ProjectSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    description: String,
+    description: {
+        type: "String",
+        default: "--No Project Description--"
+    },
     authorId: {
         type: mongoose.Types.ObjectId,
         required: true
+    },
+    assignees: {
+        type: [mongoose.Types.ObjectId],
+        required: true,
+        default: []
     },
     createdOn: {
         type: Date,
