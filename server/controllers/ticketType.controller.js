@@ -2,6 +2,17 @@ import * as permissionCheck from "../util/permissionCheck.js";
 import TicketType from "../models/ticketType.model.js";
 import { getUserRole } from "../util/utils.js";
 
+export const getTicketType = async (req, res) => {
+    try {
+
+        const ticketType = await TicketType.find({});
+
+        return res.json({ ticketType });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
 export const addTicketType = async (req, res) => {
     const { name, iconName, colour } = req.body;
 

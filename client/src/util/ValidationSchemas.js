@@ -43,3 +43,20 @@ export const CreateProjectData = {
     description: "",
     contributors: ""
 };
+
+export const CreateTicketSchema = Yup.object().shape({
+    title: Yup.string().required("Required"),
+    description: Yup.string().required("Required"),
+    status: Yup.string().required("Required"),
+    estimatedTime: Yup.number().required("Required")
+});
+
+export const CreateTicketData = {
+    title: "",
+    type: "",
+    description: "",
+    status: "Open",
+    estimatedTime: 0,
+    estimatedTimeUnit: "h",
+    assginees: []
+};

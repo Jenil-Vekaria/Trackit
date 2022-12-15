@@ -10,7 +10,7 @@ import EmptyData from "./EmptyData";
 const BaseCell = React.forwardRef((props, ref) => {
 	const { children, rowData, ...rest } = props;
 	return (
-		<Cell ref={ref} rowData={rowData} {...rest}>
+		<Cell ref={ref} rowData={rowData} {...rest} syle={{ fontSize: "15px" }}>
 			{children}
 		</Cell>
 	);
@@ -158,7 +158,7 @@ const DataTable = ({
 					<Column flexGrow={2} sortable key={index}>
 						<HeaderCell>{column.name}</HeaderCell>
 						{column.type === "date" ? (
-							<Cell dataKey={column.field}>
+							<Cell dataKey={column.field} style={{ fontSize: "15px" }}>
 								{(rowData) =>
 									moment(rowData[column.field]).format("MMMM DD, YYYY")
 								}
@@ -170,6 +170,7 @@ const DataTable = ({
 									fontWeight: index === 0 ? "500" : "0",
 									color: index === 0 ? "purple" : "",
 									cursor: "pointer",
+									fontSize: "15px",
 								}}
 							>
 								{(rowData) => rowData[column.field] || "--no-data--"}

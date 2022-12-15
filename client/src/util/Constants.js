@@ -1,0 +1,1 @@
+export const TICKET_STATUS = ["Open", "In-Progress", "Closed", "Archived"];

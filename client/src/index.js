@@ -6,6 +6,7 @@ import store from "./app/store";
 import { ChakraProvider, CSSReset } from '@chakra-ui/react';
 import { extendTheme } from '@chakra-ui/react';
 import './index.css';
+import { Modal } from "./styles/styles.js";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = extendTheme({
@@ -24,6 +25,16 @@ const theme = extendTheme({
       },
 
     },
+  },
+  components: {
+    Modal: {
+      baseStyle: {
+        dialog: {
+          minWidth: "60%",
+          minHeight: "80%"
+        }
+      }
+    }
   }
 });
 

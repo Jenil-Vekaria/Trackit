@@ -4,11 +4,13 @@ import { configureStore } from "@reduxjs/toolkit";
 // import storage from "redux-persist/lib/storage";
 import authReducer from "../features/authSlice";
 import projectSlice from "../features/projectSlice";
+import ticketTypeSlice from "../features/ticketTypeSlice";
 
 
 export default configureStore({
     reducer: {
         auth: authReducer,
-        project: projectSlice
+        project: projectSlice,
+        ticketType: ticketTypeSlice
     }
 });

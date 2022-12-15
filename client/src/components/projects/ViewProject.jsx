@@ -10,6 +10,7 @@ import {
 	TabPanels,
 	Tabs,
 	Text,
+	useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -19,11 +20,13 @@ import AuthService from "../../services/auth-service";
 import TicketService from "../../services/ticket-service";
 import DataTable from "../others/DataTable";
 import { TICKET_COLUMNS } from "../../util/TableDataDisplay";
+import CreateTicket from "../tickets/CreateTicket";
 
 const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
 	const { projectID } = useParams();
 	const [projectTickets, setProjectTickets] = useState([]);
+	const { isOpen, onOpen, onClose } = useDisclosure();
 	const navigate = useNavigate();
 
 	const isProjectAuthor = () => {
@@ -69,7 +72,7 @@ const ViewProject = () => {
 
 				<Spacer />
 
-				<Button colorScheme="whatsapp" mr={5}>
+				<Button colorScheme="whatsapp" mr={5} onClick={() => onOpen()}>
 					Add Ticket
 				</Button>
 
@@ -99,6 +102,8 @@ const ViewProject = () => {
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
+
+			<CreateTicket isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
 		</Flex>
 	);
 };
