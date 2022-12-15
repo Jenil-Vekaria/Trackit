@@ -117,7 +117,7 @@ export const updateProject = async (req, res) => {
         //Get user permssion
         const userId = req.user._id;
 
-        if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
+        if (!canPerformAction(permissionCheck.canManageProjectMember, req.user)) {
             return res.status(403).json({ message: "Not authorized to modify projects" });
         }
 
@@ -134,7 +134,6 @@ export const updateProject = async (req, res) => {
         project.updatedOn = Date.now();
 
         const updatedProject = await project.save({ new: true });
-
 
         return res.json({ project: updatedProject });
     } catch (error) {

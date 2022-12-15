@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 import ProjectAssginee from "../models/projectAssignee.model.js";
+import Project from "../models/project.model.js";
 import Ticket from "../models/ticket.model.js";
 import * as permissionCheck from "../util/permissionCheck.js";
-import { getUserRole } from "../util/utils.js";
+import { canPerformAction } from "../util/utils.js";
 
 export const getUserTickets = async (req, res) => {
 
@@ -11,7 +12,7 @@ export const getUserTickets = async (req, res) => {
     try {
         // Verify the permissions
         if (!req.user._id.equals(userId)) {
-            return res.status(403).json({ error: "Not authorized to view the tickets" });
+            return res.status(403).json({ message: "Not authorized to view the tickets" });
         }
 
         const tickets = await Ticket.aggregate([
@@ -62,7 +63,7 @@ export const getUserTickets = async (req, res) => {
         return res.json({ tickets });
 
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 
 };
@@ -73,66 +74,23 @@ export const getProjectTickets = async (req, res) => {
     try {
         // Verify the permissions
         const userId = req.user._id;
-        const userRole = await getUserRole(userId);
 
-        if (!permissionCheck.canManageTicket(userRole.permissions)) {
-            return res.status(403).json({ error: "Not authorized to get project tickets" });
+        if (!canPerformAction(permissionCheck.canManageTicket, req.user)) {
+            return res.status(403).json({ message: "Not authorized to get project tickets" });
         }
 
         // Ensure the user belongs to the project
-        const projectAssingee = await ProjectAssginee.findOne({ projectId, userId });
+        const project = await Project.findById(projectId);
 
-        if (!projectAssingee) {
-            return res.status(403).json({ error: "Not authorized to get project tickets" });
+        if (!project.assignees.includes(userId)) {
+            return res.status(403).json({ message: "Not authorized to get project tickets" });
         }
 
-        const tickets = await Ticket.aggregate([
-            {
-                $match: {
-                    projectId: mongoose.Types.ObjectId(projectId)
-                }
-            },
-            //Do a lookup to get assignee information (id and fullname)
-            {
-                $lookup: {
-                    from: "users",
-                    localField: "assignees",
-                    foreignField: "_id",
-                    as: "assignees",
-                    pipeline: [
-                        {
-                            $project: {
-                                _id: 1,
-                                fullName: { $concat: ["$firstName", " ", "$lastName"] }
-                            }
-                        }
-                    ]
-                }
-            },
-            //Do a lookup to get the ticket type information
-            {
-                $lookup: {
-                    from: "tickettypes",
-                    localField: "type",
-                    foreignField: "_id",
-                    as: "type",
-                    pipeline: [
-                        {
-                            $project: {
-                                _id: 0,
-                                name: 1,
-                                colour: 1,
-                                iconName: 1
-                            }
-                        }
-                    ]
-                }
-            }
-        ]);
+        const tickets = await Ticket.find({ projectId });
 
         return res.json({ tickets });
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -140,23 +98,22 @@ export const getTicketInfo = async (req, res) => {
     const { ticketId } = req.params;
 
     try {
-        // Verify the permissions
         const userId = req.user._id;
-        const userRole = await getUserRole(userId);
 
-        if (!permissionCheck.canManageTicket(userRole.permissions)) {
-            return res.status(403).json({ error: "Not authorized to view the ticket" });
+        // Verify the permissions
+        if (!canPerformAction(permissionCheck.canManageTicket, req.user)) {
+            return res.status(403).json({ message: "Not authorized to view the ticket" });
+        }
+
+        // Ensure the user belongs to the project
+        const project = await Project.findById(projectId);
+
+        if (!project.assignees.includes(userId)) {
+            return res.status(403).json({ message: "Not authorized to view the ticket" });
         }
 
         // Ensure the ticket exist
         const ticket = await Ticket.findOne({ _id: ticketId });
-
-        // Ensure the user belongs to the project
-        const projectAssingee = await ProjectAssginee.findOne({ projectId: ticket.projectId, userId });
-
-        if (!projectAssingee) {
-            return res.status(403).json({ error: "Not authorized to view the ticket" });
-        }
 
         if (!ticket) {
             return res.status(403).json({ message: "Ticket does not exist" });
@@ -165,7 +122,7 @@ export const getTicketInfo = async (req, res) => {
         return res.json({ ticket });
 
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -181,27 +138,25 @@ export const createTicket = async (req, res) => {
     } = req.body;
 
     try {
-
         // Verify the permissions
         const userId = req.user._id;
-        const userRole = await getUserRole(userId);
 
-        if (!permissionCheck.canManageTicket(userRole.permissions)) {
-            return res.status(403).json({ error: "Not authorized to add tickets to a project" });
+        if (!canPerformAction(permissionCheck.canManageTicket, req.user)) {
+            return res.status(403).json({ message: "Not authorized to add tickets to a project" });
         }
 
         // Ensure the user belongs to the project
-        const projectAssingee = await ProjectAssginee.findOne({ projectId, userId });
+        const project = await Project.findById(projectId);
 
-        if (!projectAssingee) {
-            return res.status(403).json({ error: "Not authorized to add tickets to this project" });
+        if (!project.assignees.includes(userId)) {
+            return res.status(403).json({ message: "Not authorized to add tickets to a project" });
         }
 
         const ticket = await Ticket.create({ projectId, type, title, description, status, tags, assignees });
 
         return res.json({ ticket });
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -220,21 +175,20 @@ export const updateTicket = async (req, res) => {
 
         // Verify the permissions
         const userId = req.user._id;
-        const userRole = await getUserRole(userId);
 
-        if (!permissionCheck.canManageTicket(userRole.permissions)) {
-            return res.status(403).json({ error: "Not authorized to add tickets to a project" });
+        if (!canPerformAction(permissionCheck.canManageTicket, req.user)) {
+            return res.status(403).json({ message: "Not authorized to add tickets to a project" });
+        }
+
+        // Ensure the user belongs to the project
+        const project = await Project.findById(projectId);
+
+        if (!project.assignees.includes(userId)) {
+            return res.status(403).json({ message: "Not authorized to add tickets to a project" });
         }
 
         // Ensure the ticket exist
         const ticket = await Ticket.findOne({ _id: ticketId });
-
-        // Ensure the user belongs to the project
-        const projectAssingee = await ProjectAssginee.findOne({ projectId: ticket.projectId, userId });
-
-        if (!projectAssingee) {
-            return res.status(403).json({ error: "Not authorized to add tickets to this project" });
-        }
 
         if (!ticket) {
             return res.status(403).json({ message: "Ticket does not exist" });
@@ -255,7 +209,7 @@ export const updateTicket = async (req, res) => {
 
 
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -265,9 +219,8 @@ export const deleteTicket = async (req, res) => {
     try {
         //Get user permssion
         const userId = req.user._id;
-        const userRole = await getUserRole(userId);
 
-        if (!permissionCheck.canManageTicket(userRole.permissions)) {
+        if (!canPerformAction(permissionCheck.canManageTicket, req.user)) {
             return res.status(403).json({ message: "Not authorized to delete the ticket" });
         }
 
@@ -277,7 +230,7 @@ export const deleteTicket = async (req, res) => {
         const projectAssingee = await ProjectAssginee.findOne({ projectId: ticket.projectId, userId });
 
         if (!projectAssingee) {
-            return res.status(403).json({ error: "Not authorized to delete the tickets" });
+            return res.status(403).json({ message: "Not authorized to delete the tickets" });
         }
 
         if (!ticket) {

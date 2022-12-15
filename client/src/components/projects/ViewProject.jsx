@@ -24,20 +24,21 @@ import CreateTicket from "../tickets/CreateTicket";
 
 const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
-	const { projectID } = useParams();
 	const [projectTickets, setProjectTickets] = useState([]);
+	const [isProjectAuthor, setisProjectAuthor] = useState(false);
+
+	const { projectID } = useParams();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const navigate = useNavigate();
 
-	const isProjectAuthor = () => {
-		const { id } = AuthService.getCurrentUser().id;
-		return projectInfo?.authorId === id;
-	};
-
 	const getProjectInfo = async () => {
 		const project = await ProjectService.getProjectInfo(projectID);
+
 		if (project) {
 			setProjectInfo(project);
+
+			const { id } = AuthService.getCurrentUser();
+			setisProjectAuthor(project?.authorId === id);
 		} else {
 			navigate("/404");
 		}
@@ -76,7 +77,7 @@ const ViewProject = () => {
 					Add Ticket
 				</Button>
 
-				{isProjectAuthor() ? (
+				{isProjectAuthor ? (
 					<Button
 						colorScheme="purple"
 						onClick={() => navigate(`/projects/${projectID}/edit`)}

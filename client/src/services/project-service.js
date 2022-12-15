@@ -45,9 +45,6 @@ const getProjectInfo = async (projectId) => {
     try {
         const { data: { project } } = await API.get(`/${projectId}`);
 
-        // const assignees = getProjectAssigneeInfo(project.assignees);
-        // project.assignees = assignees;
-
         return project;
     } catch (error) {
         console.error(error);

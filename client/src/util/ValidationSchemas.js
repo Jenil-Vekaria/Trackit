@@ -36,13 +36,12 @@ export const LoginData = {
 export const CreateProjectSchema = Yup.object().shape({
     title: Yup.string().required("Required"),
     description: Yup.string(),
-    assignees: Yup.array().required("Assignees Required"),
 });
 
 export const CreateProjectData = {
     title: "",
     description: "",
-    assignees: ""
+    assignees: []
 };
 
 export const CreateTicketSchema = Yup.object().shape({

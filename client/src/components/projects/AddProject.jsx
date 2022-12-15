@@ -96,11 +96,11 @@ const AddProject = () => {
 					navigate(-1);
 				})
 				.catch((error) => {
+					console.log(error);
 					seterror(error.response.data.message);
 				});
 		}
 	};
-
 	useEffect(() => {
 		if (projectID) {
 			getProjectInfo();
@@ -204,7 +204,9 @@ const AddProject = () => {
 			<Flex mt={10} justify="flex-end" gap={3}>
 				<Button
 					colorScheme="purple"
-					onClick={() => formRef.current?.handleSubmit()}
+					onClick={() => {
+						formRef.current?.submitForm();
+					}}
 				>
 					{projectID ? "Save" : "Create"} Project
 				</Button>
