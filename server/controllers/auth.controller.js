@@ -31,13 +31,14 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "Please provide a valid email address and password" });
         }
 
-        const accessToken = jwt.sign({ email: existingUser.email, id: existingUser._id }, process.env.SECRET_KEY, { expiresIn: EXPIRATION });
+        const accessToken = jwt.sign({ email: existingUser.email, id: existingUser._id, roleId: existingUser.roleId }, process.env.SECRET_KEY, { expiresIn: EXPIRATION });
 
         return res.status(200).json({
             firstName: existingUser.firstName,
             lastName: existingUser.lastName,
             email: existingUser.email,
             id: existingUser._id,
+            roleId: existingUser.roleId,
             accessToken
         });
 

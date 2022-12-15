@@ -1,0 +1,43 @@
+import axios from "axios";
+import AuthService from "./auth-service";
+import { setTicketType, setUsers } from "../features/miscellaneousSlice.js";
+import { store } from "../app/store.js";
+
+const API = axios.create({ baseURL: process.env.REACT_APP_API_ENDPOINT });
+
+API.interceptors.request.use((req) => {
+    const { accessToken } = AuthService.getCurrentUser();
+
+    if (accessToken)
+        req.headers["x-access-token"] = accessToken;
+
+    return req;
+});
+
+
+const getTicketType = async () => {
+    try {
+        const { data } = await API.get("/ticketType");
+        store.dispatch(setTicketType(data.ticketType));
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+const getUsers = async () => {
+    try {
+        const { data } = await API.get("/user/all");
+        store.dispatch(setUsers(data.users));
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
+const MiscellaneousService = {
+    getTicketType,
+    getUsers
+};
+
+export default MiscellaneousService;

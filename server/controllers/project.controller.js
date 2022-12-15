@@ -1,11 +1,7 @@
 import * as permissionCheck from "../util/permissionCheck.js";
 import Project from "../models/project.model.js";
 import User from "../models/user.model.js";
-import ProjectAssignee from "../models/projectAssignee.model.js";
-import { getUserRole } from "../util/utils.js";
-import mongoose from "mongoose";
-import Role from "../models/role.model.js";
-import { getUsers } from "./user.controller.js";
+import { canPerformAction } from "../util/utils.js";
 
 /**
  * @description: Creates a project
@@ -22,9 +18,8 @@ export const addProject = async (req, res) => {
     try {
         //Get user permssion
         const userId = req.user._id;
-        const userRole = await getUserRole(userId);
 
-        if (!permissionCheck.canManageProject(userRole.permissions)) {
+        if (!canPerformAction(permissionCheck.canManageProject, req.user)) {
             return res.status(403).json({ message: "Not authorized to add projects" });
         }
 
@@ -86,11 +81,8 @@ export const getUserProjects = async (req, res) => {
 export const getProjectInfo = async (req, res) => {
     const { projectId } = req.params;
     try {
-        //Get user permssion
-        const userId = req.user._id;
-        const userRole = await getUserRole(userId);
 
-        if (!permissionCheck.canManageProject(userRole.permissions)) {
+        if (!canPerformAction(permissionCheck.canManageProject, req.user)) {
             return res.status(403).json({ message: "Not authorized to view project" });
         }
 
@@ -124,7 +116,6 @@ export const updateProject = async (req, res) => {
     try {
         //Get user permssion
         const userId = req.user._id;
-        const userRole = await getUserRole(userId);
 
         if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
             return res.status(403).json({ message: "Not authorized to modify projects" });
@@ -164,9 +155,8 @@ export const deleteProject = async (req, res) => {
     try {
         //Get user permssion
         const userId = req.user._id;
-        const userRole = await getUserRole(userId);
 
-        if (!permissionCheck.canManageProject(userRole.permissions)) {
+        if (!canPerformAction(permissionCheck.canManageProject, req.user)) {
             return res.status(403).json({ message: "Not authorized to delete projects" });
         }
 

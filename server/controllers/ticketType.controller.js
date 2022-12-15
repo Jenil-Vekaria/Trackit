@@ -1,6 +1,6 @@
 import * as permissionCheck from "../util/permissionCheck.js";
 import TicketType from "../models/ticketType.model.js";
-import { getUserRole } from "../util/utils.js";
+import { canPerformAction } from "../util/utils.js";
 
 export const getTicketType = async (req, res) => {
     try {
@@ -17,12 +17,8 @@ export const addTicketType = async (req, res) => {
     const { name, iconName, colour } = req.body;
 
     try {
-        //Get user permssion
-        const userId = req.user._id;
-        const userRole = await getUserRole(userId);
-
         //Only admin should be able to add custom ticketType - if user can projectMemeber -> user is admin
-        if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
+        if (!canPerformAction(permissionCheck.canManageProjectMember, req.user)) {
             return res.status(403).json({ message: "Not authorized to manage ticket types" });
         }
 
@@ -45,12 +41,8 @@ export const updateTicketType = async (req, res) => {
     const { name, iconName, colour } = req.body;
 
     try {
-        //Get user permssion
-        const userId = req.user._id;
-        const userRole = await getUserRole(userId);
-
         //Only admin should be able to add custom ticketType - if user can projectMemeber -> user is admin
-        if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
+        if (!canPerformAction(permissionCheck.canManageProjectMember, req.user)) {
             return res.status(403).json({ message: "Not authorized to manage ticket types" });
         }
 
@@ -77,12 +69,8 @@ export const deleteTicketType = async (req, res) => {
     const { name } = req.params;
 
     try {
-        //Get user permssion
-        const userId = req.user._id;
-        const userRole = await getUserRole(userId);
-
         //Only admin should be able to add custom ticketType - if user can projectMemeber -> user is admin
-        if (!permissionCheck.canManageProjectMember(userRole.permissions)) {
+        if (!canPerformAction(permissionCheck.canManageProjectMember, req.user)) {
             return res.status(403).json({ message: "Not authorized to manage ticket types" });
         }
 

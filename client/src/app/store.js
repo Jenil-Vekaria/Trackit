@@ -1,16 +1,44 @@
 // This file will globally hold all the reducers
 import { configureStore } from "@reduxjs/toolkit";
-// import { persistStore, persistReducer } from "redux-persist";
-// import storage from "redux-persist/lib/storage";
+import {
+    persistStore,
+    persistCombineReducers,
+    FLUSH,
+    REHYDRATE,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,
+} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import authReducer from "../features/authSlice";
+import miscellaneousSlice from "../features/miscellaneousSlice";
 import projectSlice from "../features/projectSlice";
-import ticketTypeSlice from "../features/ticketTypeSlice";
 
+const persistConfig = {
+    key: 'root',
+    storage,
+    version: 1
+};
 
-export default configureStore({
-    reducer: {
-        auth: authReducer,
-        project: projectSlice,
-        ticketType: ticketTypeSlice
-    }
+// ? Add the reducers here
+const rootReducer = {
+    auth: authReducer,
+    project: projectSlice,
+    miscellaneous: miscellaneousSlice
+};
+
+const persistCombinedReducers = persistCombineReducers(persistConfig, rootReducer);
+
+let store = configureStore({
+    reducer: persistCombinedReducers,
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: {
+                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+            },
+        }),
 });
+let persistor = persistStore(store);
+
+export { store, persistor };

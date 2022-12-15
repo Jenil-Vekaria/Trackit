@@ -1,5 +1,7 @@
 import axios from "axios";
 import decode from 'jwt-decode';
+import { setLogin, setLogout } from "../features/authSlice.js";
+import { store, persistor } from "../app/store.js";
 
 const API_URL = process.env.REACT_APP_API_ENDPOINT + "/auth";
 
@@ -15,7 +17,7 @@ const signup = (user) => {
     return axios.post(API_URL + "/signup", user)
         .then((response) => {
             if (response.data.accessToken) {
-                localStorage.setItem("user", JSON.stringify(response.data));
+                store.dispatch(setLogin(response.data));
             }
 
             return response.data;
@@ -32,7 +34,8 @@ const login = (user) => {
     return axios.post(API_URL + "/login", user)
         .then((response) => {
             if (response.data.accessToken) {
-                localStorage.setItem("user", JSON.stringify(response.data));
+                console.log("LOGIN ", response.data);
+                store.dispatch(setLogin(response.data));
             }
 
             return response.data;
@@ -40,12 +43,13 @@ const login = (user) => {
 };
 
 const logout = () => {
-    localStorage.removeItem("user");
-    window.location.replace("/");
+    persistor.purge();
+    window.location.reload();
 };
 
 const getCurrentUser = () => {
-    return JSON.parse(localStorage.getItem("user"));
+    const state = store.getState();
+    return state.auth.user;
 };
 
 const isAuthorized = () => {

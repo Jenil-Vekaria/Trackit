@@ -30,8 +30,8 @@ const ViewProject = () => {
 	const navigate = useNavigate();
 
 	const isProjectAuthor = () => {
-		const signedInUserID = AuthService.getCurrentUser().id;
-		return projectInfo?.authorId === signedInUserID;
+		const { id } = AuthService.getCurrentUser().id;
+		return projectInfo?.authorId === id;
 	};
 
 	const getProjectInfo = async () => {
@@ -53,7 +53,7 @@ const ViewProject = () => {
 
 	useEffect(() => {
 		getProjectInfo();
-		getProjectTickets();
+		// getProjectTickets();
 	}, []);
 
 	return (

@@ -2,12 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { App } from './App';
 import { Provider } from 'react-redux';
-import store from "./app/store";
 import { ChakraProvider, CSSReset } from '@chakra-ui/react';
 import { extendTheme } from '@chakra-ui/react';
 import './index.css';
-import { Modal } from "./styles/styles.js";
-
+import { store, persistor } from "./app/store.js";
+import { PersistGate } from 'redux-persist/integration/react';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const theme = extendTheme({
   styles: {
@@ -40,10 +39,12 @@ const theme = extendTheme({
 
 root.render(
   <Provider store={store}>
-    <ChakraProvider theme={theme}>
-      <CSSReset />
-      <App />
-    </ChakraProvider>
+    <PersistGate loading={null} persistor={persistor}>
+      <ChakraProvider theme={theme}>
+        <CSSReset />
+        <App />
+      </ChakraProvider>
+    </PersistGate>
   </Provider>
 );
 

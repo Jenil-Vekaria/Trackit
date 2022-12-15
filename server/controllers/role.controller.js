@@ -1,17 +1,14 @@
 import mongoose from "mongoose";
 import Role from "../models/role.model.js";
 import * as permissionCheck from "../util/permissionCheck.js";
-import { getUserRole } from "../util/utils.js";
+import { canPerformAction } from "../util/utils.js";
 
 export const addRole = async (req, res) => {
     const { name, permissions } = req.body;
 
     try {
         //Get user permssion
-        const userId = req.user._id;
-        const userRole = await getUserRole(userId);
-
-        if (!permissionCheck.canManageRole(userRole.permissions)) {
+        if (!canPerformAction(permissionCheck.canManageRole, req.user)) {
             return res.status(403).json({ error: "Not authorized to add roles" });
         }
 
@@ -34,11 +31,7 @@ export const deleteRole = async (req, res) => {
 
     try {
         //Get user permssion
-        const userId = req.user._id;
-        const userRole = await getUserRole(userId);
-
-
-        if (!permissionCheck.canManageRole(userRole.permissions)) {
+        if (!canPerformAction(permissionCheck.canManageRole, req.user)) {
             return res.status(403).json({ error: "Not authorized to delete roles" });
         }
 
@@ -59,10 +52,7 @@ export const updateRole = async (req, res) => {
 
     try {
         //Get user permissions
-        const userId = req.user._id;
-        const userRole = await getUserRole(userId);
-
-        if (!permissionCheck.canManageRole(userRole.permissions)) {
+        if (!canPerformAction(permissionCheck.canManageProject, req.user)) {
             return res.status(403).json({ error: "Not authorized to modify roles" });
         }
 

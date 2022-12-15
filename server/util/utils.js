@@ -1,11 +1,10 @@
 import Role from "../models/role.model.js";
 import UserRole from "../models/userRole.model.js";
 
-export const getUserRole = async (userId) => {
+export const getUserRole = async (roleId) => {
 
     try {
-        const userRole = await UserRole.findOne({ userId });
-        const role = await Role.findOne({ _id: userRole.roleId });
+        const role = await Role.findOne({ _id: roleId });
 
         if (!role)
             throw "Role not found";
@@ -14,4 +13,12 @@ export const getUserRole = async (userId) => {
     } catch (error) {
         console.error(error);
     }
-}; 
+};
+
+
+export const canPerformAction = async (permissionCheck, user) => {
+    const roleId = user.roleId;
+    const roleObject = await getUserRole(roleId);
+
+    return permissionCheck(roleObject.permissions);
+};

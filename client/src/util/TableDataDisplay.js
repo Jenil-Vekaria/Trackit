@@ -49,8 +49,8 @@ export const USER_COLUMNS = [
         name: "Name",
         field: "fullName"
     },
-    {
-        name: "Role",
-        field: "role"
-    }
+    // {
+    //     name: "Role",
+    //     field: "role"
+    // }
 ];

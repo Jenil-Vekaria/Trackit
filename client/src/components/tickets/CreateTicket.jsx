@@ -30,8 +30,6 @@ import {
 	CreateTicketData,
 	CreateTicketSchema,
 } from "../../util/ValidationSchemas";
-import { getTicketType } from "../../features/ticketTypeSlice";
-import TicketTypeService from "../../services/ticketType-service";
 import {
 	BsPlusLg,
 	BsBugFill,
@@ -41,6 +39,7 @@ import {
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useRef } from "react";
 import { TICKET_STATUS } from "../../util/Constants";
+import { getTicketType } from "../../features/miscellaneousSlice.js";
 
 const CreateTicket = ({ isOpen, onOpen, onClose }) => {
 	const ticketTypes = useSelector(getTicketType);
@@ -54,13 +53,6 @@ const CreateTicket = ({ isOpen, onOpen, onClose }) => {
 		BsQuestion,
 		BsPlusLg,
 	};
-
-	useEffect(() => {
-		if (ticketTypes.length === 0) {
-			console.log("Fetch");
-			dispatch(TicketTypeService.getTicketType());
-		}
-	}, []);
 
 	const createTicketTypeOptions = () => {
 		if (ticketTypes) {

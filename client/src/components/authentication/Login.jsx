@@ -14,22 +14,25 @@ import {
 import { LoginData, LoginSchema } from "../../util/ValidationSchemas";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../../services/auth-service";
+import MiscellaneousService from "../../services/miscellaneous-service";
 
 export const Login = () => {
 	const [error, seterror] = useState("");
 	const navigate = useNavigate();
 
-	const onHandleFormSubmit = (values) => {
+	const onHandleFormSubmit = async (values) => {
 		seterror("");
 
-		AuthService.login(values)
-			.then(() => {
-				navigate("/dashboard");
-				window.location.reload();
-			})
-			.catch((error) => {
-				seterror(error.response.data.message);
-			});
+		try {
+			await AuthService.login(values);
+			await MiscellaneousService.getTicketType();
+			await MiscellaneousService.getUsers();
+
+			navigate("/dashboard");
+			window.location.reload();
+		} catch (error) {
+			seterror(error.response.data.message);
+		}
 	};
 
 	return (

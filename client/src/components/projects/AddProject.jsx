@@ -25,23 +25,25 @@ import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect, useRef } from "react";
 import { CreateProjectSchema } from "../../util/ValidationSchemas";
 import { USER_COLUMNS } from "../../util/TableDataDisplay";
-import { useDispatch } from "react-redux";
-import UserService from "../../services/user-service";
+import { useDispatch, useSelector } from "react-redux";
 import DataTable from "../others/DataTable";
 import ProjectService from "../../services/project-service";
 import AlertModal from "../others/AlertModal";
+import { getUsers } from "../../features/miscellaneousSlice.js";
 
 const AddProject = () => {
 	const navigate = useNavigate();
-	const [allUsers, setallUsers] = useState([]);
-	const [projectContributors, setprojectContributors] = useState([]);
-	const [projectInfo, setProjectInfo] = useState(CreateProjectSchema);
-	const [error, seterror] = useState("");
+	const dispatch = useDispatch();
 	const { isOpen, onOpen, onClose } = useDisclosure();
+
 	const { projectID } = useParams();
+	const allUsers = useSelector(getUsers);
 	const formRef = useRef();
 	const toast = useToast();
-	const dispatch = useDispatch();
+
+	const [assignees, setAssignees] = useState([]);
+	const [projectInfo, setProjectInfo] = useState(CreateProjectSchema);
+	const [error, seterror] = useState("");
 
 	const onProjectDelete = async (onClose) => {
 		onClose();
@@ -49,31 +51,21 @@ const AddProject = () => {
 		navigate(-2);
 	};
 
-	const getAllUsers = async () => {
-		const users = await UserService.getUsers();
-		setallUsers(users);
-	};
-
 	const getProjectInfo = async () => {
-		const { _id, title, description, projectAssignees } =
+		const { _id, title, description, assignees } =
 			await ProjectService.getProjectInfo(projectID);
-		// console.table(response);
 		setProjectInfo({
 			_id,
 			title,
 			description,
-			contributors: projectAssignees,
+			assignees,
 		});
 
-		const assigneesId = [];
-		projectAssignees?.forEach((assignee) => {
-			assigneesId.push(assignee._id);
-		});
-		setprojectContributors(assigneesId);
+		setAssignees(assignees);
 	};
 
 	const onHandleFormSubmit = (values, action) => {
-		values.contributors = projectContributors;
+		values.assignees = assignees;
 
 		if (projectID) {
 			ProjectService.updateProject(values)
@@ -113,7 +105,6 @@ const AddProject = () => {
 		if (projectID) {
 			getProjectInfo();
 		}
-		getAllUsers();
 	}, []);
 
 	return (
@@ -202,8 +193,8 @@ const AddProject = () => {
 							searchPlaceholder="Search by name"
 							searchbarVariant="outline"
 							hasSelect={true}
-							setSelectValues={setprojectContributors}
-							selectedValues={projectContributors}
+							setSelectValues={setAssignees}
+							selectedValues={assignees}
 							height={340}
 						/>
 					</TabPanel>
