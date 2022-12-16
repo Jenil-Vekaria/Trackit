@@ -22,11 +22,9 @@ import {
 	Flex,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
-	CreateProjectSchema,
-	CreateProjectData,
 	CreateTicketData,
 	CreateTicketSchema,
 } from "../../util/ValidationSchemas";
@@ -36,27 +34,20 @@ import {
 	BsFileEarmarkText,
 	BsQuestion,
 } from "react-icons/bs";
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useRef } from "react";
 import { TICKET_STATUS } from "../../util/Constants";
 import { getTicketType } from "../../features/miscellaneousSlice.js";
 
-const CreateTicket = ({ isOpen, onOpen, onClose }) => {
+const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 	const ticketTypes = useSelector(getTicketType);
-	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
+	const ticketInfo = ticket || CreateTicketData;
+
 	const formRef = useRef();
-	const dispatch = useDispatch();
 	const [error, seterror] = useState("");
-	const icons = {
-		BsBugFill,
-		BsFileEarmarkText,
-		BsQuestion,
-		BsPlusLg,
-	};
 
 	const createTicketTypeOptions = () => {
 		if (ticketTypes) {
-			return ticketTypes.map((ticketType) => (
+			return ticketTypes.map((ticketType, index) => (
 				<option key={ticketType._id} value={ticketType._id}>
 					{ticketType.name}
 				</option>
@@ -66,7 +57,7 @@ const CreateTicket = ({ isOpen, onOpen, onClose }) => {
 
 	const createTicketStatusOptions = () => {
 		return TICKET_STATUS.map((status, index) => (
-			<option key={index} value={status} selected={index === 0}>
+			<option key={index} value={status}>
 				{status}
 			</option>
 		));
@@ -76,12 +67,17 @@ const CreateTicket = ({ isOpen, onOpen, onClose }) => {
 		console.table(values);
 	};
 
+	const closeModal = () => {
+		setviewTicket(null);
+		onClose();
+	};
+
 	return (
-		<Modal isOpen={isOpen} onClose={onClose}>
+		<Modal isOpen={isOpen} onClose={closeModal}>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Create Ticket</ModalHeader>
-				<ModalCloseButton />
+				<ModalCloseButton onClick={closeModal} />
 				<ModalBody>
 					<Tabs variant="soft-rounded" colorScheme="purple" isFitted>
 						<TabList>
@@ -131,26 +127,62 @@ const CreateTicket = ({ isOpen, onOpen, onClose }) => {
 												</FormControl>
 
 												<Flex gap={4}>
-													<FormControl isInvalid={errors.type && touched.type}>
+													<FormControl>
 														<FormLabel fontWeight="regular">Type</FormLabel>
-														<Field as={Select} name="type" type="select">
+														<Field
+															as={Select}
+															name="type"
+															type="select"
+															// value={ticketTypes[0]._id}
+														>
 															{createTicketTypeOptions()}
 														</Field>
+													</FormControl>
+
+													<FormControl>
+														<FormLabel fontWeight="regular">Status</FormLabel>
+														<Field
+															as={Select}
+															name="status"
+															type="select"
+															// value={TICKET_STATUS[0]}
+														>
+															{createTicketStatusOptions()}
+														</Field>
+													</FormControl>
+												</Flex>
+
+												<Flex gap={4}>
+													<FormControl
+														isInvalid={
+															errors.estimatedTime && touched.estimatedTime
+														}
+													>
+														<FormLabel fontWeight="regular">
+															Estimated time
+														</FormLabel>
+														<Field
+															as={Input}
+															name="estimatedTime"
+															type="text"
+														/>
 														<FormErrorMessage>
-															{errors.description}
+															{errors.estimatedTime}
 														</FormErrorMessage>
 													</FormControl>
 
-													<FormControl
-														isInvalid={errors.status && touched.status}
-													>
-														<FormLabel fontWeight="regular">status</FormLabel>
-														<Field as={Select} name="type" type="select">
-															{createTicketStatusOptions()}
+													<FormControl>
+														<FormLabel fontWeight="regular">
+															Estimated Time Unit
+														</FormLabel>
+														<Field
+															as={Select}
+															name="estimatedTimeUnit"
+															type="select"
+														>
+															<option value="h">Hour(s)</option>
+															<option value="m">Minute(s)</option>
 														</Field>
-														<FormErrorMessage>
-															{errors.description}
-														</FormErrorMessage>
 													</FormControl>
 												</Flex>
 											</Flex>

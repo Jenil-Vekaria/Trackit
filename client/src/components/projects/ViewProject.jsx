@@ -26,6 +26,7 @@ const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
 	const [projectTickets, setProjectTickets] = useState([]);
 	const [isProjectAuthor, setisProjectAuthor] = useState(false);
+	const [viewTicket, setviewTicket] = useState(null);
 
 	const { projectID } = useParams();
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -50,11 +51,14 @@ const ViewProject = () => {
 		setProjectTickets(tickets);
 	};
 
-	const onTicketClick = (ticket) => {};
+	const onTicketClick = (ticket) => {
+		setviewTicket(ticket);
+		onOpen();
+	};
 
 	useEffect(() => {
 		getProjectInfo();
-		// getProjectTickets();
+		getProjectTickets();
 	}, []);
 
 	return (
@@ -104,7 +108,12 @@ const ViewProject = () => {
 				</TabPanels>
 			</Tabs>
 
-			<CreateTicket isOpen={isOpen} onOpen={onOpen} onClose={onClose} />
+			<CreateTicket
+				isOpen={isOpen}
+				onClose={onClose}
+				ticket={viewTicket}
+				setviewTicket={setviewTicket}
+			/>
 		</Flex>
 	);
 };
