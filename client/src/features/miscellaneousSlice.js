@@ -20,9 +20,10 @@ export const miscellaneousSlice = createSlice({
 export const { setTicketType, setUsers } = miscellaneousSlice.actions;
 
 export const getTicketType = (state) => state.miscellaneous.ticketType;
-export const getUsers = (state) => {
+
+export const getUsers = (includeSignedUser = false) => (state) => {
     const { id } = AuthService.getCurrentUser();
-    return state.miscellaneous.users.filter(user => user._id !== id);
+    return includeSignedUser ? state.miscellaneous.users : state.miscellaneous.users.filter(user => user._id !== id);
 };
 
 export default miscellaneousSlice.reducer;

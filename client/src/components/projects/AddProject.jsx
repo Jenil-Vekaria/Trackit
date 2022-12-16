@@ -37,7 +37,7 @@ const AddProject = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const { projectID } = useParams();
-	const allUsers = useSelector(getUsers);
+	const allUsers = useSelector(getUsers());
 	const formRef = useRef();
 	const toast = useToast();
 

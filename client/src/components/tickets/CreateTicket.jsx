@@ -51,7 +51,7 @@ const CreateTicket = ({
 	projectId,
 }) => {
 	const ticketTypes = useSelector(getTicketType);
-	const allUsers = useSelector(getUsers);
+	const allUsers = useSelector(getUsers(true));
 	const ticketInfo = ticket || CreateTicketData;
 
 	const formRef = useRef();
