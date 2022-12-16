@@ -16,14 +16,14 @@ export const ticketSlice = createSlice({
             state.data = [];
         },
         setTicket: (state, action) => {
-            state.data = state.data.filter(ticket => {
+            state.data = state.data.map(ticket => {
                 if (ticket._id === action.payload._id) return action.payload;
                 return ticket;
             });
         },
         removeTicket: (state, action) => {
             state.data = state.data.filter(ticket => {
-                return ticket._id !== action.payload;
+                return ticket._id !== action.payload.ticketId;
             });
         }
     }

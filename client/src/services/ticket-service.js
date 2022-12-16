@@ -71,7 +71,7 @@ const deleteTicket = async (ticketId) => {
     try {
         await API.delete(`/${ticketId}`);
 
-        store.dispatch(removeTicket(ticketId));
+        store.dispatch(removeTicket({ ticketId }));
     } catch (error) {
         console.error(error);
     }
