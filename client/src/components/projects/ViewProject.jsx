@@ -47,7 +47,6 @@ const ViewProject = () => {
 
 	const getProjectTickets = async () => {
 		const tickets = await TicketService.getProjectTickets(projectID);
-		console.table(tickets);
 		setProjectTickets(tickets);
 	};
 

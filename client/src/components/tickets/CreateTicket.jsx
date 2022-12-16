@@ -36,14 +36,18 @@ import {
 } from "react-icons/bs";
 import { useRef } from "react";
 import { TICKET_STATUS } from "../../util/Constants";
-import { getTicketType } from "../../features/miscellaneousSlice.js";
+import { getTicketType, getUsers } from "../../features/miscellaneousSlice.js";
+import DataTable from "../others/DataTable";
+import { USER_COLUMNS } from "../../util/TableDataDisplay";
 
 const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 	const ticketTypes = useSelector(getTicketType);
+	const allUsers = useSelector(getUsers);
 	const ticketInfo = ticket || CreateTicketData;
 
 	const formRef = useRef();
 	const [error, seterror] = useState("");
+	const [assignees, setAssignees] = useState([]);
 
 	const createTicketTypeOptions = () => {
 		if (ticketTypes) {
@@ -64,11 +68,12 @@ const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 	};
 
 	const onHandleFormSubmit = (values, action) => {
-		console.table(values);
+		values.assignees = assignees;
 	};
 
 	const closeModal = () => {
 		setviewTicket(null);
+		setAssignees([]);
 		onClose();
 	};
 
@@ -127,7 +132,7 @@ const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 												</FormControl>
 
 												<Flex gap={4}>
-													<FormControl>
+													<FormControl isInvalid={errors.type && touched.type}>
 														<FormLabel fontWeight="regular">Type</FormLabel>
 														<Field
 															as={Select}
@@ -135,11 +140,17 @@ const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 															type="select"
 															// value={ticketTypes[0]._id}
 														>
+															<option value="" disabled selected>
+																Select
+															</option>
 															{createTicketTypeOptions()}
 														</Field>
+														<FormErrorMessage>{errors.type}</FormErrorMessage>
 													</FormControl>
 
-													<FormControl>
+													<FormControl
+														isInvalid={errors.status && touched.status}
+													>
 														<FormLabel fontWeight="regular">Status</FormLabel>
 														<Field
 															as={Select}
@@ -147,8 +158,12 @@ const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 															type="select"
 															// value={TICKET_STATUS[0]}
 														>
+															<option value="" disabled selected>
+																Select
+															</option>
 															{createTicketStatusOptions()}
 														</Field>
+														<FormErrorMessage>{errors.status}</FormErrorMessage>
 													</FormControl>
 												</Flex>
 
@@ -164,14 +179,19 @@ const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 														<Field
 															as={Input}
 															name="estimatedTime"
-															type="text"
+															type="number"
 														/>
 														<FormErrorMessage>
 															{errors.estimatedTime}
 														</FormErrorMessage>
 													</FormControl>
 
-													<FormControl>
+													<FormControl
+														isInvalid={
+															errors.estimatedTimeUnit &&
+															touched.estimatedTimeUnit
+														}
+													>
 														<FormLabel fontWeight="regular">
 															Estimated Time Unit
 														</FormLabel>
@@ -183,6 +203,9 @@ const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 															<option value="h">Hour(s)</option>
 															<option value="m">Minute(s)</option>
 														</Field>
+														<FormErrorMessage>
+															{errors.estimatedTimeUnit}
+														</FormErrorMessage>
 													</FormControl>
 												</Flex>
 											</Flex>
@@ -191,22 +214,32 @@ const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 								</Formik>
 							</TabPanel>
 							<TabPanel>Comments</TabPanel>
-							<TabPanel>Assignees</TabPanel>
+							<TabPanel>
+								<DataTable
+									columns={USER_COLUMNS}
+									data={allUsers}
+									searchPlaceholder="Search by name"
+									searchbarVariant="outline"
+									hasSelect={true}
+									setSelectValues={setAssignees}
+									selectedValues={assignees}
+									height={340}
+								/>
+							</TabPanel>
 						</TabPanels>
 					</Tabs>
 				</ModalBody>
 
 				<ModalFooter>
-					<Button colorScheme="red" mr={3} onClick={onClose}>
-						Cancel
-					</Button>
 					<Button
 						colorScheme="purple"
 						type="submit"
+						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>
 						Create Ticket
 					</Button>
+					<Button onClick={closeModal}>Cancel</Button>
 				</ModalFooter>
 			</ModalContent>
 		</Modal>
