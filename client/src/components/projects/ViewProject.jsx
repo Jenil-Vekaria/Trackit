@@ -21,16 +21,19 @@ import TicketService from "../../services/ticket-service";
 import DataTable from "../others/DataTable";
 import { TICKET_COLUMNS } from "../../util/TableDataDisplay";
 import CreateTicket from "../tickets/CreateTicket";
+import { useDispatch, useSelector } from "react-redux";
+import { getTickets, clearTickets } from "../../features/ticketSlice.js";
 
 const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
-	const [projectTickets, setProjectTickets] = useState([]);
+	let projectTickets = useSelector(getTickets);
 	const [isProjectAuthor, setisProjectAuthor] = useState(false);
 	const [viewTicket, setviewTicket] = useState(null);
 
 	const { projectID } = useParams();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	const getProjectInfo = async () => {
 		const project = await ProjectService.getProjectInfo(projectID);
@@ -47,12 +50,17 @@ const ViewProject = () => {
 
 	const getProjectTickets = async () => {
 		const tickets = await TicketService.getProjectTickets(projectID);
-		setProjectTickets(tickets);
+		projectTickets = tickets;
 	};
 
 	const onTicketClick = (ticket) => {
 		setviewTicket(ticket);
 		onOpen();
+	};
+
+	const navigateBack = () => {
+		dispatch(clearTickets());
+		navigate(-1);
 	};
 
 	useEffect(() => {
@@ -69,7 +77,7 @@ const ViewProject = () => {
 						variant="link"
 						size="lg"
 						colorScheme="black"
-						onClick={() => navigate(-1)}
+						onClick={navigateBack}
 					/>
 					{projectInfo?.title}
 				</Heading>
@@ -112,6 +120,7 @@ const ViewProject = () => {
 				onClose={onClose}
 				ticket={viewTicket}
 				setviewTicket={setviewTicket}
+				projectId={projectID}
 			/>
 		</Flex>
 	);

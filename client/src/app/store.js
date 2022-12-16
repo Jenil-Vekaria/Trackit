@@ -14,6 +14,7 @@ import storage from 'redux-persist/lib/storage';
 import authReducer from "../features/authSlice";
 import miscellaneousSlice from "../features/miscellaneousSlice";
 import projectSlice from "../features/projectSlice";
+import ticketSlice from "../features/ticketSlice";
 
 const persistConfig = {
     key: 'root',
@@ -25,7 +26,8 @@ const persistConfig = {
 const rootReducer = {
     auth: authReducer,
     project: projectSlice,
-    miscellaneous: miscellaneousSlice
+    miscellaneous: miscellaneousSlice,
+    ticket: ticketSlice,
 };
 
 const persistCombinedReducers = persistCombineReducers(persistConfig, rootReducer);

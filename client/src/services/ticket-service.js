@@ -1,5 +1,7 @@
 import axios from "axios";
 import AuthService from "./auth-service";
+import { store } from "../app/store";
+import { addTicket, setTicket, setTickets, removeTicket, clearTickets } from "../features/ticketSlice.js";
 
 const API = axios.create({ baseURL: process.env.REACT_APP_API_ENDPOINT + "/ticket" });
 
@@ -16,9 +18,8 @@ const getUserTickets = async () => {
     const { id } = AuthService.getCurrentUser();
 
     try {
-        const { data } = await API.get(`/user/${id}`);
-
-        return data.tickets;
+        const { data: { tickets } } = await API.get(`/user/${id}`);
+        return tickets;
     } catch (error) {
         console.error(error);
     }
@@ -26,9 +27,11 @@ const getUserTickets = async () => {
 
 const getProjectTickets = async (projectId) => {
     try {
-        const { data } = await API.get(`/project/${projectId}`);
+        const { data: { tickets } } = await API.get(`/project/${projectId}`);
 
-        return data.tickets;
+        store.dispatch(setTickets(tickets));
+
+        return tickets;
     } catch (error) {
         console.error(error);
     }
@@ -46,19 +49,19 @@ const getTicketInfo = async (ticketId) => {
 
 const createTicket = async (data, projectId) => {
     try {
-        const response = await API.post(`/project/${projectId}`, data);
+        const { data: { ticket } } = await API.post(`/project/${projectId}`, data);
 
-        return response.data.ticket;
+        store.dispatch(addTicket(ticket));
     } catch (error) {
         console.error(error);
     }
 };
 
-const updateTicket = async (data, ticketId) => {
+const updateTicket = async (data, projectId) => {
     try {
-        const response = await API.post(`/${ticketId}`, data);
+        const { data: { ticket } } = await API.patch(`/project/${projectId}`, data);
+        store.dispatch(setTicket(ticket));
 
-        return response.data.ticket;
     } catch (error) {
         console.error(error);
     }
@@ -67,6 +70,8 @@ const updateTicket = async (data, ticketId) => {
 const deleteTicket = async (ticketId) => {
     try {
         await API.delete(`/${ticketId}`);
+
+        store.dispatch(removeTicket(ticketId));
     } catch (error) {
         console.error(error);
     }

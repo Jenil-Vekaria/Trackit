@@ -8,7 +8,7 @@ router.get("/:ticketId", getTicketInfo);
 
 router.post("/project/:projectId", createTicket);
 
-router.patch("/:ticketId", updateTicket);
+router.patch("/project/:projectId", updateTicket);
 
 router.delete("/:ticketId", deleteTicket);
 

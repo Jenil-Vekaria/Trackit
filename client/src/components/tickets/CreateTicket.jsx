@@ -20,6 +20,7 @@ import {
 	Textarea,
 	Select,
 	Flex,
+	useToast,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React, { useState } from "react";
@@ -39,15 +40,25 @@ import { TICKET_STATUS } from "../../util/Constants";
 import { getTicketType, getUsers } from "../../features/miscellaneousSlice.js";
 import DataTable from "../others/DataTable";
 import { USER_COLUMNS } from "../../util/TableDataDisplay";
+import TicketService from "../../services/ticket-service";
+import AlertModal from "../others/AlertModal";
 
-const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
+const CreateTicket = ({
+	isOpen,
+	onClose,
+	ticket,
+	setviewTicket,
+	projectId,
+}) => {
 	const ticketTypes = useSelector(getTicketType);
 	const allUsers = useSelector(getUsers);
 	const ticketInfo = ticket || CreateTicketData;
 
 	const formRef = useRef();
+	const toast = useToast();
 	const [error, seterror] = useState("");
 	const [assignees, setAssignees] = useState([]);
+	const [openDeleteAlert, setopenDeleteAlert] = useState(false);
 
 	const createTicketTypeOptions = () => {
 		if (ticketTypes) {
@@ -69,16 +80,44 @@ const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 
 	const onHandleFormSubmit = (values, action) => {
 		values.assignees = assignees;
+
+		if (!ticket) {
+			TicketService.createTicket(values, projectId).then(() => {
+				toast({
+					title: "Ticket created",
+					status: "success",
+					duration: 4000,
+					isClosable: true,
+				});
+				closeModal();
+			});
+		} else {
+			TicketService.updateTicket(values, projectId).then(() => {
+				toast({
+					title: "Ticket updated",
+					status: "success",
+					duration: 4000,
+					isClosable: true,
+				});
+				closeModal();
+			});
+		}
+	};
+
+	const onTicketDelete = async () => {
+		await TicketService.deleteTicket(ticket._id);
+		closeModal();
 	};
 
 	const closeModal = () => {
 		setviewTicket(null);
 		setAssignees([]);
+		setopenDeleteAlert(false);
 		onClose();
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={closeModal}>
+		<Modal isOpen={isOpen} onClose={closeModal} size="lg">
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Create Ticket</ModalHeader>
@@ -200,8 +239,11 @@ const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 															name="estimatedTimeUnit"
 															type="select"
 														>
+															<option value="" disabled selected>
+																Select
+															</option>
 															<option value="h">Hour(s)</option>
-															<option value="m">Minute(s)</option>
+															<option value="d">Day(s)</option>
 														</Field>
 														<FormErrorMessage>
 															{errors.estimatedTimeUnit}
@@ -237,11 +279,25 @@ const CreateTicket = ({ isOpen, onClose, ticket, setviewTicket }) => {
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>
-						Create Ticket
+						{ticket ? "Save" : "Create"} Ticket
 					</Button>
-					<Button onClick={closeModal}>Cancel</Button>
+					{ticket ? (
+						<Button colorScheme="red" onClick={() => setopenDeleteAlert(true)}>
+							Delete Ticket
+						</Button>
+					) : (
+						<Button onClick={closeModal}>Cancel</Button>
+					)}
 				</ModalFooter>
 			</ModalContent>
+
+			<AlertModal
+				title={"Delete ticket"}
+				body="Are you sure you to delete this ticket?"
+				isOpen={openDeleteAlert}
+				onClose={closeModal}
+				onCTA={onTicketDelete}
+			/>
 		</Modal>
 	);
 };

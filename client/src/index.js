@@ -27,10 +27,12 @@ const theme = extendTheme({
   },
   components: {
     Modal: {
-      baseStyle: {
-        dialog: {
-          minWidth: "60%",
-          minHeight: "80%"
+      sizes: {
+        lg: {
+          dialog: {
+            minWidth: "60%",
+            minHeight: "80%"
+          }
         }
       }
     }
