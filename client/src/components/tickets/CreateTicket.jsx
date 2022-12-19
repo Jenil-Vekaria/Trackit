@@ -23,7 +23,7 @@ import {
 	useToast,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	CreateTicketData,
@@ -60,6 +60,12 @@ const CreateTicket = ({
 	const [assignees, setAssignees] = useState([]);
 	const [openDeleteAlert, setopenDeleteAlert] = useState(false);
 
+	useEffect(() => {
+		if (ticket) {
+			setAssignees(ticket.assignees);
+		}
+	}, [ticket]);
+
 	const createTicketTypeOptions = () => {
 		if (ticketTypes) {
 			return ticketTypes.map((ticketType, index) => (
@@ -79,10 +85,11 @@ const CreateTicket = ({
 	};
 
 	const onHandleFormSubmit = (values, action) => {
-		values.assignees = assignees;
+		const ticketFormData = { ...values };
+		ticketFormData.assignees = assignees;
 
 		if (!ticket) {
-			TicketService.createTicket(values, projectId).then(() => {
+			TicketService.createTicket(ticketFormData, projectId).then(() => {
 				toast({
 					title: "Ticket created",
 					status: "success",
@@ -92,7 +99,7 @@ const CreateTicket = ({
 				closeModal();
 			});
 		} else {
-			TicketService.updateTicket(values, projectId).then(() => {
+			TicketService.updateTicket(ticketFormData, projectId).then(() => {
 				toast({
 					title: "Ticket updated",
 					status: "success",
