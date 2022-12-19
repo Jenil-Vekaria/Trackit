@@ -1,9 +1,11 @@
 import {
 	Button,
+	Center,
 	Flex,
 	Heading,
 	IconButton,
 	Spacer,
+	Spinner,
 	Tab,
 	TabList,
 	TabPanel,
@@ -18,17 +20,21 @@ import ProjectService from "../../services/project-service";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import AuthService from "../../services/auth-service";
 import TicketService from "../../services/ticket-service";
-import DataTable from "../others/DataTable";
-import { TICKET_COLUMNS } from "../../util/TableDataDisplay";
+import {
+	TICKETS_DEFAULT_SORT,
+	TICKETS_COLUMNS,
+} from "../../util/TableDataDisplay";
 import CreateTicket from "../tickets/CreateTicket";
-import { useDispatch, useSelector } from "react-redux";
-import { getTickets, clearTickets } from "../../features/ticketSlice.js";
+import { useDispatch } from "react-redux";
+import { clearTickets } from "../../features/ticketSlice.js";
+import Table from "../others/Table";
 
 const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
-	let projectTickets = useSelector(getTickets);
+	const [projectTickets, setProjectTickets] = useState([]);
 	const [isProjectAuthor, setisProjectAuthor] = useState(false);
 	const [viewTicket, setviewTicket] = useState(null);
+	const [isLoading, setisLoading] = useState(true);
 
 	const { projectID } = useParams();
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -50,11 +56,15 @@ const ViewProject = () => {
 
 	const getProjectTickets = async () => {
 		const tickets = await TicketService.getProjectTickets(projectID);
-		projectTickets = tickets;
+		setProjectTickets(tickets);
+
+		setTimeout(() => {
+			setisLoading(false);
+		}, 50);
 	};
 
-	const onTicketClick = (ticket) => {
-		setviewTicket(ticket);
+	const onTicketClick = (rowProps, event) => {
+		setviewTicket(projectTickets[rowProps.rowIndex]);
 		onOpen();
 	};
 
@@ -67,6 +77,14 @@ const ViewProject = () => {
 		getProjectInfo();
 		getProjectTickets();
 	}, []);
+
+	if (isLoading) {
+		return (
+			<Center w="100%">
+				<Spinner color="purple" size="xl" />
+			</Center>
+		);
+	}
 
 	return (
 		<Flex w="100%" direction="column">
@@ -105,11 +123,12 @@ const ViewProject = () => {
 
 				<TabPanels h="100%">
 					<TabPanel>
-						<DataTable
-							columns={TICKET_COLUMNS}
-							data={projectTickets}
+						<Table
+							tableData={projectTickets}
+							columns={TICKETS_COLUMNS}
 							searchPlaceholder="Search for tickets"
-							handleRowClick={onTicketClick}
+							onRowClick={onTicketClick}
+							defaultSortInfo={TICKETS_DEFAULT_SORT}
 						/>
 					</TabPanel>
 				</TabPanels>

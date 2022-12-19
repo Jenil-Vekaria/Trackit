@@ -24,12 +24,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect, useRef } from "react";
 import { CreateProjectSchema } from "../../util/ValidationSchemas";
-import { USER_COLUMNS } from "../../util/TableDataDisplay";
+import { USERS_COLUMNS } from "../../util/TableDataDisplay";
 import { useDispatch, useSelector } from "react-redux";
-import DataTable from "../others/DataTable";
 import ProjectService from "../../services/project-service";
 import AlertModal from "../others/AlertModal";
 import { getUsers } from "../../features/miscellaneousSlice.js";
+import Table from "../others/Table";
 
 const AddProject = () => {
 	const navigate = useNavigate();
@@ -121,7 +121,7 @@ const AddProject = () => {
 				/>
 			</Flex>
 
-			<Tabs variant="soft-rounded" colorScheme="purple" mt={10} h="100%">
+			<Tabs variant="soft-rounded" colorScheme="purple" mt={10}>
 				<TabList>
 					<Tab>Project Info</Tab>
 					<Tab>Contributors</Tab>
@@ -187,21 +187,17 @@ const AddProject = () => {
 						</Formik>
 					</TabPanel>
 					<TabPanel>
-						<DataTable
-							columns={USER_COLUMNS}
-							data={allUsers}
-							searchPlaceholder="Search by name"
-							searchbarVariant="outline"
-							hasSelect={true}
-							setSelectValues={setAssignees}
-							selectedValues={assignees}
-							height={340}
+						<Table
+							tableData={allUsers}
+							columns={USERS_COLUMNS}
+							searchbarVariant={"Search for users"}
+							height={390}
 						/>
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
 
-			<Flex mt={10} justify="flex-end" gap={3}>
+			<Flex mt={3} justify="flex-end" gap={3}>
 				<Button
 					colorScheme="purple"
 					onClick={() => {

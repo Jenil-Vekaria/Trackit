@@ -28,16 +28,25 @@ const getTicketType = async () => {
 const getUsers = async () => {
     try {
         const { data } = await API.get("/user/all");
-        store.dispatch(setUsers(data.users));
+        const temp = [...data.users, ...data.users, ...data.users, ...data.users, ...data.users];
+        store.dispatch(setUsers(temp));
     } catch (error) {
         console.error(error);
     }
 };
 
+const getUserFullName = (id) => {
+    const state = store.getState();
+    const userMapping = state.miscellaneous.userMapping;
+
+    return userMapping[id] || "No Data";
+};
+
 
 const MiscellaneousService = {
     getTicketType,
-    getUsers
+    getUsers,
+    getUserFullName
 };
 
 export default MiscellaneousService;

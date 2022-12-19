@@ -5,7 +5,8 @@ export const miscellaneousSlice = createSlice({
     name: "miscellaneous",
     initialState: {
         ticketType: [],
-        users: []
+        users: [],
+        userMapping: {}
     },
     reducers: {
         setTicketType: (state, action) => {
@@ -13,6 +14,7 @@ export const miscellaneousSlice = createSlice({
         },
         setUsers: (state, action) => {
             state.users = action.payload;
+            action.payload.forEach(user => state.userMapping[user._id] = user.fullName);
         }
     }
 });

@@ -2,10 +2,10 @@ import { Flex, Heading, Button, Spacer, useDisclosure } from "@chakra-ui/react";
 import { getProjects } from "../../features/projectSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Link as ReachLink, useNavigate } from "react-router-dom";
-import { PROJECT_COLUMNS } from "../../util/TableDataDisplay";
+import { PROJECTS_COLUMNS } from "../../util/TableDataDisplay";
 import React, { useEffect } from "react";
 import ProjectService from "../../services/project-service";
-import DataTable from "../others/DataTable";
+import Table from "../others/Table";
 
 const ViewAllProjects = () => {
 	const projects = useSelector(getProjects);
@@ -17,9 +17,10 @@ const ViewAllProjects = () => {
 		dispatch(ProjectService.getMyProjects());
 	}, []);
 
-	const handleRowClick = (rowData) => {
+	const handleRowClick = (rowProps, event) => {
+		const projectId = projects[rowProps.rowIndex]._id;
 		//TODO
-		navigate(`/projects/${rowData._id}`);
+		navigate(`/projects/${projectId}`);
 	};
 
 	return (
@@ -42,12 +43,11 @@ const ViewAllProjects = () => {
 
 			<br />
 
-			<DataTable
-				data={projects}
-				columns={PROJECT_COLUMNS}
-				searchPlaceholder="Search projects"
-				handleRowClick={handleRowClick}
-				height={500}
+			<Table
+				tableData={projects}
+				columns={PROJECTS_COLUMNS}
+				searchPlaceholder="Search for projects"
+				onRowClick={handleRowClick}
 			/>
 		</Flex>
 	);

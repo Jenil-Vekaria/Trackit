@@ -24,7 +24,7 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import {
 	CreateTicketData,
 	CreateTicketSchema,
@@ -38,10 +38,10 @@ import {
 import { useRef } from "react";
 import { TICKET_STATUS } from "../../util/Constants";
 import { getTicketType, getUsers } from "../../features/miscellaneousSlice.js";
-import DataTable from "../others/DataTable";
-import { USER_COLUMNS } from "../../util/TableDataDisplay";
 import TicketService from "../../services/ticket-service";
 import AlertModal from "../others/AlertModal";
+import { USERS_COLUMNS } from "../../util/TableDataDisplay";
+import Table from "../others/Table";
 
 const CreateTicket = ({
 	isOpen,
@@ -264,15 +264,11 @@ const CreateTicket = ({
 							</TabPanel>
 							<TabPanel>Comments</TabPanel>
 							<TabPanel>
-								<DataTable
-									columns={USER_COLUMNS}
-									data={allUsers}
-									searchPlaceholder="Search by name"
-									searchbarVariant="outline"
-									hasSelect={true}
-									setSelectValues={setAssignees}
-									selectedValues={assignees}
-									height={340}
+								<Table
+									tableData={allUsers}
+									columns={USERS_COLUMNS}
+									searchPlaceholder={"Search for users"}
+									height={300}
 								/>
 							</TabPanel>
 						</TabPanels>
