@@ -1,6 +1,6 @@
 import axios from "axios";
 import AuthService from "./auth-service";
-import { setProjects } from "../features/projectSlice";
+import { setProject, setProjects } from "../features/projectSlice";
 import { store } from "../app/store.js";
 
 const API = axios.create({ baseURL: process.env.REACT_APP_API_ENDPOINT + "/project" });
@@ -35,7 +35,8 @@ const addProject = async (data) => {
 const updateProject = async (data) => {
     try {
         const response = await API.patch(`/${data._id}`, data);
-        return response;
+        store.dispatch(setProject(response.data.project));
+        return response.data.project;
     } catch (error) {
         throw error;
     }
