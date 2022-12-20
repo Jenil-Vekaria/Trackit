@@ -17,8 +17,8 @@ const ViewAllProjects = () => {
 		dispatch(ProjectService.getMyProjects());
 	}, []);
 
-	const handleRowClick = (rowProps, event) => {
-		const projectId = projects[rowProps.rowIndex]._id;
+	const handleRowClick = (rowData) => {
+		const projectId = rowData.data._id;
 		//TODO
 		navigate(`/projects/${projectId}`);
 	};

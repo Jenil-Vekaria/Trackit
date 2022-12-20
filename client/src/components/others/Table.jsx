@@ -3,6 +3,7 @@ import SearchBar from "./SearchBar";
 import ReactDataGrid from "@inovua/reactdatagrid-community";
 import "@inovua/reactdatagrid-community/index.css";
 import { getFieldValue } from "../../util/GetObjectProperty";
+import { useCallback } from "react";
 
 const Table = ({
 	tableData,
@@ -62,4 +63,4 @@ const Table = ({
 	);
 };
 
-export default React.memo(Table);
+export default Table;

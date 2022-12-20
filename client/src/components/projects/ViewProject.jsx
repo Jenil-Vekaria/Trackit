@@ -25,13 +25,13 @@ import {
 	TICKETS_COLUMNS,
 } from "../../util/TableDataDisplay";
 import CreateTicket from "../tickets/CreateTicket";
-import { useDispatch } from "react-redux";
-import { clearTickets } from "../../features/ticketSlice.js";
+import { useDispatch, useSelector } from "react-redux";
+import { clearTickets, getTickets } from "../../features/ticketSlice.js";
 import Table from "../others/Table";
 
 const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
-	const [projectTickets, setProjectTickets] = useState([]);
+	const projectTickets = useSelector(getTickets);
 	const [isProjectAuthor, setisProjectAuthor] = useState(false);
 	const [viewTicket, setviewTicket] = useState(null);
 	const [isLoading, setisLoading] = useState(true);
@@ -40,6 +40,8 @@ const ViewProject = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+
+	console.log(projectTickets);
 
 	const getProjectInfo = async () => {
 		const project = await ProjectService.getProjectInfo(projectID);
@@ -55,8 +57,8 @@ const ViewProject = () => {
 	};
 
 	const getProjectTickets = async () => {
-		const tickets = await TicketService.getProjectTickets(projectID);
-		setProjectTickets(tickets);
+		await TicketService.getProjectTickets(projectID);
+		// setProjectTickets(tickets);
 
 		setTimeout(() => {
 			setisLoading(false);
@@ -64,7 +66,7 @@ const ViewProject = () => {
 	};
 
 	const onTicketClick = (rowProps, event) => {
-		setviewTicket(projectTickets[rowProps.rowIndex]);
+		setviewTicket(rowProps.data);
 		onOpen();
 	};
 

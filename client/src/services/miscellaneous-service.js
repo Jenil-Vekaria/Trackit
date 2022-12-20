@@ -42,11 +42,19 @@ const getUserFullName = (id) => {
     return userMapping[id] || "No Data";
 };
 
+const getTicketTypeInfo = (id) => {
+    const state = store.getState();
+    const ticketType = state.miscellaneous.ticketType;
+
+    return ticketType[id];
+};
+
 
 const MiscellaneousService = {
     getTicketType,
     getUsers,
-    getUserFullName
+    getUserFullName,
+    getTicketTypeInfo
 };
 
 export default MiscellaneousService;

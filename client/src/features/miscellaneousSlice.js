@@ -4,13 +4,13 @@ import AuthService from "../services/auth-service";
 export const miscellaneousSlice = createSlice({
     name: "miscellaneous",
     initialState: {
-        ticketType: [],
+        ticketType: {},
         users: [],
         userMapping: {}
     },
     reducers: {
         setTicketType: (state, action) => {
-            state.ticketType = action.payload;
+            action.payload.forEach(ticketType => state.ticketType[ticketType._id] = ticketType);
         },
         setUsers: (state, action) => {
             state.users = action.payload;

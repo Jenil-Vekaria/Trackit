@@ -29,12 +29,7 @@ import {
 	CreateTicketData,
 	CreateTicketSchema,
 } from "../../util/ValidationSchemas";
-import {
-	BsPlusLg,
-	BsBugFill,
-	BsFileEarmarkText,
-	BsQuestion,
-} from "react-icons/bs";
+
 import { useRef } from "react";
 import { TICKET_STATUS } from "../../util/Constants";
 import { getTicketType, getUsers } from "../../features/miscellaneousSlice.js";
@@ -68,9 +63,9 @@ const CreateTicket = ({
 
 	const createTicketTypeOptions = () => {
 		if (ticketTypes) {
-			return ticketTypes.map((ticketType, index) => (
-				<option key={ticketType._id} value={ticketType._id}>
-					{ticketType.name}
+			return Object.entries(ticketTypes).map(([ticketTypeId, value], index) => (
+				<option key={ticketTypeId} value={ticketTypeId}>
+					{value.name}
 				</option>
 			));
 		}

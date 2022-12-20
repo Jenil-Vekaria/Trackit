@@ -1,6 +1,19 @@
 import MiscellaneousService from "../services/miscellaneous-service";
 import moment from "moment";
-import { Badge } from "@chakra-ui/react";
+import { Badge, Box, Flex, Icon, Tag, TagLabel, TagLeftIcon, Tooltip } from "@chakra-ui/react";
+import {
+    BsPlusLg,
+    BsBugFill,
+    BsFileEarmarkText,
+    BsQuestion,
+} from "react-icons/bs";
+
+const iconMapping = {
+    BsPlusLg,
+    BsBugFill,
+    BsFileEarmarkText,
+    BsQuestion,
+};
 
 export const PROJECTS_COLUMNS = [
     {
@@ -48,12 +61,36 @@ export const PROJECTS_COLUMNS = [
     }
 ];
 
+
 export const TICKETS_COLUMNS = [
     {
         name: "_id",
         header: "Id",
         defaultVisible: false,
         flex: 1,
+        shouldComponentUpdate: () => true
+    },
+    {
+        name: "type",
+        header: "Type",
+        width: 55,
+        headerEllipsis: false,
+        render: ({ value }) => {
+            const { iconName, colour, name } = MiscellaneousService.getTicketTypeInfo(value);
+            return (
+                // <Badge background={colour}>{name}</Badge>
+                <Tooltip label={name}>
+                    <span>
+
+                        <Icon as={iconMapping[iconName]} bg={colour} color="gray.50" w={6} h={6} p={1} borderRadius={5} />
+                    </span>
+                </Tooltip>
+                // <Tag size="md" key={value} variant='subtle'>
+                //     <TagLeftIcon boxSize='12px' as={iconMapping[iconName]} />
+                //     <TagLabel>{name}</TagLabel>
+                // </Tag>
+            );
+        },
         shouldComponentUpdate: () => true
     },
     {
@@ -71,6 +108,7 @@ export const TICKETS_COLUMNS = [
     },
     {
         name: "description",
+        defaultVisible: false,
         header: "Description",
         flex: 3,
         shouldComponentUpdate: () => true
@@ -84,9 +122,9 @@ export const TICKETS_COLUMNS = [
                 case "Open":
                     return <Badge colorScheme='orange'>{value}</Badge>;
                 case "In-Progress":
-                    return <Badge colorScheme='green'>{value}</Badge>;
-                case "Closed":
                     return <Badge colorScheme='blue'>{value}</Badge>;
+                case "Done":
+                    return <Badge colorScheme='green'>{value}</Badge>;
                 case "Archived":
                     return <Badge colorScheme='facebook'>{value}</Badge>;
                 default:
@@ -98,10 +136,11 @@ export const TICKETS_COLUMNS = [
     {
         name: "createdOn",
         header: "Created On",
-        flex: 1,
+        flex: 2,
         render: ({ value }) => {
             return <span>{moment(value).format("MMMM DD, YYYY")}</span>;
-        }
+        },
+        shouldComponentUpdate: () => true
     }
 ];
 

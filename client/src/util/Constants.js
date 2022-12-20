@@ -1,1 +1,1 @@
-export const TICKET_STATUS = ["Open", "In-Progress", "Closed", "Archived"];
+export const TICKET_STATUS = ["Open", "In-Progress", "Done", "Archived"];
