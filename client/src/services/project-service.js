@@ -59,11 +59,12 @@ const deleteProject = async (projectId) => {
     }
 };
 
-const getProjectAssigneeInfo = (assigneeIds) => {
+const getProjectTitle = (projectId) => {
     const state = store.getState();
-    const allUsers = state.miscellaneous.users;
+    const myProjects = state.project.data;
+    const project = myProjects.filter(project => project._id === projectId);
 
-    return allUsers.filter(user => assigneeIds.includes(user._id));
+    return project[0].title;
 };
 
 const ProjectService = {
@@ -71,7 +72,8 @@ const ProjectService = {
     addProject,
     getProjectInfo,
     updateProject,
-    deleteProject
+    deleteProject,
+    getProjectTitle
 };
 
 export default ProjectService;

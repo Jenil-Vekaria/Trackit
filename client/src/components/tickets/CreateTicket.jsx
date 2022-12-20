@@ -21,6 +21,8 @@ import {
 	Select,
 	Flex,
 	useToast,
+	Heading,
+	Text,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect } from "react";
@@ -37,6 +39,7 @@ import TicketService from "../../services/ticket-service";
 import AlertModal from "../others/AlertModal";
 import { USERS_COLUMNS } from "../../util/TableDataDisplay";
 import Table from "../others/Table";
+import ProjectService from "../../services/project-service";
 
 const CreateTicket = ({
 	isOpen,
@@ -138,7 +141,14 @@ const CreateTicket = ({
 		<Modal isOpen={isOpen} onClose={closeModal} size="lg">
 			<ModalOverlay />
 			<ModalContent>
-				<ModalHeader>Create Ticket</ModalHeader>
+				<ModalHeader>
+					<Heading as="h3" size="md">
+						Create Ticket
+					</Heading>
+					<Text fontSize="sm" color="purple" mt={2}>
+						{ProjectService.getProjectTitle(projectId)}
+					</Text>
+				</ModalHeader>
 				<ModalCloseButton onClick={closeModal} />
 				<ModalBody>
 					<Tabs variant="soft-rounded" colorScheme="purple" isFitted>
