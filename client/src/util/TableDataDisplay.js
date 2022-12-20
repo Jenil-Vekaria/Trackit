@@ -1,12 +1,13 @@
 import MiscellaneousService from "../services/miscellaneous-service";
 import moment from "moment";
-import { Badge, Box, Flex, Icon, Tag, TagLabel, TagLeftIcon, Tooltip } from "@chakra-ui/react";
+import { assignRef, Avatar, AvatarGroup, Badge, Box, Flex, Icon, Tag, TagLabel, TagLeftIcon, Tooltip } from "@chakra-ui/react";
 import {
     BsPlusLg,
     BsBugFill,
     BsFileEarmarkText,
     BsQuestion,
 } from "react-icons/bs";
+import TooltipAvatar from "../components/others/TooltipAvatar";
 
 const iconMapping = {
     BsPlusLg,
@@ -78,17 +79,12 @@ export const TICKETS_COLUMNS = [
         render: ({ value }) => {
             const { iconName, colour, name } = MiscellaneousService.getTicketTypeInfo(value);
             return (
-                // <Badge background={colour}>{name}</Badge>
                 <Tooltip label={name}>
                     <span>
 
                         <Icon as={iconMapping[iconName]} bg={colour} color="gray.50" w={6} h={6} p={1} borderRadius={5} />
                     </span>
                 </Tooltip>
-                // <Tag size="md" key={value} variant='subtle'>
-                //     <TagLeftIcon boxSize='12px' as={iconMapping[iconName]} />
-                //     <TagLabel>{name}</TagLabel>
-                // </Tag>
             );
         },
         shouldComponentUpdate: () => true
@@ -132,6 +128,25 @@ export const TICKETS_COLUMNS = [
             }
         },
         shouldComponentUpdate: () => true
+    },
+    {
+        name: "assignees",
+        header: "Assignee(s)",
+        flex: 1,
+        render: ({ value }) => {
+            return (
+                <AvatarGroup size="sm" max={5}>
+                    {
+                        value.map(assigneeId => (
+                            // <Tooltip label={MiscellaneousService.getUserFullName(assigneeId)}>
+                            <TooltipAvatar name={MiscellaneousService.getUserFullName(assigneeId)} />
+                            // </Tooltip>
+                        ))
+                    }
+                </AvatarGroup>
+            );
+        },
+        includeInSearch: false, //custom field i added
     },
     {
         name: "createdOn",

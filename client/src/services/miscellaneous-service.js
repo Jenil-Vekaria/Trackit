@@ -34,11 +34,11 @@ const getUsers = async () => {
     }
 };
 
-const getUserFullName = (id) => {
+const getUserFullName = (userId) => {
     const state = store.getState();
     const userMapping = state.miscellaneous.userMapping;
 
-    return userMapping[id] || "No Data";
+    return userMapping[userId] || "No Data";
 };
 
 const getTicketTypeInfo = (id) => {

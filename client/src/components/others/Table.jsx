@@ -26,8 +26,12 @@ const Table = ({
 	const getDataSourceFields = () => {
 		const result = [];
 
-		columns.forEach((column) => result.push(column.name));
-
+		columns.forEach((column) => {
+			if (column.includeInSearch || column.includeInSearch === undefined) {
+				result.push(column.name);
+			}
+		});
+		console.log(result);
 		setDataFields(result);
 	};
 
