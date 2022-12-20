@@ -138,9 +138,7 @@ export const TICKETS_COLUMNS = [
                 <AvatarGroup size="sm" max={5}>
                     {
                         value.map(assigneeId => (
-                            // <Tooltip label={MiscellaneousService.getUserFullName(assigneeId)}>
-                            <TooltipAvatar name={MiscellaneousService.getUserFullName(assigneeId)} />
-                            // </Tooltip>
+                            <TooltipAvatar key={assigneeId} name={MiscellaneousService.getUserFullName(assigneeId)} />
                         ))
                     }
                 </AvatarGroup>

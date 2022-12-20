@@ -28,7 +28,7 @@ const addProject = async (data) => {
         const response = await API.post("/", data);
         return response;
     } catch (error) {
-        throw error;
+        console.error(error);
     }
 };
 
@@ -38,7 +38,7 @@ const updateProject = async (data) => {
         store.dispatch(setProject(response.data.project));
         return response.data.project;
     } catch (error) {
-        throw error;
+        console.error(error);
     }
 };
 

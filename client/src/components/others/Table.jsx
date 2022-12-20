@@ -18,7 +18,6 @@ const Table = ({
 	onSelectionChange,
 	height = 400,
 }) => {
-	console.log("🚀 ~ file: Table.jsx:21 ~ selectedRow", selectedRow);
 	const [dataSource, setDataSource] = useState(tableData || []);
 	const gridStyle = { minHeight: height };
 	const [dataFields, setDataFields] = useState([]);
@@ -31,7 +30,7 @@ const Table = ({
 				result.push(column.name);
 			}
 		});
-		console.log(result);
+
 		setDataFields(result);
 	};
 
