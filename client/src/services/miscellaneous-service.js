@@ -38,7 +38,7 @@ const getUserFullName = (userId) => {
     const state = store.getState();
     const userMapping = state.miscellaneous.userMapping;
 
-    return userMapping[userId] || "No Data";
+    return userMapping[userId] || "Unknown";
 };
 
 const getTicketTypeInfo = (id) => {

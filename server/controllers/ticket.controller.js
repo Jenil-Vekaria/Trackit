@@ -153,7 +153,7 @@ export const createTicket = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to add tickets to a project" });
         }
 
-        const ticket = await Ticket.create({ projectId, type, title, description, status, assignees, estimatedTime, estimatedTimeUnit });
+        const ticket = await Ticket.create({ projectId, type, title, description, status, assignees, estimatedTime, estimatedTimeUnit, createdBy: userId });
 
         return res.json({ ticket });
     } catch (error) {

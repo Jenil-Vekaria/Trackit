@@ -146,10 +146,28 @@ export const TICKETS_COLUMNS = [
         },
         includeInSearch: false, //custom field i added
     },
+    // {
+    //     name: "updatedOn",
+    //     header: "Modified",
+    //     headerEllipsis: false,
+    //     flex: 1,
+    //     render: ({ value }) => {
+    //         return <span>{moment(value).fromNow()}</span>;
+    //     },
+    //     shouldComponentUpdate: () => true
+    // },
+    {
+        name: "createdBy",
+        header: "Created By",
+        flex: 1,
+        render: ({ value }) => {
+            return MiscellaneousService.getUserFullName(value);
+        }
+    },
     {
         name: "createdOn",
         header: "Created On",
-        flex: 2,
+        flex: 1,
         render: ({ value }) => {
             return <span>{moment(value).format("MMMM DD, YYYY")}</span>;
         },

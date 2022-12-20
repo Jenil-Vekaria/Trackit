@@ -18,7 +18,7 @@ const Table = ({
 	onSelectionChange,
 	height = 400,
 }) => {
-	const [dataSource, setDataSource] = useState(tableData || []);
+	const [dataSource, setDataSource] = useState([]);
 	const gridStyle = { minHeight: height };
 	const [dataFields, setDataFields] = useState([]);
 
@@ -50,6 +50,10 @@ const Table = ({
 	useEffect(() => {
 		getDataSourceFields();
 	}, []);
+
+	useEffect(() => {
+		setDataSource(tableData);
+	}, [tableData]);
 
 	return (
 		<>
