@@ -18,12 +18,17 @@ import {
 	Input,
 	useToast,
 	useDisclosure,
+	Center,
+	Spinner,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect, useRef } from "react";
-import { CreateProjectSchema } from "../../util/ValidationSchemas";
+import {
+	CreateProjectData,
+	CreateProjectSchema,
+} from "../../util/ValidationSchemas";
 import { USERS_COLUMNS } from "../../util/TableDataDisplay";
 import { useDispatch, useSelector } from "react-redux";
 import ProjectService from "../../services/project-service";
@@ -37,13 +42,28 @@ const AddProject = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const { projectID } = useParams();
-	const allUsers = useSelector(getUsers());
+	const allUsers = useSelector(getUsers(true));
 	const formRef = useRef();
 	const toast = useToast();
 
-	const [assignees, setAssignees] = useState([]);
-	const [projectInfo, setProjectInfo] = useState(CreateProjectSchema);
+	const [assigneesId, setAssigneesId] = useState([]);
+	const [projectInfo, setProjectInfo] = useState(CreateProjectData);
 	const [error, seterror] = useState("");
+	const [isLoading, setisLoading] = useState(false);
+
+	const getSelectedAssigneesId = () => {
+		const selectedAssignees = {};
+
+		projectInfo.assignees.forEach((assignee) => {
+			selectedAssignees[assignee] = true;
+		});
+
+		return selectedAssignees;
+	};
+
+	const onAssigneeClick = ({ selected }) => {
+		setAssigneesId(Object.keys(selected));
+	};
 
 	const onProjectDelete = async (onClose) => {
 		onClose();
@@ -52,6 +72,7 @@ const AddProject = () => {
 	};
 
 	const getProjectInfo = async () => {
+		setisLoading(true);
 		const { _id, title, description, assignees } =
 			await ProjectService.getProjectInfo(projectID);
 		setProjectInfo({
@@ -60,12 +81,15 @@ const AddProject = () => {
 			description,
 			assignees,
 		});
+		setAssigneesId(assignees);
 
-		setAssignees(assignees);
+		setTimeout(() => {
+			setisLoading(false);
+		}, 100);
 	};
 
 	const onHandleFormSubmit = (values, action) => {
-		values.assignees = assignees;
+		values.assignees = assigneesId;
 
 		if (projectID) {
 			ProjectService.updateProject(values)
@@ -106,6 +130,14 @@ const AddProject = () => {
 			getProjectInfo();
 		}
 	}, []);
+
+	if (isLoading) {
+		return (
+			<Center w="100%">
+				<Spinner color="purple" size="xl" />
+			</Center>
+		);
+	}
 
 	return (
 		<Flex w="100%" h="100%" direction="column">
@@ -190,8 +222,12 @@ const AddProject = () => {
 						<Table
 							tableData={allUsers}
 							columns={USERS_COLUMNS}
-							searchbarVariant={"Search for users"}
+							searchPlaceholder={"Search for users"}
 							height={390}
+							hasCheckboxColumn={true}
+							sortable={false}
+							selectedRow={getSelectedAssigneesId()}
+							onSelectionChange={onAssigneeClick}
 						/>
 					</TabPanel>
 				</TabPanels>
