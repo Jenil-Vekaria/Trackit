@@ -15,12 +15,12 @@ const theme = extendTheme({
         boxSizing: "border-box",
         margin: 0,
         padding: 0,
-        overflow: "none"
       },
       'html, body': {
         background: "white",
         maxHeight: "100vh",
-        height: "100vh"
+        height: "100vh",
+        overflowY: "hidden"
       },
 
     },

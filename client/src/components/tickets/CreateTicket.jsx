@@ -52,14 +52,30 @@ const CreateTicket = ({
 	const formRef = useRef();
 	const toast = useToast();
 	const [error, seterror] = useState("");
-	const [assignees, setAssignees] = useState([]);
+	const [assigneesId, setAssigneesId] = useState([]);
 	const [openDeleteAlert, setopenDeleteAlert] = useState(false);
 
 	useEffect(() => {
 		if (ticket) {
-			setAssignees(ticket.assignees);
+			setAssigneesId(ticket.assignees);
 		}
 	}, [ticket]);
+
+	const onAssigneeClick = ({ selected }) => {
+		setAssigneesId(Object.keys(selected));
+	};
+
+	const getSelectedAssigneesId = () => {
+		const selectedAssignees = {};
+
+		if (ticket) {
+			ticket.assignees.forEach((assignee) => {
+				selectedAssignees[assignee] = true;
+			});
+		}
+
+		return selectedAssignees;
+	};
 
 	const createTicketTypeOptions = () => {
 		if (ticketTypes) {
@@ -81,7 +97,7 @@ const CreateTicket = ({
 
 	const onHandleFormSubmit = (values, action) => {
 		const ticketFormData = { ...values };
-		ticketFormData.assignees = assignees;
+		ticketFormData.assignees = assigneesId;
 
 		if (!ticket) {
 			TicketService.createTicket(ticketFormData, projectId).then(() => {
@@ -113,7 +129,7 @@ const CreateTicket = ({
 
 	const closeModal = () => {
 		setviewTicket(null);
-		setAssignees([]);
+		setAssigneesId([]);
 		setopenDeleteAlert(false);
 		onClose();
 	};
@@ -264,6 +280,10 @@ const CreateTicket = ({
 									columns={USERS_COLUMNS}
 									searchPlaceholder={"Search for users"}
 									height={300}
+									hasCheckboxColumn={true}
+									sortable={false}
+									selectedRow={getSelectedAssigneesId()}
+									onSelectionChange={onAssigneeClick}
 								/>
 							</TabPanel>
 						</TabPanels>

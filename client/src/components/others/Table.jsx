@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import ReactDataGrid from "@inovua/reactdatagrid-community";
 import "@inovua/reactdatagrid-community/index.css";
+
 import { getFieldValue } from "../../util/GetObjectProperty";
-import { useCallback } from "react";
 
 const Table = ({
 	tableData,
@@ -12,6 +12,10 @@ const Table = ({
 	searchbarVariant,
 	onRowClick,
 	defaultSortInfo,
+	hasCheckboxColumn = false,
+	sortable = true,
+	selectedRow,
+	onSelectionChange,
 	height = 400,
 }) => {
 	const [dataSource, setDataSource] = useState(tableData || []);
@@ -22,7 +26,7 @@ const Table = ({
 		const result = [];
 
 		columns.forEach((column) => result.push(column.name));
-		console.log(result);
+
 		setDataFields(result);
 	};
 
@@ -54,10 +58,15 @@ const Table = ({
 			<ReactDataGrid
 				idProperty="_id"
 				style={gridStyle}
+				dataSource={dataSource}
 				columns={columns}
 				defaultSortInfo={defaultSortInfo}
-				dataSource={dataSource}
+				sortable={sortable}
 				onRowClick={onRowClick}
+				checkboxColumn={hasCheckboxColumn}
+				checkboxOnlyRowSelect={hasCheckboxColumn}
+				defaultSelected={selectedRow}
+				onSelectionChange={onSelectionChange}
 			/>
 		</>
 	);

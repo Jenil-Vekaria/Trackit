@@ -28,8 +28,7 @@ const getTicketType = async () => {
 const getUsers = async () => {
     try {
         const { data } = await API.get("/user/all");
-        const temp = [...data.users, ...data.users, ...data.users, ...data.users, ...data.users];
-        store.dispatch(setUsers(temp));
+        store.dispatch(setUsers(data.users));
     } catch (error) {
         console.error(error);
     }

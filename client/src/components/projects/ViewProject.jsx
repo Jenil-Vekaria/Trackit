@@ -41,8 +41,6 @@ const ViewProject = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	console.log(projectTickets);
-
 	const getProjectInfo = async () => {
 		const project = await ProjectService.getProjectInfo(projectID);
 
@@ -131,6 +129,7 @@ const ViewProject = () => {
 							searchPlaceholder="Search for tickets"
 							onRowClick={onTicketClick}
 							defaultSortInfo={TICKETS_DEFAULT_SORT}
+							height={480}
 						/>
 					</TabPanel>
 				</TabPanels>
