@@ -65,7 +65,7 @@ const getProjectTitle = (projectId) => {
     const myProjects = state.project.data;
     const project = myProjects.filter(project => project._id === projectId);
 
-    return project[0].title;
+    return project[0]?.title || "";
 };
 
 const ProjectService = {

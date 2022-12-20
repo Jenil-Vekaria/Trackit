@@ -40,6 +40,7 @@ import AlertModal from "../others/AlertModal";
 import { USERS_COLUMNS } from "../../util/TableDataDisplay";
 import Table from "../others/Table";
 import ProjectService from "../../services/project-service";
+import AuthService from "../../services/auth-service";
 
 const CreateTicket = ({
 	isOpen,
@@ -130,10 +131,20 @@ const CreateTicket = ({
 		closeModal();
 	};
 
+	//Every the signed in user's ticket is updated, refetch all the user's tickets and store in redux
+	const getMyTickets = async () => {
+		const { id } = AuthService.getCurrentUser();
+
+		if (assigneesId.includes(id) || ticketInfo.createdBy === id) {
+			await TicketService.getUserTickets();
+		}
+	};
+
 	const closeModal = () => {
 		setviewTicket(null);
 		setAssigneesId([]);
 		setopenDeleteAlert(false);
+		getMyTickets();
 		onClose();
 	};
 

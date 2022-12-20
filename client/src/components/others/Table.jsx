@@ -75,6 +75,7 @@ const Table = ({
 				checkboxOnlyRowSelect={hasCheckboxColumn}
 				defaultSelected={selectedRow}
 				onSelectionChange={onSelectionChange}
+				showColumnMenuTool={false}
 			/>
 		</>
 	);

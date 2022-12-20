@@ -3,7 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 export const ticketSlice = createSlice({
     name: "ticket",
     initialState: {
-        data: []
+        data: [],
+        myTickets: []
     },
     reducers: {
         setTickets: (state, action) => {
@@ -25,12 +26,17 @@ export const ticketSlice = createSlice({
             state.data = state.data.filter(ticket => {
                 return ticket._id !== action.payload.ticketId;
             });
+        },
+        setMyTickets: (state, action) => {
+            state.myTickets = action.payload;
         }
     }
 });
 
-export const { setTickets, setTicket, addTicket, clearTickets, removeTicket } = ticketSlice.actions;
+export const { setTickets, setTicket, addTicket, clearTickets, removeTicket, setMyTickets } = ticketSlice.actions;
 
 export const getTickets = (state) => state.ticket.data;
+export const getMyTickets = (state) => state.ticket.myTickets;
+
 
 export default ticketSlice.reducer;

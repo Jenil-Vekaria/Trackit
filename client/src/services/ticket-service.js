@@ -1,7 +1,7 @@
 import axios from "axios";
 import AuthService from "./auth-service";
 import { store } from "../app/store";
-import { addTicket, setTicket, setTickets, removeTicket, clearTickets } from "../features/ticketSlice.js";
+import { addTicket, setTicket, setTickets, removeTicket, setMyTickets } from "../features/ticketSlice.js";
 
 const API = axios.create({ baseURL: process.env.REACT_APP_API_ENDPOINT + "/ticket" });
 
@@ -19,6 +19,7 @@ const getUserTickets = async () => {
 
     try {
         const { data: { tickets } } = await API.get(`/user/${id}`);
+        store.dispatch(setMyTickets(tickets));
         return tickets;
     } catch (error) {
         console.error(error);
