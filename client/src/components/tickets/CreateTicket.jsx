@@ -143,7 +143,7 @@ const CreateTicket = ({
 			<ModalContent>
 				<ModalHeader>
 					<Heading as="h3" size="md">
-						Create Ticket
+						{ticket ? "Edit" : "Create"} Ticket
 					</Heading>
 					<Text fontSize="sm" color="purple" mt={2}>
 						{ProjectService.getProjectTitle(projectId)}
