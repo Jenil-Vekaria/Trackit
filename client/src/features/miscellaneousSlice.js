@@ -6,6 +6,7 @@ export const miscellaneousSlice = createSlice({
     initialState: {
         ticketType: {},
         users: [],
+        roles: [],
         userMapping: {}
     },
     reducers: {
@@ -15,11 +16,20 @@ export const miscellaneousSlice = createSlice({
         setUsers: (state, action) => {
             state.users = action.payload;
             action.payload.forEach(user => state.userMapping[user._id] = user.fullName);
+        },
+        setRoles: (state, action) => {
+            state.roles = action.payload;
+        },
+        setRole: (state, action) => {
+            state.roles = state.roles.map(role => {
+                if (role._id === action.payload._id) return action.payload;
+                return action.payload;
+            });
         }
     }
 });
 
-export const { setTicketType, setUsers } = miscellaneousSlice.actions;
+export const { setTicketType, setUsers, setRole, setRoles } = miscellaneousSlice.actions;
 
 export const getTicketType = (state) => state.miscellaneous.ticketType;
 
@@ -27,5 +37,7 @@ export const getUsers = (includeSignedUser = false) => (state) => {
     const { id } = AuthService.getCurrentUser();
     return includeSignedUser ? state.miscellaneous.users : state.miscellaneous.users.filter(user => user._id !== id);
 };
+
+export const getRoles = (state) => state.miscellaneous.roles;
 
 export default miscellaneousSlice.reducer;

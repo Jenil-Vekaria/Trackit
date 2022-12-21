@@ -32,6 +32,12 @@ export const LoginData = {
     password: "",
 };
 
+export const ManageUserSchema = Yup.object().shape({
+    firstName: Yup.string().required("Required"),
+    lastName: Yup.string().required("Required"),
+    email: Yup.string().email("Invalid email").required("Required")
+});
+
 
 export const CreateProjectSchema = Yup.object().shape({
     title: Yup.string().required("Required"),

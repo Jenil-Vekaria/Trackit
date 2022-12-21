@@ -27,6 +27,7 @@ export const Login = () => {
 			await AuthService.login(values);
 			await MiscellaneousService.getTicketType();
 			await MiscellaneousService.getUsers();
+			await MiscellaneousService.getRoles();
 
 			navigate("/dashboard");
 			window.location.reload();

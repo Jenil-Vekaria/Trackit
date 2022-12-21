@@ -33,6 +33,12 @@ const theme = extendTheme({
             minWidth: "60%",
             minHeight: "80%"
           }
+        },
+        md: {
+          dialog: {
+            minWidth: "40%",
+            minHeight: "50%"
+          }
         }
       }
     }

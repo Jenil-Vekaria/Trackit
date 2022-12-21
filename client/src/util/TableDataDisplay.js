@@ -1,6 +1,6 @@
 import MiscellaneousService from "../services/miscellaneous-service";
 import moment from "moment";
-import { assignRef, Avatar, AvatarGroup, Badge, Box, Flex, Icon, Tag, TagLabel, TagLeftIcon, Tooltip } from "@chakra-ui/react";
+import { AvatarGroup, Badge, Icon, Tooltip } from "@chakra-ui/react";
 import {
     BsPlusLg,
     BsBugFill,
@@ -189,6 +189,40 @@ export const USERS_COLUMNS = [
         header: "Name",
         flex: 1,
         shouldComponentUpdate: () => true
+    },
+    {
+        name: "role.name",
+        header: "Role",
+        flex: 1,
+        render: ({ data }) => data.role.name,
+        shouldComponentUpdate: () => true
+    }
+];
+
+export const MANAGE_USERS_COLUMNS = [
+    {
+        name: "_id",
+        header: "Id",
+        defaultVisible: false,
+        shouldComponentUpdate: () => true
+    },
+    {
+        name: "fullName",
+        header: "Name",
+        flex: 1,
+        render: ({ value }) => {
+            return <span style={{
+                fontWeight: "500",
+                color: "purple",
+                cursor: "pointer",
+            }}>{value}</span>;
+        },
+        shouldComponentUpdate: () => true
+    },
+    {
+        name: "email",
+        header: "Email",
+        flex: 1
     },
     {
         name: "role.name",

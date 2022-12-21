@@ -3,6 +3,21 @@ import Role from "../models/role.model.js";
 import * as permissionCheck from "../util/permissionCheck.js";
 import { canPerformAction } from "../util/utils.js";
 
+export const getRoles = async (req, res) => {
+    try {
+        //Get user permssion
+        if (!canPerformAction(permissionCheck.canManageRole, req.user)) {
+            return res.status(403).json({ error: "Not authorized to view roles" });
+        }
+
+        const roles = await Role.find({});
+
+        return res.json({ roles });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 export const addRole = async (req, res) => {
     const { name, permissions } = req.body;
 
