@@ -1,20 +1,10 @@
 import MiscellaneousService from "../services/miscellaneous-service";
 import moment from "moment";
 import { AvatarGroup, Badge, Icon, Tooltip } from "@chakra-ui/react";
-import {
-    BsPlusLg,
-    BsBugFill,
-    BsFileEarmarkText,
-    BsQuestion,
-} from "react-icons/bs";
+import * as BsIcon from "react-icons/bs";
 import TooltipAvatar from "../components/others/TooltipAvatar";
 
-const iconMapping = {
-    BsPlusLg,
-    BsBugFill,
-    BsFileEarmarkText,
-    BsQuestion,
-};
+
 
 export const PROJECTS_COLUMNS = [
     {
@@ -71,8 +61,7 @@ export const TICKETS_COLUMNS = [
             return (
                 <Tooltip label={name}>
                     <span>
-
-                        <Icon as={iconMapping[iconName]} bg={colour} color="gray.50" w={6} h={6} p={1} borderRadius={5} />
+                        <Icon as={BsIcon[iconName]} bg={colour} color="gray.50" w={6} h={6} p={1} borderRadius={5} />
                     </span>
                 </Tooltip>
             );
