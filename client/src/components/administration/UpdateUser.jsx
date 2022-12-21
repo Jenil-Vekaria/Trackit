@@ -18,6 +18,7 @@ import {
 	InputRightElement,
 	useBoolean,
 	Select,
+	Tooltip,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import { ManageUserSchema, SignupSchema } from "../../util/ValidationSchemas";
@@ -31,7 +32,6 @@ const UpdateUser = ({
 	viewUser,
 	isUpdateMyProfile = false,
 }) => {
-	console.log("🚀 ~ file: UpdateUser.jsx:33 ~ viewUser", viewUser);
 	const roles = useSelector(getRoles);
 	const formRef = useRef(null);
 	const [error, setError] = useState(null);
@@ -55,7 +55,14 @@ const UpdateUser = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={closeModal} size="md">
+		<Modal
+			isOpen={isOpen}
+			onClose={() => {
+				setShowPassword.off();
+				closeModal();
+			}}
+			size="md"
+		>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Update User</ModalHeader>
@@ -118,6 +125,22 @@ const UpdateUser = ({
 									<FormErrorMessage>{errors.email}</FormErrorMessage>
 								</FormControl>
 
+								<FormControl mt={4} isInvalid={errors.roleId && touched.roleId}>
+									<FormLabel fontWeight="regular">Role</FormLabel>
+									<Field
+										as={Select}
+										name="roleId"
+										type="select"
+										disabled={isUpdateMyProfile}
+									>
+										<option value="" disabled selected>
+											Select
+										</option>
+										{createRoleTypeOption()}
+									</Field>
+									<FormErrorMessage>{errors.roleId}</FormErrorMessage>
+								</FormControl>
+
 								{isUpdateMyProfile ? (
 									<>
 										<FormControl
@@ -161,21 +184,7 @@ const UpdateUser = ({
 											</FormErrorMessage>
 										</FormControl>
 									</>
-								) : (
-									<FormControl
-										mt={4}
-										isInvalid={errors.roleId && touched.roleId}
-									>
-										<FormLabel fontWeight="regular">Role</FormLabel>
-										<Field as={Select} name="roleId" type="select">
-											<option value="" disabled selected>
-												Select
-											</option>
-											{createRoleTypeOption()}
-										</Field>
-										<FormErrorMessage>{errors.roleId}</FormErrorMessage>
-									</FormControl>
-								)}
+								) : null}
 							</Form>
 						)}
 					</Formik>
@@ -189,7 +198,21 @@ const UpdateUser = ({
 					>
 						Save User
 					</Button>
-					<Button colorScheme="red">Delete User</Button>
+					{isUpdateMyProfile ? (
+						<Button
+							colorScheme="gray"
+							onClick={() => {
+								setShowPassword.off();
+								closeModal();
+							}}
+						>
+							Cancel
+						</Button>
+					) : (
+						<Tooltip label="Not Implemeted">
+							<Button colorScheme="red">Delete User</Button>
+						</Tooltip>
+					)}
 				</ModalFooter>
 			</ModalContent>
 		</Modal>

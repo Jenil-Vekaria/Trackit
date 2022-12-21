@@ -7,7 +7,7 @@ import Table from "../others/Table";
 import UpdateUser from "./UpdateUser";
 
 const ManageUsers = () => {
-	const allUsers = useSelector(getUsers(true));
+	const allUsers = useSelector(getUsers(false));
 	const [viewUser, setViewUser] = useState(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -30,12 +30,7 @@ const ManageUsers = () => {
 				onRowClick={onUserClick}
 				height={340}
 			/>
-			<UpdateUser
-				isOpen={isOpen}
-				closeModal={closeModal}
-				viewUser={viewUser}
-				setViewUser={setViewUser}
-			/>
+			<UpdateUser isOpen={isOpen} closeModal={closeModal} viewUser={viewUser} />
 		</>
 	);
 };
