@@ -83,9 +83,9 @@ const CreateTicket = ({
 
 	const createTicketTypeOptions = () => {
 		if (ticketTypes) {
-			return Object.entries(ticketTypes).map(([ticketTypeId, value], index) => (
-				<option key={ticketTypeId} value={ticketTypeId}>
-					{value.name}
+			return ticketTypes.map((ticketType) => (
+				<option key={ticketType._id} value={ticketType._id}>
+					{ticketType.name}
 				</option>
 			));
 		}

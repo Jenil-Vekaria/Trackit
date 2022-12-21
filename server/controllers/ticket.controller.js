@@ -102,7 +102,7 @@ export const createTicket = async (req, res) => {
         }
 
         // Ensure the user belongs to the project
-        const project = await Project.findById(projectId);
+        const project = await Project.findOne({ _id: projectId });
 
         if (!project.assignees.includes(userId)) {
             return res.status(403).json({ message: "Not authorized to add tickets to a project" });

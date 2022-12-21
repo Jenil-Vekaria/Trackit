@@ -30,7 +30,7 @@ export const updateUser = async (req, res) => {
 
         await User.findOneAndUpdate({ _id: userData._id }, userData);
 
-        const user = await User.find({ _id: userData._id }, { _id: 1, firstName: 1, lastName: 1, email: 1, roleId: 1 });
+        const user = await User.findOne({ _id: userData._id }, { _id: 1, firstName: 1, lastName: 1, email: 1, roleId: 1 });
 
         return res.json({ updatedUser: user });
 
