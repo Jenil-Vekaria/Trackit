@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import { canPerformAction } from '../util/utils.js';
 import * as permissionCheck from "../util/permissionCheck.js";
 import bcrypt from 'bcrypt';
+import mongoose from "mongoose";
 
 export const getAllUsers = async (req, res) => {
     try {
@@ -16,9 +17,18 @@ export const updateUser = async (req, res) => {
     const userData = req.body;
 
     try {
-
         if (!canPerformAction(permissionCheck.canUpdateUserProfile, req.user)) {
             return res.status(403).json({ message: "You do not have permission update user profile" });
+        }
+
+        //ensure email is not a duplicate
+        const existingEmailUser = await User.findOne({ email: userData.email });
+
+        console.log(userData._id);
+        console.log(existingEmailUser._id.toString());
+        console.log(userData._id !== existingEmailUser._id.toString());
+        if (userData._id !== existingEmailUser._id.toString()) {
+            return res.status(400).json({ message: "Email already exists, please try again" });
         }
 
         if (userData.password) {

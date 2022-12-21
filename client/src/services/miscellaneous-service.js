@@ -28,7 +28,7 @@ const updateUserProfile = async (userData) => {
         store.dispatch(setUser(updatedUser));
 
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 };
 

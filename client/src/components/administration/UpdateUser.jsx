@@ -25,6 +25,7 @@ import { ManageUserSchema, SignupSchema } from "../../util/ValidationSchemas";
 import { useSelector } from "react-redux";
 import { getRoles } from "../../features/miscellaneousSlice";
 import MiscellaneousService from "../../services/miscellaneous-service";
+import { useEffect } from "react";
 
 const UpdateUser = ({
 	isOpen,
@@ -32,6 +33,7 @@ const UpdateUser = ({
 	viewUser,
 	isUpdateMyProfile = false,
 }) => {
+	const [userData, setUserData] = useState(null);
 	const roles = useSelector(getRoles);
 	const formRef = useRef(null);
 	const [error, setError] = useState(null);
@@ -42,7 +44,7 @@ const UpdateUser = ({
 			await MiscellaneousService.updateUserProfile(values);
 			closeModal();
 		} catch (error) {
-			console.error(error);
+			setError(error.response.data.message);
 		}
 	};
 
@@ -54,11 +56,24 @@ const UpdateUser = ({
 		));
 	};
 
+	useEffect(() => {
+		if (isUpdateMyProfile) {
+			setUserData({
+				...viewUser,
+				password: "",
+				confirmPassword: "",
+			});
+		} else {
+			setUserData(viewUser);
+		}
+	}, [viewUser]);
+
 	return (
 		<Modal
 			isOpen={isOpen}
 			onClose={() => {
 				setShowPassword.off();
+				setError("");
 				closeModal();
 			}}
 			size="md"
@@ -203,6 +218,7 @@ const UpdateUser = ({
 							colorScheme="gray"
 							onClick={() => {
 								setShowPassword.off();
+								setError("");
 								closeModal();
 							}}
 						>
