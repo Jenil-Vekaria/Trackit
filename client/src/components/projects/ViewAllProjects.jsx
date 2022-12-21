@@ -19,7 +19,6 @@ const ViewAllProjects = () => {
 
 	const handleRowClick = (rowData) => {
 		const projectId = rowData.data._id;
-		//TODO
 		navigate(`/projects/${projectId}`);
 	};
 

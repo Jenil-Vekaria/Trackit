@@ -17,10 +17,11 @@ const Table = ({
 	selectedRow,
 	onSelectionChange,
 	height = 400,
+	isLoading = false,
 }) => {
 	const [dataSource, setDataSource] = useState([]);
-	const gridStyle = { minHeight: height };
 	const [dataFields, setDataFields] = useState([]);
+	const gridStyle = { minHeight: height };
 
 	const getDataSourceFields = () => {
 		const result = [];
@@ -52,8 +53,8 @@ const Table = ({
 	}, []);
 
 	useEffect(() => {
-		setDataSource(tableData);
-	}, [tableData]);
+		if (!isLoading) setDataSource(tableData);
+	}, [tableData, isLoading]);
 
 	return (
 		<>
@@ -76,6 +77,7 @@ const Table = ({
 				defaultSelected={selectedRow}
 				onSelectionChange={onSelectionChange}
 				showColumnMenuTool={false}
+				loading={isLoading}
 			/>
 		</>
 	);

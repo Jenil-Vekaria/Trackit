@@ -1,4 +1,11 @@
-import { Flex, Heading, useDisclosure } from "@chakra-ui/react";
+import {
+	Center,
+	Flex,
+	Heading,
+	Spinner,
+	useBoolean,
+	useDisclosure,
+} from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import "@inovua/reactdatagrid-community/index.css";
 import Table from "../components/others/Table";
@@ -13,11 +20,12 @@ const Tickets = () => {
 	const [viewTicket, setViewTicket] = useState(null);
 	const [viewTicketProjectId, setViewTicketProjectId] = useState(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const [isLoading, setIsLoading] = useState(false);
 
 	const getUserTickets = async () => {
+		setIsLoading(true);
 		await TicketService.getUserTickets();
-
-		setTimeout(() => {}, 50);
+		setIsLoading(false);
 	};
 
 	const onTicketClick = (rowProps, event) => {
@@ -45,6 +53,7 @@ const Tickets = () => {
 				searchPlaceholder="Search for tickets"
 				height={450}
 				onRowClick={onTicketClick}
+				isLoading={isLoading}
 			/>
 
 			<CreateTicket
