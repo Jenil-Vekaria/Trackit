@@ -15,10 +15,10 @@ API.interceptors.request.use((req) => {
 });
 
 const getUserTickets = async () => {
-    const { id } = AuthService.getCurrentUser();
+    const { _id } = AuthService.getCurrentUser();
 
     try {
-        const { data: { tickets } } = await API.get(`/user/${id}`);
+        const { data: { tickets } } = await API.get(`/user/${_id}`);
         store.dispatch(setMyTickets(tickets));
         return tickets;
     } catch (error) {

@@ -18,6 +18,7 @@ import {
 import NavItem from "./NavItem";
 import { useLocation } from "react-router-dom";
 import AuthService from "../../services/auth-service";
+import MiscellaneousService from "../../services/miscellaneous-service";
 
 const Navbar = () => {
 	const [navSize, setNavSize] = useState("large");
@@ -115,7 +116,9 @@ const Navbar = () => {
 								<Heading as="h3" size="xs">
 									{user.firstName} {user.lastName}
 								</Heading>
-								<Text fontSize="sm">Admin</Text>
+								<Text fontSize="sm">
+									{MiscellaneousService.getRoleInfo(user.roleId).name}
+								</Text>
 							</Flex>
 						</Flex>
 					</PopoverTrigger>

@@ -7,24 +7,12 @@ import Table from "../others/Table";
 import UpdateUser from "./UpdateUser";
 
 const ManageUsers = () => {
-	const allUsers = useSelector(getUsers(false));
+	const allUsers = useSelector(getUsers(true));
 	const [viewUser, setViewUser] = useState(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const onUserClick = (rowProps, event) => {
-		const user = { ...rowProps.data };
-		console.log("🚀 ~ file: ManageUsers.jsx:16 ~ onUserClick ~ user", user);
-
-		user.roleId = user.role._id;
-		delete user.role;
-
-		const [firstName, lastName] = user.fullName.split(" ");
-		delete user.fullName;
-
-		user.firstName = firstName;
-		user.lastName = lastName;
-
-		setViewUser(user);
+		setViewUser(rowProps.data);
 		onOpen();
 	};
 

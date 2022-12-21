@@ -47,8 +47,8 @@ const ViewProject = () => {
 		if (project) {
 			setProjectInfo(project);
 
-			const { id } = AuthService.getCurrentUser();
-			setisProjectAuthor(project?.authorId === id);
+			const { _id } = AuthService.getCurrentUser();
+			setisProjectAuthor(project?.authorId === _id);
 		} else {
 			navigate("/404");
 		}

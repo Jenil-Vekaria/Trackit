@@ -133,9 +133,9 @@ const CreateTicket = ({
 
 	//Every the signed in user's ticket is updated, refetch all the user's tickets and store in redux
 	const getMyTickets = async () => {
-		const { id } = AuthService.getCurrentUser();
+		const { _id } = AuthService.getCurrentUser();
 
-		if (assigneesId.includes(id) || ticketInfo.createdBy === id) {
+		if (assigneesId.includes(_id) || ticketInfo.createdBy === _id) {
 			await TicketService.getUserTickets();
 		}
 	};

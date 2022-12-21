@@ -26,8 +26,8 @@ const Table = ({
 		const result = [];
 
 		columns.forEach((column) => {
-			if (column.includeInSearch || column.includeInSearch === undefined) {
-				result.push(column.name);
+			if (column.searchInField) {
+				result.push(...column.searchInField);
 			}
 		});
 

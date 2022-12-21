@@ -18,14 +18,8 @@ const iconMapping = {
 
 export const PROJECTS_COLUMNS = [
     {
-        name: "_id",
-        header: "Id",
-        defaultVisible: false,
-        flex: 1,
-        shouldComponentUpdate: () => true
-    },
-    {
         name: "title",
+        searchInField: ["title"],
         header: "Title",
         flex: 3,
         render: ({ value }) => {
@@ -39,6 +33,7 @@ export const PROJECTS_COLUMNS = [
     },
     {
         name: "description",
+        searchInField: ["description"],
         header: "Description",
         flex: 3,
         shouldComponentUpdate: () => true
@@ -48,16 +43,17 @@ export const PROJECTS_COLUMNS = [
         header: "Author",
         flex: 1,
         render: ({ value }) => {
-            return <span>{MiscellaneousService.getUserFullName(value)}</span>;
+            return MiscellaneousService.getUserFullName(value);
         },
         shouldComponentUpdate: () => true
     },
     {
         name: "createdOn",
+        searchInField: ["createdOn"],
         header: "Created On",
         flex: 1,
         render: ({ value }) => {
-            return <span>{moment(value).format("MMMM DD, YYYY")}</span>;
+            return moment(value).format("MMMM DD, YYYY");
         }
     }
 ];
@@ -65,14 +61,8 @@ export const PROJECTS_COLUMNS = [
 
 export const TICKETS_COLUMNS = [
     {
-        name: "_id",
-        header: "Id",
-        defaultVisible: false,
-        flex: 1,
-        shouldComponentUpdate: () => true
-    },
-    {
         name: "type",
+        searchInField: ["type"],
         header: "Type",
         width: 55,
         headerEllipsis: false,
@@ -91,6 +81,7 @@ export const TICKETS_COLUMNS = [
     },
     {
         name: "title",
+        searchInField: ["title"],
         header: "Title",
         flex: 3,
         render: ({ value }) => {
@@ -104,6 +95,7 @@ export const TICKETS_COLUMNS = [
     },
     {
         name: "description",
+        searchInField: ["description"],
         defaultVisible: false,
         header: "Description",
         flex: 3,
@@ -111,6 +103,7 @@ export const TICKETS_COLUMNS = [
     },
     {
         name: "status",
+        searchInField: ["status"],
         header: "Status",
         flex: 1,
         render: ({ value }) => {
@@ -143,8 +136,7 @@ export const TICKETS_COLUMNS = [
                     }
                 </AvatarGroup>
             );
-        },
-        includeInSearch: false, //custom field i added
+        }
     },
     // {
     //     name: "updatedOn",
@@ -152,7 +144,7 @@ export const TICKETS_COLUMNS = [
     //     headerEllipsis: false,
     //     flex: 1,
     //     render: ({ value }) => {
-    //         return <span>{moment(value).fromNow()}</span>;
+    //         return moment(value).fromNow()
     //     },
     //     shouldComponentUpdate: () => true
     // },
@@ -166,10 +158,11 @@ export const TICKETS_COLUMNS = [
     },
     {
         name: "createdOn",
+        searchInField: ["createdOn"],
         header: "Created On",
         flex: 1,
         render: ({ value }) => {
-            return <span>{moment(value).format("MMMM DD, YYYY")}</span>;
+            return moment(value).format("MMMM DD, YYYY");
         },
         shouldComponentUpdate: () => true
     }
@@ -180,21 +173,21 @@ export const TICKETS_DEFAULT_SORT = { name: 'createdOn', dir: -1 };
 export const USERS_COLUMNS = [
     {
         name: "_id",
-        header: "Id",
-        defaultVisible: false,
-        shouldComponentUpdate: () => true
-    },
-    {
-        name: "fullName",
+        searchInField: ["firstName", "lastName"],
         header: "Name",
         flex: 1,
+        render: ({ value }) => {
+            return MiscellaneousService.getUserFullName(value);
+        },
         shouldComponentUpdate: () => true
     },
     {
-        name: "role.name",
+        name: "roleId",
         header: "Role",
         flex: 1,
-        render: ({ data }) => data.role.name,
+        render: ({ value }) => {
+            return MiscellaneousService.getRoleInfo(value).name;
+        },
         shouldComponentUpdate: () => true
     }
 ];
@@ -202,33 +195,36 @@ export const USERS_COLUMNS = [
 export const MANAGE_USERS_COLUMNS = [
     {
         name: "_id",
-        header: "Id",
-        defaultVisible: false,
-        shouldComponentUpdate: () => true
-    },
-    {
-        name: "fullName",
+        searchInField: ["firstName", "lastName"],
         header: "Name",
         flex: 1,
         render: ({ value }) => {
-            return <span style={{
-                fontWeight: "500",
-                color: "purple",
-                cursor: "pointer",
-            }}>{value}</span>;
+
+            return (
+                <span style={{
+                    fontWeight: "500",
+                    color: "purple",
+                    cursor: "pointer",
+                }}>
+                    {MiscellaneousService.getUserFullName(value)}
+                </span>
+            );
         },
         shouldComponentUpdate: () => true
     },
     {
         name: "email",
+        searchInField: ["email"],
         header: "Email",
         flex: 1
     },
     {
-        name: "role.name",
+        name: "roleId",
         header: "Role",
         flex: 1,
-        render: ({ data }) => data.role.name,
+        render: ({ value }) => {
+            return MiscellaneousService.getRoleInfo(value).name;
+        },
         shouldComponentUpdate: () => true
     }
 ];

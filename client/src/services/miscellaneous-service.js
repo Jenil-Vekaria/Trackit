@@ -1,6 +1,6 @@
 import axios from "axios";
 import AuthService from "./auth-service";
-import { setRoles, setTicketType, setUsers } from "../features/miscellaneousSlice.js";
+import { setRoles, setTicketType, setUser, setUsers } from "../features/miscellaneousSlice.js";
 import { store } from "../app/store.js";
 import { setLogin } from "../features/authSlice";
 
@@ -18,12 +18,14 @@ API.interceptors.request.use((req) => {
 const updateUserProfile = async (userData) => {
     try {
         const { data: { updatedUser } } = await API.patch("/user/update", userData);
-        const { id, accessToken } = AuthService.getCurrentUser();
+        const { _id, accessToken } = AuthService.getCurrentUser();
 
-        if (updatedUser._id === id) {
+        if (updatedUser._id === _id) {
             updatedUser.accessToken = accessToken;
             store.dispatch(setLogin(updatedUser));
         }
+
+        store.dispatch(setUser(updatedUser));
 
     } catch (error) {
         console.log(error);
@@ -57,31 +59,39 @@ const getRoles = async () => {
     }
 };
 
-const getUserFullName = (userId) => {
+const getUserInfo = (userId) => {
     const state = store.getState();
-    const userMapping = state.miscellaneous.userMapping;
+    const user = state.miscellaneous.users.filter(user => user._id === userId);
 
-    return userMapping[userId] || "Unknown";
+    return user[0];
 };
 
-const getTicketTypeInfo = (id) => {
+const getUserFullName = (userId) => {
     const state = store.getState();
-    const ticketType = state.miscellaneous.ticketType;
+    const user = state.miscellaneous.users.filter(user => user._id === userId);
 
-    return ticketType[id];
+    return user[0].firstName + " " + user[0].lastName;
+};
+
+const getTicketTypeInfo = (ticketTypeId) => {
+    const state = store.getState();
+    const ticketType = state.miscellaneous.ticketType.filter(ticketType => ticketType._id === ticketTypeId);
+
+    return ticketType[0];
 };
 
 const getRoleInfo = (roleId) => {
     const state = store.getState();
-    const roles = state.miscellaneous.roles;
+    const role = state.miscellaneous.roles.filter(role => role._id === roleId);
 
-    return roles.filter(role => role._id === roleId);
+    return role[0];
 };
 
 
 const MiscellaneousService = {
     getTicketType,
     getUsers,
+    getUserInfo,
     getUserFullName,
     getTicketTypeInfo,
     getRoles,

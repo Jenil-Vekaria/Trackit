@@ -4,18 +4,22 @@ import AuthService from "../services/auth-service";
 export const miscellaneousSlice = createSlice({
     name: "miscellaneous",
     initialState: {
-        ticketType: {},
+        ticketType: [],
         users: [],
-        roles: [],
-        userMapping: {}
+        roles: []
     },
     reducers: {
         setTicketType: (state, action) => {
-            action.payload.forEach(ticketType => state.ticketType[ticketType._id] = ticketType);
+            state.ticketType = action.payload;
         },
         setUsers: (state, action) => {
             state.users = action.payload;
-            action.payload.forEach(user => state.userMapping[user._id] = user.fullName);
+        },
+        setUser: (state, action) => {
+            state.users = state.users.map(user => {
+                if (user._id === action.payload._id) return action.payload;
+                return user;
+            });
         },
         setRoles: (state, action) => {
             state.roles = action.payload;
@@ -29,13 +33,13 @@ export const miscellaneousSlice = createSlice({
     }
 });
 
-export const { setTicketType, setUsers, setRole, setRoles } = miscellaneousSlice.actions;
+export const { setTicketType, setUsers, setUser, setRole, setRoles } = miscellaneousSlice.actions;
 
 export const getTicketType = (state) => state.miscellaneous.ticketType;
 
 export const getUsers = (includeSignedUser = false) => (state) => {
-    const { id } = AuthService.getCurrentUser();
-    return includeSignedUser ? state.miscellaneous.users : state.miscellaneous.users.filter(user => user._id !== id);
+    const { _id } = AuthService.getCurrentUser();
+    return includeSignedUser ? state.miscellaneous.users : state.miscellaneous.users.filter(user => user._id !== _id);
 };
 
 export const getRoles = (state) => state.miscellaneous.roles;
