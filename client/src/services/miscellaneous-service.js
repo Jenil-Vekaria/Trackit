@@ -1,6 +1,6 @@
 import axios from "axios";
 import AuthService from "./auth-service";
-import { addRole, removeRole, setRole, setRoles, setTicketType, setUser, setUsers } from "../features/miscellaneousSlice.js";
+import { addRole, addTicketType, removeRole, removeTicketType, setRole, setRoles, setTicketType, setUser, setUsers } from "../features/miscellaneousSlice.js";
 import { store } from "../app/store.js";
 import { setLogin } from "../features/authSlice";
 
@@ -38,6 +38,34 @@ const getTicketType = async () => {
         store.dispatch(setTicketType(data.ticketType));
     } catch (error) {
         console.error(error);
+    }
+};
+
+const createTicketType = async (ticketData) => {
+    try {
+        const { data } = await API.post("/ticketType", ticketData);
+        store.dispatch(addTicketType(data.ticketType));
+    } catch (error) {
+        throw error.response.data.message;
+    }
+};
+
+
+const updateTicketType = async (ticketData) => {
+    try {
+        const { data } = await API.patch("/ticketType", ticketData);
+        store.dispatch(setTicketType(data.ticketType));
+    } catch (error) {
+        throw error.response.data.message;
+    }
+};
+
+const deleteTicketType = async (ticketName) => {
+    try {
+        await API.delete(`/ticketType/${ticketName}`);
+        store.dispatch(removeTicketType(ticketName));
+    } catch (error) {
+        throw error.response.data.message;
     }
 };
 
@@ -123,6 +151,9 @@ const MiscellaneousService = {
     getUserInfo,
     getUserFullName,
     getTicketTypeInfo,
+    createTicketType,
+    updateTicketType,
+    deleteTicketType,
     getRoles,
     getRoleInfo,
     updateUserProfile,

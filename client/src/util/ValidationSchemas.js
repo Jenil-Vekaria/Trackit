@@ -78,3 +78,15 @@ export const CreateRoleData = {
     name: "",
     permissions: []
 };
+
+export const CreateTicketTypeSchema = Yup.object().shape({
+    name: Yup.string().required("Required"),
+    iconName: Yup.string().required("Required"),
+    colour: Yup.string().required("Required"),
+});
+
+export const CreateTicketTypeData = {
+    name: "",
+    iconName: "",
+    colour: "#000000",
+};

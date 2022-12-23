@@ -230,14 +230,14 @@ export const MANAGE_ROLES = [
         header: "Permissions",
         flex: 5,
         render: ({ value }) => {
-            return value.map(permission =>
-                <p>{permission}</p>
+            return value.map((permission, index) =>
+                <p key={index}>{permission}</p>
             );
         }
     }
 ];
 
-export const MANAGE_TICKET_TYPES = [
+export const MANAGE_TICKET_TYPES_COLUMNS = [
     {
         name: "_id",
         header: "Icon",
@@ -256,6 +256,22 @@ export const MANAGE_TICKET_TYPES = [
         header: "Icon Name",
         flex: 1,
         searchInField: ["iconName"],
+        render: ({ value }) => <span style={styles}>{value}</span>
+    }
+];
+
+export const ICONS_COLUMNS = [
+    {
+        name: "icon",
+        header: "Icon",
+        headerEllipsis: false,
+        width: 55,
+    },
+    {
+        name: "name",
+        header: "Name",
+        searchInField: ["name"],
+        flex: 1,
         render: ({ value }) => <span style={styles}>{value}</span>
     }
 ];

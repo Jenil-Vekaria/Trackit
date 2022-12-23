@@ -68,7 +68,7 @@ const Table = ({
 				variant={searchbarVariant}
 				handleSearchInputChange={handleSearchInputChange}
 			/>
-			<br />
+
 			<ReactDataGrid
 				idProperty="_id"
 				style={gridStyle}

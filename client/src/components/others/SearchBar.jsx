@@ -25,6 +25,7 @@ const SearchBar = ({
 			w="100%"
 			alignItems={"space-between"}
 			justifyContent="space-between"
+			mb={5}
 		>
 			<InputGroup mr={5}>
 				<InputLeftElement

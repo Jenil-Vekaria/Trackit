@@ -28,7 +28,7 @@ const ManageUsers = () => {
 				columns={MANAGE_USERS_COLUMNS}
 				searchPlaceholder="Search for users"
 				onRowClick={onUserClick}
-				height={340}
+				height={480}
 			/>
 			<UpdateUser isOpen={isOpen} closeModal={closeModal} viewUser={viewUser} />
 		</>

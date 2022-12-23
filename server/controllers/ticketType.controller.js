@@ -26,7 +26,7 @@ export const addTicketType = async (req, res) => {
         const existingTicketType = await TicketType.findOne({ name });
 
         if (existingTicketType) {
-            return res.status(403).json({ message: "Ticket already exist with name as " + name });
+            return res.status(403).json({ message: "Ticket type already exist with name as " + name });
         }
 
         const ticketType = await TicketType.create({ name, iconName, colour });

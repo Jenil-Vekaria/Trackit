@@ -9,8 +9,20 @@ export const miscellaneousSlice = createSlice({
         roles: []
     },
     reducers: {
-        setTicketType: (state, action) => {
+        setTicketTypes: (state, action) => {
             state.ticketType = action.payload;
+        },
+        setTicketType: (state, action) => {
+            state.ticketType = state.ticketType.map(ticketType => {
+                if (ticketType._id === action.payload._id) return action.payload;
+                return ticketType;
+            });
+        },
+        addTicketType: (state, action) => {
+            state.ticketType.push(action.payload);
+        },
+        removeTicketType: (state, action) => {
+            state.ticketType = state.ticketType.filter(ticketType => ticketType.name !== action.payload);
         },
         setUsers: (state, action) => {
             state.users = action.payload;
@@ -39,7 +51,7 @@ export const miscellaneousSlice = createSlice({
     }
 });
 
-export const { setTicketType, setUsers, setUser, setRole, setRoles, addRole, removeRole } = miscellaneousSlice.actions;
+export const { setTicketTypes, setTicketType, addTicketType, removeTicketType, setUsers, setUser, setRole, setRoles, addRole, removeRole } = miscellaneousSlice.actions;
 
 export const getTicketType = (state) => state.miscellaneous.ticketType;
 
