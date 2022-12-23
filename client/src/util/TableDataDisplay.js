@@ -5,6 +5,11 @@ import * as BsIcon from "react-icons/bs";
 import TooltipAvatar from "../components/others/TooltipAvatar";
 
 
+const styles = {
+    fontWeight: "500",
+    color: "purple",
+    cursor: "pointer",
+};
 
 export const PROJECTS_COLUMNS = [
     {
@@ -13,11 +18,7 @@ export const PROJECTS_COLUMNS = [
         header: "Title",
         flex: 3,
         render: ({ value }) => {
-            return <span style={{
-                fontWeight: "500",
-                color: "purple",
-                cursor: "pointer",
-            }}>{value}</span>;
+            return <span style={styles}>{value}</span>;
         },
         shouldComponentUpdate: () => true
     },
@@ -73,11 +74,7 @@ export const TICKETS_COLUMNS = [
         header: "Title",
         flex: 3,
         render: ({ value }) => {
-            return <span style={{
-                fontWeight: "500",
-                color: "purple",
-                cursor: "pointer",
-            }}>{value}</span>;
+            return <span style={styles}>{value}</span>;
         },
         shouldComponentUpdate: () => true
     },
@@ -189,11 +186,7 @@ export const MANAGE_USERS_COLUMNS = [
         render: ({ value }) => {
 
             return (
-                <span style={{
-                    fontWeight: "500",
-                    color: "purple",
-                    cursor: "pointer",
-                }}>
+                <span style={styles}>
                     {MiscellaneousService.getUserFullName(value)}
                 </span>
             );
@@ -225,11 +218,7 @@ export const MANAGE_ROLES = [
         render: ({ value }) => {
 
             return (
-                <span style={{
-                    fontWeight: "500",
-                    color: "purple",
-                    cursor: "pointer",
-                }}>
+                <span style={styles}>
                     {value}
                 </span>
             );
@@ -245,5 +234,28 @@ export const MANAGE_ROLES = [
                 <p>{permission}</p>
             );
         }
+    }
+];
+
+export const MANAGE_TICKET_TYPES = [
+    {
+        name: "_id",
+        header: "Icon",
+        searchInField: ["name"],
+        width: 55,
+        headerEllipsis: false,
+        render: ({ value }) => {
+            const { iconName, colour } = MiscellaneousService.getTicketTypeInfo(value);
+            return (
+                <Icon as={BsIcon[iconName]} bg={colour} color="gray.50" w={6} h={6} p={1} borderRadius={5} />
+            );
+        }
+    },
+    {
+        name: "name",
+        header: "Icon Name",
+        flex: 1,
+        searchInField: ["iconName"],
+        render: ({ value }) => <span style={styles}>{value}</span>
     }
 ];

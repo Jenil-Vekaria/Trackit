@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import ManageRoles from "../components/administration/ManageRoles";
+import ManageTicketTypes from "../components/administration/ManageTicketTypes";
 import ManageUsers from "../components/administration/ManageUsers";
 
 const Administration = () => {
@@ -35,7 +36,9 @@ const Administration = () => {
 					<TabPanel>
 						<ManageRoles />
 					</TabPanel>
-					<TabPanel>Ticket Types</TabPanel>
+					<TabPanel>
+						<ManageTicketTypes />
+					</TabPanel>
 				</TabPanels>
 			</Tabs>
 		</Flex>
