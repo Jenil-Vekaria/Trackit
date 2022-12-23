@@ -24,16 +24,22 @@ export const miscellaneousSlice = createSlice({
         setRoles: (state, action) => {
             state.roles = action.payload;
         },
+        addRole: (state, action) => {
+            state.roles.push(action.payload);
+        },
+        removeRole: (state, action) => {
+            state.roles = state.roles.filter(role => role._id !== action.payload);
+        },
         setRole: (state, action) => {
             state.roles = state.roles.map(role => {
                 if (role._id === action.payload._id) return action.payload;
-                return action.payload;
+                return role;
             });
         }
     }
 });
 
-export const { setTicketType, setUsers, setUser, setRole, setRoles } = miscellaneousSlice.actions;
+export const { setTicketType, setUsers, setUser, setRole, setRoles, addRole, removeRole } = miscellaneousSlice.actions;
 
 export const getTicketType = (state) => state.miscellaneous.ticketType;
 

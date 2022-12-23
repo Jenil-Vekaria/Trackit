@@ -8,7 +8,7 @@ import UpdateUser from "./UpdateUser";
 
 const ManageUsers = () => {
 	const allUsers = useSelector(getUsers(false));
-	const [viewUser, setViewUser] = useState(null);
+	const [viewUser, setViewUser] = useState({});
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const onUserClick = (rowProps, event) => {

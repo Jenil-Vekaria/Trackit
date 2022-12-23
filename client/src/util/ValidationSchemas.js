@@ -68,3 +68,13 @@ export const CreateTicketData = {
     estimatedTimeUnit: "",
     assignees: []
 };
+
+export const CreateRoleSchema = Yup.object().shape({
+    name: Yup.string().min(1, "Cannot be empty").required("Required"),
+    permissions: Yup.array()
+});
+
+export const CreateRoleData = {
+    name: "",
+    permissions: []
+};

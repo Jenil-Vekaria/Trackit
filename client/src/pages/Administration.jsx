@@ -8,6 +8,7 @@ import {
 	Tabs,
 } from "@chakra-ui/react";
 import React from "react";
+import ManageRoles from "../components/administration/ManageRoles";
 import ManageUsers from "../components/administration/ManageUsers";
 
 const Administration = () => {
@@ -31,7 +32,9 @@ const Administration = () => {
 					<TabPanel>
 						<ManageUsers />
 					</TabPanel>
-					<TabPanel>Roles</TabPanel>
+					<TabPanel>
+						<ManageRoles />
+					</TabPanel>
 					<TabPanel>Ticket Types</TabPanel>
 				</TabPanels>
 			</Tabs>

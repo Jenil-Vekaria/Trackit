@@ -1,6 +1,6 @@
 import axios from "axios";
 import AuthService from "./auth-service";
-import { setRoles, setTicketType, setUser, setUsers } from "../features/miscellaneousSlice.js";
+import { addRole, removeRole, setRole, setRoles, setTicketType, setUser, setUsers } from "../features/miscellaneousSlice.js";
 import { store } from "../app/store.js";
 import { setLogin } from "../features/authSlice";
 
@@ -59,6 +59,35 @@ const getRoles = async () => {
     }
 };
 
+const createRole = async (roleData) => {
+    try {
+        const { data } = await API.post("/role", roleData);
+        store.dispatch(addRole(data.role));
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const updateRole = async (roleData) => {
+    try {
+        const { data } = await API.patch(`/role/${roleData._id}`, roleData);
+
+        store.dispatch(setRole(data.updatedRole));
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const deleteRole = async (roleId) => {
+    try {
+        await API.delete(`/role/${roleId}`);
+
+        store.dispatch(removeRole(roleId));
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const getUserInfo = (userId) => {
     const state = store.getState();
     const user = state.miscellaneous.users.filter(user => user._id === userId);
@@ -84,7 +113,7 @@ const getRoleInfo = (roleId) => {
     const state = store.getState();
     const role = state.miscellaneous.roles.filter(role => role._id === roleId);
 
-    return role[0];
+    return role[0] || {};
 };
 
 
@@ -96,7 +125,10 @@ const MiscellaneousService = {
     getTicketTypeInfo,
     getRoles,
     getRoleInfo,
-    updateUserProfile
+    updateUserProfile,
+    createRole,
+    updateRole,
+    deleteRole,
 };
 
 export default MiscellaneousService;

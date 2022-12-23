@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/", getRoles);
 router.post("/", addRole);
-router.patch("/", updateRole);
-router.delete("/", deleteRole);
+router.patch("/:roleId", updateRole);
+router.delete("/:roleId", deleteRole);
 
 export default router;

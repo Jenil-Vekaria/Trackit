@@ -33,16 +33,16 @@ export const addRole = async (req, res) => {
             return res.status(400).json({ error: "Role already exist" });
         }
 
-        await Role.create({ name, permissions });
+        const role = await Role.create({ name, permissions });
 
-        return res.sendStatus(200);
+        return res.json({ role });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 };
 
 export const deleteRole = async (req, res) => {
-    const { roleId } = req.body;
+    const { roleId } = req.params;
 
     try {
         //Get user permssion
@@ -63,7 +63,8 @@ export const deleteRole = async (req, res) => {
 };
 
 export const updateRole = async (req, res) => {
-    const { roleId, name, permissions } = req.body;
+    const { roleId } = req.params;
+    const { name, permissions } = req.body;
 
     try {
         //Get user permissions
@@ -75,9 +76,9 @@ export const updateRole = async (req, res) => {
             return res.status(404).json({ error: "No roles found with that id" });
         }
 
-        await Role.findOneAndUpdate({ _id: roleId }, { name, permissions });
+        const updatedRole = await Role.findOneAndUpdate({ _id: roleId }, { name, permissions }, { new: true });
 
-        return res.sendStatus(200);
+        return res.json({ updatedRole });
 
     } catch (error) {
         console.error(error.message);

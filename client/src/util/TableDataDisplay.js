@@ -48,7 +48,6 @@ export const PROJECTS_COLUMNS = [
     }
 ];
 
-
 export const TICKETS_COLUMNS = [
     {
         name: "type",
@@ -212,8 +211,39 @@ export const MANAGE_USERS_COLUMNS = [
         header: "Role",
         flex: 1,
         render: ({ value }) => {
-            return MiscellaneousService.getRoleInfo(value).name;
+            return MiscellaneousService.getRoleInfo(value).name || "No Data";
         },
         shouldComponentUpdate: () => true
+    }
+];
+
+export const MANAGE_ROLES = [
+    {
+        name: "name",
+        header: "Role Name",
+        searchInField: ["name"],
+        render: ({ value }) => {
+
+            return (
+                <span style={{
+                    fontWeight: "500",
+                    color: "purple",
+                    cursor: "pointer",
+                }}>
+                    {value}
+                </span>
+            );
+        },
+        flex: 1
+    },
+    {
+        name: "permissions",
+        header: "Permissions",
+        flex: 5,
+        render: ({ value }) => {
+            return value.map(permission =>
+                <p>{permission}</p>
+            );
+        }
     }
 ];

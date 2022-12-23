@@ -125,7 +125,8 @@ const Navbar = () => {
 										{user.firstName} {user.lastName}
 									</Heading>
 									<Text fontSize="sm">
-										{MiscellaneousService.getRoleInfo(user.roleId).name}
+										{MiscellaneousService.getRoleInfo(user.roleId).name ||
+											"No Data"}
 									</Text>
 								</Flex>
 							</Flex>
