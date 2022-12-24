@@ -38,7 +38,7 @@ export const addTicketType = async (req, res) => {
 };
 
 export const updateTicketType = async (req, res) => {
-    const { name, iconName, colour } = req.body;
+    const { _id, name, iconName, colour } = req.body;
 
     try {
         //Only admin should be able to add custom ticketType - if user can projectMemeber -> user is admin
@@ -46,7 +46,7 @@ export const updateTicketType = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to manage ticket types" });
         }
 
-        const ticketType = await TicketType.findOne({ name });
+        const ticketType = await TicketType.findOne({ _id });
 
         if (!ticketType) {
             return res.status(403).json({ message: "Ticket not found" });
