@@ -1,6 +1,6 @@
 import axios from "axios";
 import AuthService from "./auth-service";
-import { addRole, addTicketType, removeRole, removeTicketType, setRole, setRoles, setTicketType, setUser, setUsers } from "../features/miscellaneousSlice.js";
+import { addRole, addTicketType, removeRole, removeTicketType, setRole, setRoles, setTicketType, setTicketTypes, setUser, setUsers } from "../features/miscellaneousSlice.js";
 import { store } from "../app/store.js";
 import { setLogin } from "../features/authSlice";
 
@@ -35,7 +35,8 @@ const updateUserProfile = async (userData) => {
 const getTicketType = async () => {
     try {
         const { data } = await API.get("/ticketType");
-        store.dispatch(setTicketType(data.ticketType));
+        console.log(data);
+        store.dispatch(setTicketTypes(data.ticketType));
     } catch (error) {
         console.error(error);
     }

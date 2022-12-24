@@ -3,6 +3,7 @@ import { Button, HStack } from "@chakra-ui/react";
 import { Text, Heading, VStack, Image } from "@chakra-ui/react";
 import { Login } from "../components/authentication/Login";
 import { SignUp } from "../components/authentication/SignUp";
+import logo from "../assests/Trackit_Plain.png";
 
 export const Auth = () => {
 	const [isLogin, setisLogin] = useState(true);
@@ -10,10 +11,7 @@ export const Auth = () => {
 	return (
 		<>
 			<VStack mt={10}>
-				<Image
-					boxSize="75px"
-					src="https://cdn-icons-png.flaticon.com/512/4409/4409350.png"
-				/>
+				<Image width="300px" src={logo} />
 				<Heading as="h3" size="lg" fontWeight="semibold">
 					Log in to your account
 				</Heading>

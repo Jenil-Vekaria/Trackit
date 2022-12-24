@@ -7,6 +7,7 @@ import {
 	Flex,
 	Heading,
 	IconButton,
+	Image,
 	Popover,
 	PopoverArrow,
 	PopoverBody,
@@ -21,7 +22,7 @@ import { useLocation } from "react-router-dom";
 import AuthService from "../../services/auth-service";
 import MiscellaneousService from "../../services/miscellaneous-service";
 import UpdateUser from "../administration/UpdateUser";
-
+import logo from "../../assests/Trackit_Plain.png";
 const Navbar = () => {
 	const [navSize, setNavSize] = useState("large");
 	const location = useLocation();
@@ -73,6 +74,7 @@ const Navbar = () => {
 					alignItems={navSize === "small" ? "center" : "flex-start"}
 					as="nav"
 				>
+					<Image src={logo} />
 					<IconButton
 						background="none"
 						mt={5}
