@@ -24,10 +24,7 @@ export const updateUser = async (req, res) => {
         //ensure email is not a duplicate
         const existingEmailUser = await User.findOne({ email: userData.email });
 
-        console.log(userData._id);
-        console.log(existingEmailUser._id.toString());
-        console.log(userData._id !== existingEmailUser._id.toString());
-        if (userData._id !== existingEmailUser._id.toString()) {
+        if (existingEmailUser && userData._id !== existingEmailUser._id.toString()) {
             return res.status(400).json({ message: "Email already exists, please try again" });
         }
 
@@ -45,6 +42,7 @@ export const updateUser = async (req, res) => {
         return res.json({ updatedUser: user });
 
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ error: error.message });
     }
 };
