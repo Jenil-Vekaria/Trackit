@@ -35,7 +35,6 @@ const updateUserProfile = async (userData) => {
 const getTicketType = async () => {
     try {
         const { data } = await API.get("/ticketType");
-        console.log(data);
         store.dispatch(setTicketTypes(data.ticketType));
     } catch (error) {
         console.error(error);
@@ -117,6 +116,16 @@ const deleteRole = async (roleId) => {
     }
 };
 
+const fetchInitialData = async () => {
+    try {
+        await getTicketType();
+        await getUsers();
+        await getRoles();
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 const getUserInfo = (userId) => {
     const state = store.getState();
     const user = state.miscellaneous.users.filter(user => user._id === userId);
@@ -161,6 +170,7 @@ const MiscellaneousService = {
     createRole,
     updateRole,
     deleteRole,
+    fetchInitialData
 };
 
 export default MiscellaneousService;

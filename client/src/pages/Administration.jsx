@@ -7,12 +7,21 @@ import {
 	TabPanels,
 	Tabs,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect } from "react";
 import ManageRoles from "../components/administration/ManageRoles";
 import ManageTicketTypes from "../components/administration/ManageTicketTypes";
 import ManageUsers from "../components/administration/ManageUsers";
+import MiscellaneousService from "../services/miscellaneous-service";
 
 const Administration = () => {
+	const fetchAdminData = async () => {
+		await MiscellaneousService.fetchInitialData();
+	};
+
+	useEffect(() => {
+		fetchAdminData();
+	}, []);
+
 	return (
 		<Flex w="100%" direction="column" p={10}>
 			<Flex w="100%" h="fit-content">
