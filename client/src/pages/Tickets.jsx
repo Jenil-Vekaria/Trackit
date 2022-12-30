@@ -20,12 +20,9 @@ const Tickets = () => {
 	const [viewTicket, setViewTicket] = useState(null);
 	const [viewTicketProjectId, setViewTicketProjectId] = useState(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const [isLoading, setIsLoading] = useState(false);
 
 	const getUserTickets = async () => {
-		setIsLoading(true);
 		await TicketService.getUserTickets();
-		setIsLoading(false);
 	};
 
 	const onTicketClick = (rowProps, event) => {
@@ -53,7 +50,6 @@ const Tickets = () => {
 				searchPlaceholder="Search for tickets"
 				height={450}
 				onRowClick={onTicketClick}
-				isLoading={isLoading}
 			/>
 
 			<CreateTicket

@@ -28,6 +28,7 @@ import CreateTicket from "../tickets/CreateTicket";
 import { useDispatch, useSelector } from "react-redux";
 import { clearTickets, getTickets } from "../../features/ticketSlice.js";
 import Table from "../others/Table";
+import Dashboard from "../../pages/Dashboard";
 
 const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
@@ -60,7 +61,7 @@ const ViewProject = () => {
 
 		setTimeout(() => {
 			setisLoading(false);
-		}, 50);
+		}, 100);
 	};
 
 	const onTicketClick = (rowProps, event) => {
@@ -119,6 +120,7 @@ const ViewProject = () => {
 			<Tabs variant="soft-rounded" colorScheme="purple" mt={5} h="100%">
 				<TabList>
 					<Tab>Tickets</Tab>
+					<Tab>Overview</Tab>
 				</TabList>
 
 				<TabPanels h="100%">
@@ -131,6 +133,9 @@ const ViewProject = () => {
 							defaultSortInfo={TICKETS_DEFAULT_SORT}
 							height={480}
 						/>
+					</TabPanel>
+					<TabPanel>
+						<Dashboard />
 					</TabPanel>
 				</TabPanels>
 			</Tabs>

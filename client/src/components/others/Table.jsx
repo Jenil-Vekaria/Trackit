@@ -4,6 +4,7 @@ import ReactDataGrid from "@inovua/reactdatagrid-community";
 import "@inovua/reactdatagrid-community/index.css";
 
 import { getFieldValue } from "../../util/GetObjectProperty";
+import { Center, Spinner } from "@chakra-ui/react";
 
 const Table = ({
 	tableData,
@@ -55,10 +56,11 @@ const Table = ({
 
 	useEffect(() => {
 		setIsLoading(true);
+		setDataSource(tableData);
+
 		setTimeout(() => {
-			setDataSource(tableData);
 			setIsLoading(false);
-		}, 50);
+		}, 200);
 	}, [tableData]);
 
 	return (
@@ -69,22 +71,28 @@ const Table = ({
 				handleSearchInputChange={handleSearchInputChange}
 			/>
 
-			<ReactDataGrid
-				idProperty="_id"
-				style={gridStyle}
-				dataSource={dataSource}
-				columns={columns}
-				defaultSortInfo={defaultSortInfo}
-				sortable={sortable}
-				onRowClick={onRowClick}
-				checkboxColumn={hasCheckboxColumn}
-				checkboxOnlyRowSelect={hasCheckboxColumn}
-				defaultSelected={selectedRow}
-				onSelectionChange={onSelectionChange}
-				showColumnMenuTool={false}
-				loading={isLoading}
-				rowHeight={rowHeight}
-			/>
+			{isLoading ? (
+				<Center w="100%">
+					<Spinner color="purple" size="xl" />
+				</Center>
+			) : (
+				<ReactDataGrid
+					idProperty="_id"
+					style={gridStyle}
+					dataSource={dataSource}
+					columns={columns}
+					defaultSortInfo={defaultSortInfo}
+					sortable={sortable}
+					onRowClick={onRowClick}
+					checkboxColumn={hasCheckboxColumn}
+					checkboxOnlyRowSelect={hasCheckboxColumn}
+					defaultSelected={selectedRow}
+					onSelectionChange={onSelectionChange}
+					showColumnMenuTool={false}
+					loading={isLoading}
+					rowHeight={rowHeight}
+				/>
+			)}
 		</>
 	);
 };
