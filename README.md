@@ -68,6 +68,11 @@
 </div>
 
 <div>
+  <h3>Project Overview</h3>
+  <img src="./screenshots/project_overview.png"/>
+</div>
+
+<div>
   <h3>View Ticket Info</h3>
   <img src="./screenshots/view_ticket.png"/>
 </div>
