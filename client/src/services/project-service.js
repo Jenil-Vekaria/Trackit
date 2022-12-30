@@ -68,13 +68,26 @@ const getProjectTitle = (projectId) => {
     return project[0]?.title || "";
 };
 
+const getProjectStats = async (projectId) => {
+    try {
+        const { data } = await API.get(`/stat/${projectId}`);
+
+        return data.stat;
+    } catch (error) {
+        console.error(error);
+
+    }
+
+};
+
 const ProjectService = {
     getMyProjects,
     addProject,
     getProjectInfo,
     updateProject,
     deleteProject,
-    getProjectTitle
+    getProjectTitle,
+    getProjectStats
 };
 
 export default ProjectService;

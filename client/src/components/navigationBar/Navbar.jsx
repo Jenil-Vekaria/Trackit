@@ -30,11 +30,11 @@ const Navbar = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const menuItems = [
-		{
-			path: "/dashboard",
-			name: "Dashboard",
-			icon: FiHome,
-		},
+		// {
+		// 	path: "/dashboard",
+		// 	name: "Dashboard",
+		// 	icon: FiHome,
+		// },
 		{
 			path: "/projects",
 			name: "Projects",
@@ -114,8 +114,7 @@ const Navbar = () => {
 							<Flex mt={4} align="center" cursor="pointer">
 								<Avatar
 									size="sm"
-									name="Dan Abrahmov"
-									src="https://bit.ly/dan-abramov"
+									name="Jenil Vekaria"
 									alignItems={navSize === "small" ? "center" : "flex-start"}
 								/>
 								<Flex

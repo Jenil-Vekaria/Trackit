@@ -36,7 +36,7 @@ export const App = () => {
               <Routes>
                 <Route extact path="/" element={<Dashboard />} />
 
-                <Route path="/dashboard" element={<Dashboard />} />
+                {/* <Route path="/dashboard" element={<Dashboard />} /> */}
 
                 <Route path="/projects" element={<Projects />}>
                   <Route path='add' element={<AddProject />} />

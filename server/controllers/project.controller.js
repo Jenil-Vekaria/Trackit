@@ -1,7 +1,9 @@
 import * as permissionCheck from "../util/permissionCheck.js";
 import Project from "../models/project.model.js";
 import User from "../models/user.model.js";
+import Ticket from "../models/ticket.model.js";
 import { canPerformAction } from "../util/utils.js";
+import mongoose from "mongoose";
 
 /**
  * @description: Creates a project
@@ -170,6 +172,65 @@ export const deleteProject = async (req, res) => {
         await Project.deleteOne({ _id: projectId });
 
         return res.sendStatus(200);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+/**
+ * @description: Delete Project
+ * @param {projectId} string 
+ * 
+ * @return status 200
+ */
+export const getProjectStat = async (req, res) => {
+    const { projectId } = req.params;
+
+    try {
+        //Get user permssion
+        const userId = req.user._id;
+
+        if (!canPerformAction(permissionCheck.canManageProject, req.user)) {
+            return res.status(403).json({ message: "Not authorized to view project" });
+        }
+
+        //Ensure - ensure signed in belongs to the project
+        const project = await Project.findOne({ _id: projectId, assignees: userId });
+
+        if (!project) {
+            return res.status(403).json({ message: "Not authorized to view project -" });
+        }
+
+        const ticketCount = await Ticket.find({ projectId }).count();
+        const myTicketCount = await Ticket.find({ projectId, assignees: userId }).count();
+        const unassignedTicketCount = await Ticket.find({ projectId, assignees: [] }).count();
+        const assignedTicketCount = ticketCount - unassignedTicketCount;
+        const ticketStatusCount = await Ticket.aggregate([
+            { $match: { projectId: mongoose.Types.ObjectId(projectId) } },
+            {
+                $group: { _id: "$status", value: { $sum: 1 } }
+            }
+        ]);
+        const ticketTypeCount = await Ticket.aggregate([
+            { $match: { projectId: mongoose.Types.ObjectId(projectId) } },
+            {
+                $group: {
+                    _id: "$type",
+                    value: { $sum: 1 }
+                }
+            }
+        ]);
+
+        return res.send({
+            stat: {
+                ticketCount,
+                myTicketCount,
+                assignedTicketCount,
+                unassignedTicketCount,
+                ticketStatusCount,
+                ticketTypeCount
+            }
+        });
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
