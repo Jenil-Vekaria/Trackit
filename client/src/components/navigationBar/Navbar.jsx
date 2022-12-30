@@ -23,10 +23,12 @@ import AuthService from "../../services/auth-service";
 import MiscellaneousService from "../../services/miscellaneous-service";
 import UpdateUser from "../administration/UpdateUser";
 import logo from "../../assests/Trackit_Plain.png";
+import { Permissions } from "../../util/Utils";
 const Navbar = () => {
 	const [navSize, setNavSize] = useState("large");
 	const location = useLocation();
 	const user = AuthService.getCurrentUser();
+	const userRole = MiscellaneousService.getRoleInfo(user.roleId);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const menuItems = [
@@ -88,19 +90,28 @@ const Navbar = () => {
 						}}
 					/>
 
-					{menuItems.map((item, index) => (
-						<NavItem
-							key={index}
-							navSize={navSize}
-							icon={item.icon}
-							name={item.name}
-							path={item.path}
-							active={
-								location.pathname.includes(item.path) ||
-								(item.path === "/dashboard" && location.pathname === "/")
-							}
-						/>
-					))}
+					{menuItems.map((item, index) => {
+						if (
+							item.name === "Administration" &&
+							!Permissions.canUpdateUserProfile(userRole.permissions)
+						) {
+							return <></>;
+						}
+
+						return (
+							<NavItem
+								key={index}
+								navSize={navSize}
+								icon={item.icon}
+								name={item.name}
+								path={item.path}
+								active={
+									location.pathname.includes(item.path) ||
+									(item.path === "/dashboard" && location.pathname === "/")
+								}
+							/>
+						);
+					})}
 				</Flex>
 
 				<Flex p={5} direction="column" w="100%" alignItems="flex-start" mb={4}>
