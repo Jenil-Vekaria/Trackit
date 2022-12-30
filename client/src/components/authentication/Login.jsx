@@ -27,7 +27,7 @@ export const Login = () => {
 			await AuthService.login(values);
 			await MiscellaneousService.fetchInitialData();
 
-			navigate("/dashboard");
+			navigate("/projects");
 			window.location.reload();
 		} catch (error) {
 			seterror(error.response.data.message);
