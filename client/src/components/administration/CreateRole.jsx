@@ -53,8 +53,8 @@ const CreateRole = ({ data, isOpen, onClose, canModifyPermission = true }) => {
 			value: Constants.ADD_MEMBER_TO_PROJECT,
 		},
 		{
-			name: "Manage Roles",
-			helperText: "Allows user create and update roles",
+			name: "Manage Custom Fields",
+			helperText: "Allows user create and update custom fields",
 			value: Constants.MANAGE_ROLE,
 		},
 		{

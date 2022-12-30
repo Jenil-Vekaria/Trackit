@@ -41,6 +41,9 @@ import { USERS_COLUMNS } from "../../util/TableDataDisplay";
 import Table from "../others/Table";
 import ProjectService from "../../services/project-service";
 import AuthService from "../../services/auth-service";
+import { usePermissions } from "../../hooks/usePermissions";
+import { Permissions } from "../../util/Utils";
+import PermissionsRender from "../others/PermissionsRender";
 
 const CreateTicket = ({
 	isOpen,
@@ -52,6 +55,7 @@ const CreateTicket = ({
 	const ticketTypes = useSelector(getTicketType);
 	const allUsers = useSelector(getUsers(true));
 	const ticketInfo = ticket || CreateTicketData;
+	const canManageTickets = usePermissions(Permissions.canManageTicket);
 
 	const formRef = useRef();
 	const toast = useToast();
@@ -193,7 +197,12 @@ const CreateTicket = ({
 											<Flex direction="column" gap={3}>
 												<FormControl isInvalid={errors.title && touched.title}>
 													<FormLabel fontWeight="regular">Title</FormLabel>
-													<Field as={Input} name="title" type="text" />
+													<Field
+														as={Input}
+														name="title"
+														type="text"
+														disabled={!canManageTickets}
+													/>
 													<FormErrorMessage>{errors.title}</FormErrorMessage>
 												</FormControl>
 
@@ -203,7 +212,12 @@ const CreateTicket = ({
 													<FormLabel fontWeight="regular">
 														Description
 													</FormLabel>
-													<Field as={Textarea} name="description" type="text" />
+													<Field
+														as={Textarea}
+														name="description"
+														type="text"
+														disabled={!canManageTickets}
+													/>
 													<FormErrorMessage>
 														{errors.description}
 													</FormErrorMessage>
@@ -216,7 +230,7 @@ const CreateTicket = ({
 															as={Select}
 															name="type"
 															type="select"
-															// value={ticketTypes[0]._id}
+															disabled={!canManageTickets}
 														>
 															<option value="" disabled selected>
 																Select
@@ -234,7 +248,7 @@ const CreateTicket = ({
 															as={Select}
 															name="status"
 															type="select"
-															// value={TICKET_STATUS[0]}
+															disabled={!canManageTickets}
 														>
 															<option value="" disabled selected>
 																Select
@@ -258,6 +272,7 @@ const CreateTicket = ({
 															as={Input}
 															name="estimatedTime"
 															type="number"
+															disabled={!canManageTickets}
 														/>
 														<FormErrorMessage>
 															{errors.estimatedTime}
@@ -277,6 +292,7 @@ const CreateTicket = ({
 															as={Select}
 															name="estimatedTimeUnit"
 															type="select"
+															disabled={!canManageTickets}
 														>
 															<option value="" disabled selected>
 																Select
@@ -305,29 +321,35 @@ const CreateTicket = ({
 									sortable={false}
 									selectedRow={getSelectedAssigneesId()}
 									onSelectionChange={onAssigneeClick}
+									disableCheckBox={!canManageTickets}
 								/>
 							</TabPanel>
 						</TabPanels>
 					</Tabs>
 				</ModalBody>
 
-				<ModalFooter>
-					<Button
-						colorScheme="purple"
-						type="submit"
-						mr={3}
-						onClick={() => formRef.current?.handleSubmit()}
-					>
-						{ticket ? "Save" : "Create"} Ticket
-					</Button>
-					{ticket ? (
-						<Button colorScheme="red" onClick={() => setopenDeleteAlert(true)}>
-							Delete Ticket
+				<PermissionsRender permissionCheck={Permissions.canManageTicket}>
+					<ModalFooter>
+						<Button
+							colorScheme="purple"
+							type="submit"
+							mr={3}
+							onClick={() => formRef.current?.handleSubmit()}
+						>
+							{ticket ? "Save" : "Create"} Ticket
 						</Button>
-					) : (
-						<Button onClick={closeModal}>Cancel</Button>
-					)}
-				</ModalFooter>
+						{ticket ? (
+							<Button
+								colorScheme="red"
+								onClick={() => setopenDeleteAlert(true)}
+							>
+								Delete Ticket
+							</Button>
+						) : (
+							<Button onClick={closeModal}>Cancel</Button>
+						)}
+					</ModalFooter>
+				</PermissionsRender>
 			</ModalContent>
 
 			<AlertModal

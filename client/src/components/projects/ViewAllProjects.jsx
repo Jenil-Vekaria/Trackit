@@ -6,6 +6,8 @@ import { PROJECTS_COLUMNS } from "../../util/TableDataDisplay";
 import React, { useEffect } from "react";
 import ProjectService from "../../services/project-service";
 import Table from "../others/Table";
+import PermissionsRender from "../others/PermissionsRender";
+import { Permissions } from "../../util/Utils";
 
 const ViewAllProjects = () => {
 	const projects = useSelector(getProjects);
@@ -30,13 +32,15 @@ const ViewAllProjects = () => {
 				</Heading>
 				<Spacer />
 				<Link to="/projects/add" as={ReachLink}>
-					<Button
-						colorScheme="purple"
-						variant="solid"
-						onClick={disclosure.onOpen}
-					>
-						Add Project
-					</Button>
+					<PermissionsRender permissionCheck={Permissions.canManageProject}>
+						<Button
+							colorScheme="purple"
+							variant="solid"
+							onClick={disclosure.onOpen}
+						>
+							Add Project
+						</Button>
+					</PermissionsRender>
 				</Link>
 			</Flex>
 

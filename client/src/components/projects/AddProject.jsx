@@ -35,10 +35,15 @@ import ProjectService from "../../services/project-service";
 import AlertModal from "../others/AlertModal";
 import { getUsers } from "../../features/miscellaneousSlice.js";
 import Table from "../others/Table";
+import { usePermissions } from "../../hooks/usePermissions";
+import { Permissions } from "../../util/Utils";
+import PermissionsRender from "../others/PermissionsRender";
 
 const AddProject = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const canUpdateProjectInfo = usePermissions(Permissions.canManageProject);
+	const canManageProjectMembers = usePermissions(Permissions.canManageProject);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const { projectID } = useParams();
@@ -190,6 +195,7 @@ const AddProject = () => {
 														name="title"
 														type="text"
 														border="2px"
+														disabled={!canUpdateProjectInfo}
 													/>
 													<FormErrorMessage>{errors.title}</FormErrorMessage>
 												</FormControl>
@@ -206,6 +212,7 @@ const AddProject = () => {
 														type="text"
 														border="2px"
 														height="100%"
+														disabled={!canUpdateProjectInfo}
 													/>
 													<FormErrorMessage>
 														{errors.description}
@@ -228,25 +235,30 @@ const AddProject = () => {
 							sortable={false}
 							selectedRow={getSelectedAssigneesId()}
 							onSelectionChange={onAssigneeClick}
+							disableCheckBox={!canUpdateProjectInfo}
 						/>
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
 
 			<Flex mt={3} justify="flex-end" gap={3}>
-				<Button
-					colorScheme="purple"
-					onClick={() => {
-						formRef.current?.submitForm();
-					}}
-				>
-					{projectID ? "Save" : "Create"} Project
-				</Button>
+				<PermissionsRender permissionCheck={Permissions.canManageProject}>
+					<Button
+						colorScheme="purple"
+						onClick={() => {
+							formRef.current?.submitForm();
+						}}
+					>
+						{projectID ? "Save" : "Create"} Project
+					</Button>
+				</PermissionsRender>
 
 				{projectID ? (
-					<Button colorScheme="red" onClick={() => onOpen()}>
-						Delete Project
-					</Button>
+					<PermissionsRender permissionCheck={Permissions.canManageProject}>
+						<Button colorScheme="red" onClick={() => onOpen()}>
+							Delete Project
+						</Button>
+					</PermissionsRender>
 				) : (
 					<Button onClick={() => navigate(-1)}>Cancel</Button>
 				)}

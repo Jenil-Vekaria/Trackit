@@ -29,6 +29,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearTickets, getTickets } from "../../features/ticketSlice.js";
 import Table from "../others/Table";
 import Dashboard from "../../pages/Dashboard";
+import PermissionsRender from "../others/PermissionsRender";
+import { Permissions } from "../../util/Utils";
 
 const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
@@ -103,18 +105,18 @@ const ViewProject = () => {
 
 				<Spacer />
 
-				<Button colorScheme="whatsapp" mr={5} onClick={() => onOpen()}>
-					Add Ticket
-				</Button>
-
-				{isProjectAuthor ? (
-					<Button
-						colorScheme="purple"
-						onClick={() => navigate(`/projects/${projectID}/edit`)}
-					>
-						Edit Project
+				<PermissionsRender permissionCheck={Permissions.canManageTicket}>
+					<Button colorScheme="whatsapp" mr={5} onClick={() => onOpen()}>
+						Add Ticket
 					</Button>
-				) : null}
+				</PermissionsRender>
+
+				<Button
+					colorScheme="purple"
+					onClick={() => navigate(`/projects/${projectID}/edit`)}
+				>
+					Project Info
+				</Button>
 			</Flex>
 
 			<Tabs variant="soft-rounded" colorScheme="purple" mt={5} h="100%">

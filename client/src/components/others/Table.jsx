@@ -19,6 +19,7 @@ const Table = ({
 	onSelectionChange,
 	height = 400,
 	rowHeight = 40,
+	disableCheckBox = false,
 }) => {
 	const [dataSource, setDataSource] = useState([]);
 	const [dataFields, setDataFields] = useState([]);
@@ -84,7 +85,7 @@ const Table = ({
 					defaultSortInfo={defaultSortInfo}
 					sortable={sortable}
 					onRowClick={onRowClick}
-					checkboxColumn={hasCheckboxColumn}
+					checkboxColumn={!disableCheckBox && hasCheckboxColumn}
 					checkboxOnlyRowSelect={hasCheckboxColumn}
 					defaultSelected={selectedRow}
 					onSelectionChange={onSelectionChange}

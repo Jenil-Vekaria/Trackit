@@ -24,12 +24,14 @@ import MiscellaneousService from "../../services/miscellaneous-service";
 import UpdateUser from "../administration/UpdateUser";
 import logo from "../../assests/Trackit_Plain.png";
 import { Permissions } from "../../util/Utils";
+import { usePermissions } from "../../hooks/usePermissions";
 const Navbar = () => {
 	const [navSize, setNavSize] = useState("large");
 	const location = useLocation();
 	const user = AuthService.getCurrentUser();
-	const userRole = MiscellaneousService.getRoleInfo(user.roleId);
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const canManageOtherUsers = usePermissions(Permissions.canUpdateUserProfile);
+	const canManageCustomFields = usePermissions(Permissions.canManageRole);
 
 	const menuItems = [
 		// {
@@ -93,7 +95,8 @@ const Navbar = () => {
 					{menuItems.map((item, index) => {
 						if (
 							item.name === "Administration" &&
-							!Permissions.canUpdateUserProfile(userRole.permissions)
+							!canManageOtherUsers &&
+							!canManageCustomFields
 						) {
 							return <></>;
 						}
