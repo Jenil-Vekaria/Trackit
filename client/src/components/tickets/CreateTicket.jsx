@@ -162,7 +162,7 @@ const CreateTicket = ({
 						{ticket ? "Edit" : "Create"} Ticket
 					</Heading>
 					<Text fontSize="sm" color="purple" mt={2}>
-						{ProjectService.getProjectTitle(projectId)}
+						{ProjectService.getProjectTitle(projectId)} | {ticketInfo.title}
 					</Text>
 				</ModalHeader>
 				<ModalCloseButton onClick={closeModal} />
