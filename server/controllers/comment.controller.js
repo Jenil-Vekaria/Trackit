@@ -28,7 +28,7 @@ export const createComment = async (req, res) => {
 
     try {
 
-        if (!canPerformAction(permissionCheck.canManageComments, req.user)) {
+        if (!(await canPerformAction(permissionCheck.canManageComments, req.user))) {
             return res.status(403).json({ message: "Not authorized to comment" });
         }
 
@@ -50,7 +50,7 @@ export const updateComment = async (req, res) => {
 
     try {
 
-        if (!canPerformAction(permissionCheck.canManageComments, req.user)) {
+        if (!(await canPerformAction(permissionCheck.canManageComments, req.user))) {
             return res.status(403).json({ message: "Not authorized to comment" });
         }
 
@@ -72,8 +72,7 @@ export const deleteComment = async (req, res) => {
     const { commentId } = req.params;
 
     try {
-
-        if (!canPerformAction(permissionCheck.canManageComments, req.user)) {
+        if (!(await canPerformAction(permissionCheck.canManageComments, req.user))) {
             return res.status(403).json({ message: "Not authorized to comment" });
         }
 
