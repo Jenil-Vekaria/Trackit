@@ -37,9 +37,9 @@ const createTicketComment = async (ticketId, ticketData) => {
     }
 };
 
-const updateTicketComment = async (ticketId, ticketData) => {
+const updateTicketComment = async (commentId, ticketData) => {
     try {
-        await API.patch(`/${ticketId}`, ticketData);
+        await API.patch(`/${commentId}`, ticketData);
     } catch (error) {
         console.log(error);
     }

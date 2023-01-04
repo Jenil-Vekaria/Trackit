@@ -20,14 +20,29 @@ import CommentService from "../../services/comment-service";
 
 //_id = commentId
 
-const Comment = ({ _id, username, text, userId, getTicketComments }) => {
+const Comment = ({
+	_id,
+	ticketId,
+	username,
+	text,
+	userId,
+	getTicketComments,
+}) => {
 	const [isEditing, setisEditing] = useState(false);
 	const [comment, setcomment] = useState(text);
 	const { isOpen, onToggle, onClose } = useDisclosure();
 	const signedInUserId = AuthService.getCurrentUser()?._id;
 	const isSignedInUsersComment = userId === signedInUserId;
 
-	const onCommentEditSaveClick = () => {
+	const onCommentEditSaveClick = async () => {
+		if (isEditing) {
+			try {
+				await CommentService.updateTicketComment(_id, { text: comment });
+			} catch (error) {
+				console.log(error);
+			}
+		}
+
 		onClose();
 		setisEditing((prev) => !prev);
 	};
