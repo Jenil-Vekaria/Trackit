@@ -18,6 +18,8 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import AuthService from "../../services/auth-service";
 import CommentService from "../../services/comment-service";
 import moment from "moment";
+import PermissionsRender from "../others/PermissionsRender";
+import { Permissions } from "../../util/Utils";
 
 //_id = commentId
 
@@ -100,30 +102,32 @@ const Comment = ({
 				<Spacer />
 			</Flex>
 
-			{isSignedInUsersComment ? (
-				<Popover isOpen={isOpen}>
-					<PopoverTrigger>
-						<IconButton
-							aria-label="Edit comment"
-							variant="link"
-							onClick={onToggle}
-							icon={<BsThreeDotsVertical />}
-						/>
-					</PopoverTrigger>
-					<PopoverContent w="fit-content">
-						<PopoverBody>
-							<Flex direction="column" alignItems="start">
-								<Button variant="link" onClick={onCommentEditSaveClick}>
-									{isEditing ? "Save" : "Edit"}
-								</Button>
-								<Button variant="link" onClick={onCommentDeleteClick}>
-									Delete
-								</Button>
-							</Flex>
-						</PopoverBody>
-					</PopoverContent>
-				</Popover>
-			) : null}
+			<PermissionsRender permissionCheck={Permissions.canManageComments}>
+				{isSignedInUsersComment ? (
+					<Popover isOpen={isOpen}>
+						<PopoverTrigger>
+							<IconButton
+								aria-label="Edit comment"
+								variant="link"
+								onClick={onToggle}
+								icon={<BsThreeDotsVertical />}
+							/>
+						</PopoverTrigger>
+						<PopoverContent w="fit-content">
+							<PopoverBody>
+								<Flex direction="column" alignItems="start">
+									<Button variant="link" onClick={onCommentEditSaveClick}>
+										{isEditing ? "Save" : "Edit"}
+									</Button>
+									<Button variant="link" onClick={onCommentDeleteClick}>
+										Delete
+									</Button>
+								</Flex>
+							</PopoverBody>
+						</PopoverContent>
+					</Popover>
+				) : null}
+			</PermissionsRender>
 		</Box>
 	);
 };

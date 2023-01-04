@@ -16,6 +16,8 @@ import {
 import { IoMdSend } from "react-icons/io";
 import Comment from "./Comment";
 import CommentService from "../../services/comment-service";
+import PermissionsRender from "../others/PermissionsRender";
+import { Permissions } from "../../util/Utils";
 
 const CommentSection = ({ ticketId }) => {
 	const [comments, setComments] = useState([]);
@@ -58,36 +60,38 @@ const CommentSection = ({ ticketId }) => {
 				))}
 			</Flex>
 
-			<Formik
-				initialValues={CreateCommentData}
-				validationSchema={CreateCommentSchema}
-				onSubmit={onComment}
-			>
-				{({ errors, touched }) => (
-					<Form>
-						<FormControl isInvalid={errors.text && touched.text}>
-							<InputGroup>
-								<Field
-									as={Input}
-									placeholder="Comment"
-									name="text"
-									type="text"
-								/>
-								<InputRightElement width="fit-content">
-									<IconButton
-										size="sm"
-										variant="link"
-										colorScheme="purple"
-										icon={<IoMdSend size={20} />}
-										type="submit"
+			<PermissionsRender permissionCheck={Permissions.canManageComments}>
+				<Formik
+					initialValues={CreateCommentData}
+					validationSchema={CreateCommentSchema}
+					onSubmit={onComment}
+				>
+					{({ errors, touched }) => (
+						<Form>
+							<FormControl isInvalid={errors.text && touched.text}>
+								<InputGroup>
+									<Field
+										as={Input}
+										placeholder="Comment"
+										name="text"
+										type="text"
 									/>
-								</InputRightElement>
-							</InputGroup>
-							<FormErrorMessage>{errors.text}</FormErrorMessage>
-						</FormControl>
-					</Form>
-				)}
-			</Formik>
+									<InputRightElement width="fit-content">
+										<IconButton
+											size="sm"
+											variant="link"
+											colorScheme="purple"
+											icon={<IoMdSend size={20} />}
+											type="submit"
+										/>
+									</InputRightElement>
+								</InputGroup>
+								<FormErrorMessage>{errors.text}</FormErrorMessage>
+							</FormControl>
+						</Form>
+					)}
+				</Formik>
+			</PermissionsRender>
 		</Flex>
 	);
 };
