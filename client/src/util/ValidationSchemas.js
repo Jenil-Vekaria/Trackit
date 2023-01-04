@@ -92,7 +92,7 @@ export const CreateTicketTypeData = {
 };
 
 export const CreateCommentSchema = Yup.object().shape({
-    text: Yup.string().min(1, "Cannot be empty").required("Required")
+    text: Yup.string().trim().min(1, "Cannot be empty")
 });
 
 export const CreateCommentData = {

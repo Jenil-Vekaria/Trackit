@@ -52,7 +52,11 @@ const CommentSection = ({ ticketId }) => {
 				mb={4}
 			>
 				{comments.map((comment) => (
-					<Comment onCommentEditClick={onCommentEditClick} {...comment} />
+					<Comment
+						key={comment._id}
+						onCommentEditClick={onCommentEditClick}
+						{...comment}
+					/>
 				))}
 			</Flex>
 
