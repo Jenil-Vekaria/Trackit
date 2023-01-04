@@ -170,7 +170,7 @@ const CreateTicket = ({
 					<Tabs variant="soft-rounded" colorScheme="purple" isFitted>
 						<TabList>
 							<Tab>Ticket Info</Tab>
-							<Tab>Comments</Tab>
+							{ticket ? <Tab>Comments</Tab> : null}
 							<Tab>Assignees</Tab>
 						</TabList>
 						<TabPanels>
@@ -311,9 +311,13 @@ const CreateTicket = ({
 									)}
 								</Formik>
 							</TabPanel>
-							<TabPanel>
-								<CommentSection ticketId={ticket ? ticket._id : null} />
-							</TabPanel>
+
+							{ticket ? (
+								<TabPanel>
+									<CommentSection ticketId={ticket ? ticket._id : null} />
+								</TabPanel>
+							) : null}
+
 							<TabPanel>
 								<Table
 									tableData={allUsers}
