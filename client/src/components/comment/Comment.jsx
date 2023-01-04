@@ -12,32 +12,35 @@ import {
 	Button,
 	Spacer,
 	useDisclosure,
+	Avatar,
 } from "@chakra-ui/react";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import TooltipAvatar from "../others/TooltipAvatar";
 import AuthService from "../../services/auth-service";
 import CommentService from "../../services/comment-service";
+import moment from "moment";
 
 //_id = commentId
 
 const Comment = ({
 	_id,
-	ticketId,
 	username,
 	text,
 	userId,
 	getTicketComments,
+	updatedOn,
+	createdOn,
 }) => {
 	const [isEditing, setisEditing] = useState(false);
 	const [comment, setcomment] = useState(text);
 	const { isOpen, onToggle, onClose } = useDisclosure();
 	const signedInUserId = AuthService.getCurrentUser()?._id;
 	const isSignedInUsersComment = userId === signedInUserId;
-
+	const isCommentEdited = createdOn !== updatedOn;
 	const onCommentEditSaveClick = async () => {
 		if (isEditing) {
 			try {
 				await CommentService.updateTicketComment(_id, { text: comment });
+				getTicketComments();
 			} catch (error) {
 				console.log(error);
 			}
@@ -53,6 +56,19 @@ const Comment = ({
 		getTicketComments();
 	};
 
+	const getCommentDateTime = () => {
+		const now = moment(new Date());
+		const end = moment(updatedOn);
+		const duration = moment.duration(now.diff(end));
+		const days = duration.asDays();
+
+		if (days >= 1) {
+			return moment(updatedOn).format("MMM D, YYYY hh:mm A");
+		} else {
+			return moment(updatedOn).fromNow();
+		}
+	};
+
 	return (
 		<Box
 			display="flex"
@@ -62,17 +78,27 @@ const Comment = ({
 			boxShadow="xs"
 			width="100%"
 		>
-			<TooltipAvatar name={username} size="sm" />
-			{isEditing ? (
-				<Input
-					name="comment"
-					value={comment}
-					onChange={(e) => setcomment(e.target.value)}
-				/>
-			) : (
-				<Text fontSize="sm">{comment}</Text>
-			)}
-			<Spacer />
+			<Avatar name={username} size="sm" />
+			<Flex direction="column" width="100%">
+				<Flex gap={3}>
+					<Text fontSize="sm" as="b">
+						{username}
+					</Text>
+					<Text fontSize="sm" color="gray" align="right">
+						{getCommentDateTime()} {isCommentEdited ? "(Edited)" : ""}
+					</Text>
+				</Flex>
+				{isEditing ? (
+					<Input
+						name="comment"
+						value={comment}
+						onChange={(e) => setcomment(e.target.value)}
+					/>
+				) : (
+					<Text fontSize="sm">{comment}</Text>
+				)}
+				<Spacer />
+			</Flex>
 
 			{isSignedInUsersComment ? (
 				<Popover isOpen={isOpen}>

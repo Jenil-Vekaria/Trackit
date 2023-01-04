@@ -10,7 +10,7 @@ export const getComments = async (req, res) => {
             return res.status(403).json({ message: "Invalid ticket id" });
         }
 
-        const comments = await Comment.find({ ticketId }, { _id: 1, text: 1, userId: 1 });
+        const comments = await Comment.find({ ticketId }, { _id: 1, text: 1, userId: 1, updatedOn: 1, createdOn: 1 });
 
         return res.json({ comments });
 
@@ -47,7 +47,7 @@ export const updateComment = async (req, res) => {
             return res.status(403).json({ message: "Invalid comment id" });
         }
 
-        const updatedComment = await Comment.findOneAndUpdate({ _id: commentId }, { text });
+        const updatedComment = await Comment.findOneAndUpdate({ _id: commentId }, { text, updatedOn: Date.now() });
 
         return res.json({ comment: updatedComment });
 

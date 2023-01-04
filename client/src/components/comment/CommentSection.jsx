@@ -30,8 +30,6 @@ const CommentSection = ({ ticketId }) => {
 		getTicketComments();
 	}, []);
 
-	const onCommentEditClick = () => {};
-
 	const onComment = async (values, { resetForm }) => {
 		try {
 			await CommentService.createTicketComment(ticketId, values);
@@ -54,7 +52,6 @@ const CommentSection = ({ ticketId }) => {
 				{comments.map((comment) => (
 					<Comment
 						key={comment._id}
-						onCommentEditClick={onCommentEditClick}
 						getTicketComments={getTicketComments}
 						{...comment}
 					/>
