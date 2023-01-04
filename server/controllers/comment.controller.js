@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import Comment from "../models/comment.model.js";
+import { canPerformAction } from "../util/utils.js";
+import * as permissionCheck from "../util/permissionCheck.js";
 
 export const getComments = async (req, res) => {
     const { ticketId } = req.params;
@@ -25,6 +27,11 @@ export const createComment = async (req, res) => {
     const { text } = req.body;
 
     try {
+
+        if (!canPerformAction(permissionCheck.canManageComments, req.user)) {
+            return res.status(403).json({ message: "Not authorized to comment" });
+        }
+
         const userId = req.user._id;
 
         const newComment = await Comment.create({ ticketId, userId, text });
@@ -42,6 +49,10 @@ export const updateComment = async (req, res) => {
     const { text } = req.body;
 
     try {
+
+        if (!canPerformAction(permissionCheck.canManageComments, req.user)) {
+            return res.status(403).json({ message: "Not authorized to comment" });
+        }
 
         if (!mongoose.Types.ObjectId.isValid(commentId)) {
             return res.status(403).json({ message: "Invalid comment id" });
@@ -61,6 +72,10 @@ export const deleteComment = async (req, res) => {
     const { commentId } = req.params;
 
     try {
+
+        if (!canPerformAction(permissionCheck.canManageComments, req.user)) {
+            return res.status(403).json({ message: "Not authorized to comment" });
+        }
 
         if (!mongoose.Types.ObjectId.isValid(commentId)) {
             return res.status(403).json({ message: "Invalid comment id" });
