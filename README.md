@@ -78,6 +78,11 @@
 </div>
 
 <div>
+  <h3>View Ticket Comments</h3>
+  <img src="./screenshots/ticket_comments.png"/>
+</div>
+
+<div>
   <h3>My Tickets</h3>
   <img src="./screenshots/my_tickets.png"/>
 </div>
