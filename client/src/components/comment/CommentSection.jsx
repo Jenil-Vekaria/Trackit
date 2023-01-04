@@ -20,14 +20,14 @@ import CommentService from "../../services/comment-service";
 const CommentSection = ({ ticketId }) => {
 	const [comments, setComments] = useState([]);
 
-	const getComments = async () => {
+	const getTicketComments = async () => {
 		if (ticketId) {
-			const comments = await CommentService.fetchTicketComments(ticketId);
+			const comments = await CommentService.getTicketComments(ticketId);
 			setComments(comments);
 		}
 	};
 	useEffect(() => {
-		getComments();
+		getTicketComments();
 	}, []);
 
 	const onCommentEditClick = () => {};
@@ -36,7 +36,7 @@ const CommentSection = ({ ticketId }) => {
 		try {
 			await CommentService.createTicketComment(ticketId, values);
 			resetForm();
-			getComments();
+			getTicketComments();
 		} catch (error) {
 			console.log(error);
 		}
@@ -55,6 +55,7 @@ const CommentSection = ({ ticketId }) => {
 					<Comment
 						key={comment._id}
 						onCommentEditClick={onCommentEditClick}
+						getTicketComments={getTicketComments}
 						{...comment}
 					/>
 				))}

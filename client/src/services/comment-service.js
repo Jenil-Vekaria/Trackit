@@ -13,7 +13,7 @@ API.interceptors.request.use((req) => {
     return req;
 });
 
-const fetchTicketComments = async (ticketId) => {
+const getTicketComments = async (ticketId) => {
     try {
         const { data: { comments } } = await API.get(`/${ticketId}`);
 
@@ -37,9 +37,27 @@ const createTicketComment = async (ticketId, ticketData) => {
     }
 };
 
+const updateTicketComment = async (ticketId, ticketData) => {
+    try {
+        await API.patch(`/${ticketId}`, ticketData);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+const deleteTicketComment = async (commentId) => {
+    try {
+        await API.delete(`/${commentId}`);
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 const CommentService = {
-    fetchTicketComments,
-    createTicketComment
+    getTicketComments,
+    createTicketComment,
+    updateTicketComment,
+    deleteTicketComment,
 };
 
 export default CommentService;

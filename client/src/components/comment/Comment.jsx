@@ -1,13 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
 	Box,
 	Flex,
 	Input,
 	Text,
-	Menu,
-	MenuButton,
-	MenuList,
-	MenuItem,
 	IconButton,
 	Popover,
 	PopoverTrigger,
@@ -20,8 +16,11 @@ import {
 import { BsThreeDotsVertical } from "react-icons/bs";
 import TooltipAvatar from "../others/TooltipAvatar";
 import AuthService from "../../services/auth-service";
+import CommentService from "../../services/comment-service";
 
-const Comment = ({ username, text, userId }) => {
+//_id = commentId
+
+const Comment = ({ _id, username, text, userId, getTicketComments }) => {
 	const [isEditing, setisEditing] = useState(false);
 	const [comment, setcomment] = useState(text);
 	const { isOpen, onToggle, onClose } = useDisclosure();
@@ -31,6 +30,12 @@ const Comment = ({ username, text, userId }) => {
 	const onCommentEditSaveClick = () => {
 		onClose();
 		setisEditing((prev) => !prev);
+	};
+
+	const onCommentDeleteClick = async () => {
+		onClose();
+		await CommentService.deleteTicketComment(_id);
+		getTicketComments();
 	};
 
 	return (
@@ -70,7 +75,9 @@ const Comment = ({ username, text, userId }) => {
 								<Button variant="link" onClick={onCommentEditSaveClick}>
 									{isEditing ? "Save" : "Edit"}
 								</Button>
-								<Button variant="link">Delete</Button>
+								<Button variant="link" onClick={onCommentDeleteClick}>
+									Delete
+								</Button>
 							</Flex>
 						</PopoverBody>
 					</PopoverContent>
