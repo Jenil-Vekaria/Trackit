@@ -44,6 +44,7 @@ import AuthService from "../../services/auth-service";
 import { usePermissions } from "../../hooks/usePermissions";
 import { Permissions } from "../../util/Utils";
 import PermissionsRender from "../others/PermissionsRender";
+import CommentSection from "../comment/CommentSection";
 
 const CreateTicket = ({
 	isOpen,
@@ -165,7 +166,7 @@ const CreateTicket = ({
 					</Text>
 				</ModalHeader>
 				<ModalCloseButton onClick={closeModal} />
-				<ModalBody>
+				<ModalBody overflowY="auto">
 					<Tabs variant="soft-rounded" colorScheme="purple" isFitted>
 						<TabList>
 							<Tab>Ticket Info</Tab>
@@ -310,7 +311,9 @@ const CreateTicket = ({
 									)}
 								</Formik>
 							</TabPanel>
-							<TabPanel>Comments</TabPanel>
+							<TabPanel>
+								<CommentSection ticketId={ticket ? ticket._id : null} />
+							</TabPanel>
 							<TabPanel>
 								<Table
 									tableData={allUsers}

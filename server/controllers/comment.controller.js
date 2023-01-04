@@ -10,7 +10,7 @@ export const getComments = async (req, res) => {
             return res.status(403).json({ message: "Invalid ticket id" });
         }
 
-        const comments = await Comment.find({ ticketId });
+        const comments = await Comment.find({ ticketId }, { _id: 1, text: 1, userId: 1 });
 
         return res.json({ comments });
 

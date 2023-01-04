@@ -20,8 +20,9 @@ const theme = extendTheme({
         background: "white",
         maxHeight: "100vh",
         height: "100vh",
-        overflowY: "hidden"
-      },
+        overflowY: "hidden",
+        // scrollbarwWidth: "thin"
+      }
 
     },
   },
@@ -30,8 +31,8 @@ const theme = extendTheme({
       sizes: {
         lg: {
           dialog: {
-            minWidth: "60%",
-            minHeight: "80%"
+            maxWidth: "60%",
+            maxHeight: "85%"
           }
         },
         md: {

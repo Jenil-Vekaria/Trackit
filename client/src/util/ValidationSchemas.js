@@ -90,3 +90,11 @@ export const CreateTicketTypeData = {
     iconName: "",
     colour: "#000000",
 };
+
+export const CreateCommentSchema = Yup.object().shape({
+    text: Yup.string().min(1, "Cannot be empty").required("Required")
+});
+
+export const CreateCommentData = {
+    text: ""
+};
