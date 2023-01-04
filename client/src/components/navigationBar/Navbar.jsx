@@ -128,7 +128,7 @@ const Navbar = () => {
 							<Flex mt={4} align="center" cursor="pointer">
 								<Avatar
 									size="sm"
-									name="Jenil Vekaria"
+									name={user.firstName + " " + user.lastName}
 									alignItems={navSize === "small" ? "center" : "flex-start"}
 								/>
 								<Flex
