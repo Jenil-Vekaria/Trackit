@@ -104,30 +104,27 @@ const CreateTicket = ({
 		));
 	};
 
-	const onHandleFormSubmit = (values, action) => {
+	const onHandleFormSubmit = async (values) => {
 		const ticketFormData = { ...values };
 		ticketFormData.assignees = assigneesId;
 
-		if (!ticket) {
-			TicketService.createTicket(ticketFormData, projectId).then(() => {
-				toast({
-					title: "Ticket created",
-					status: "success",
-					duration: 4000,
-					isClosable: true,
-				});
-				closeModal();
+		try {
+			if (!ticket) {
+				await TicketService.createTicket(ticketFormData, projectId);
+			} else {
+				await TicketService.updateTicket(ticketFormData, projectId);
+			}
+
+			toast({
+				title: `Ticket ${ticket ? "updated" : "created"}`,
+				status: "success",
+				duration: 1000,
+				isClosable: true,
 			});
-		} else {
-			TicketService.updateTicket(ticketFormData, projectId).then(() => {
-				toast({
-					title: "Ticket updated",
-					status: "success",
-					duration: 4000,
-					isClosable: true,
-				});
-				closeModal();
-			});
+
+			closeModal();
+		} catch (error) {
+			seterror(error);
 		}
 	};
 
