@@ -32,6 +32,10 @@ export const addProject = async (req, res) => {
             return res.status(400).json({ message: "Project already exist with that title" });
         }
 
+        if (assignees.length == 0) {
+            assignees.push(userId);
+        }
+
         //Create project
         const newProject = await Project.create({ title, description, authorId: userId, assignees });
 
@@ -170,6 +174,9 @@ export const deleteProject = async (req, res) => {
 
         //Delete project
         await Project.deleteOne({ _id: projectId });
+
+        //Delete all tickets
+        await Ticket.remove({ projectId });
 
         return res.sendStatus(200);
     } catch (error) {
