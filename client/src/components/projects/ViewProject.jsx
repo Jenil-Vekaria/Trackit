@@ -119,14 +119,14 @@ const ViewProject = () => {
 				</TabList>
 
 				<TabPanels h="100%">
-					<TabPanel>
+					<TabPanel h="100%">
 						<Table
 							tableData={projectTickets}
 							columns={TICKETS_COLUMNS}
 							searchPlaceholder="Search for tickets"
 							onRowClick={onTicketClick}
 							defaultSortInfo={TICKETS_DEFAULT_SORT}
-							height={480}
+							height="92%"
 						/>
 					</TabPanel>
 					<TabPanel>
@@ -134,7 +134,7 @@ const ViewProject = () => {
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
-
+			<br />
 			<CreateTicket
 				isOpen={isOpen}
 				onClose={onClose}
