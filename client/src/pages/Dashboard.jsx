@@ -4,7 +4,6 @@ import {
 	Flex,
 	Heading,
 	Spinner,
-	Text,
 	useColorModeValue,
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
@@ -24,7 +23,7 @@ import {
 	Legend,
 	Colors,
 } from "chart.js";
-import { Bar, Doughnut, Pie } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
 import MiscellaneousService from "../services/miscellaneous-service";
 import { hexToRgb } from "../util/Utils";
 
@@ -126,28 +125,22 @@ const Dashboard = () => {
 			data.labels.push(ticketStatus._id);
 
 			let backgroundColour = "";
-			let borderColour = "";
 
 			switch (ticketStatus._id) {
 				case "Open":
 					backgroundColour = hexToRgb("#FBD38D", 1);
-					borderColour = hexToRgb("#FBD38D", 1);
 					break;
 				case "In-Progress":
 					backgroundColour = hexToRgb("#90CDF4", 1);
-					borderColour = hexToRgb("#90CDF4", 1);
 					break;
 				case "Done":
 					backgroundColour = hexToRgb("#68D391", 1);
-					borderColour = hexToRgb("#68D391", 1);
 					break;
 				case "Archived":
 					backgroundColour = hexToRgb("#E2E8F0", 1);
-					borderColour = hexToRgb("#E2E8F0", 1);
 					break;
 				default:
 					backgroundColour = hexToRgb("#FBD38D", 1);
-					borderColour = hexToRgb("#FBD38D", 1);
 					break;
 			}
 

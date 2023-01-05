@@ -28,6 +28,7 @@ const CommentSection = ({ ticketId }) => {
 			setComments(comments);
 		}
 	};
+
 	useEffect(() => {
 		getTicketComments();
 	}, []);

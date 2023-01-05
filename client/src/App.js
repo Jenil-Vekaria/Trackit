@@ -3,8 +3,7 @@ import { Auth } from "./pages/Auth";
 import {
   BrowserRouter,
   Routes,
-  Route,
-  Navigate
+  Route
 } from "react-router-dom";
 
 import AuthService from './services/auth-service';

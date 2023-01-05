@@ -43,7 +43,6 @@ const AddProject = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const canUpdateProjectInfo = usePermissions(Permissions.canManageProject);
-	const canManageProjectMembers = usePermissions(Permissions.canManageProject);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const { projectID } = useParams();

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FiHome, FiLayers, FiFileText, FiUser, FiMenu } from "react-icons/fi";
+import { FiLayers, FiFileText, FiUser, FiMenu } from "react-icons/fi";
 import {
 	Avatar,
 	Button,
@@ -14,7 +14,6 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 	Text,
-	useColorModeValue,
 	useDisclosure,
 } from "@chakra-ui/react";
 import NavItem from "./NavItem";

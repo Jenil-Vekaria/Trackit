@@ -1,6 +1,6 @@
 import axios from "axios";
 import decode from 'jwt-decode';
-import { setLogin, setLogout } from "../features/authSlice.js";
+import { setLogin } from "../features/authSlice.js";
 import { store, persistor } from "../app/store.js";
 
 const API_URL = process.env.REACT_APP_API_ENDPOINT + "/auth";

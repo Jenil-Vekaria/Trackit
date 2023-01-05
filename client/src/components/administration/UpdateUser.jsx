@@ -25,7 +25,6 @@ import { ManageUserSchema, SignupSchema } from "../../util/ValidationSchemas";
 import { useSelector } from "react-redux";
 import { getRoles } from "../../features/miscellaneousSlice";
 import MiscellaneousService from "../../services/miscellaneous-service";
-import { useEffect } from "react";
 
 const UpdateUser = ({
 	isOpen,
@@ -33,7 +32,6 @@ const UpdateUser = ({
 	viewUser,
 	isUpdateMyProfile = false,
 }) => {
-	const [userData, setUserData] = useState(null);
 	const roles = useSelector(getRoles);
 	const formRef = useRef(null);
 	const [error, setError] = useState(null);
@@ -55,18 +53,6 @@ const UpdateUser = ({
 			</option>
 		));
 	};
-
-	useEffect(() => {
-		if (isUpdateMyProfile) {
-			setUserData({
-				...viewUser,
-				password: "",
-				confirmPassword: "",
-			});
-		} else {
-			setUserData(viewUser);
-		}
-	}, [viewUser]);
 
 	return (
 		<Modal

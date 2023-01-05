@@ -1,16 +1,6 @@
-import {
-	Input,
-	Flex,
-	InputGroup,
-	InputLeftElement,
-	Spacer,
-	Box,
-	Text,
-	Button,
-} from "@chakra-ui/react";
-import { SearchIcon, RepeatIcon } from "@chakra-ui/icons";
+import { Input, Flex, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { SearchIcon } from "@chakra-ui/icons";
 import React from "react";
-import SearchBarFilter from "./SearchBarFilter";
 
 const SearchBar = ({
 	children,

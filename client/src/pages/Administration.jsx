@@ -14,7 +14,6 @@ import ManageRoles from "../components/administration/ManageRoles";
 import ManageTicketTypes from "../components/administration/ManageTicketTypes";
 import ManageUsers from "../components/administration/ManageUsers";
 import MiscellaneousService from "../services/miscellaneous-service";
-import PermissionsRender from "../components/others/PermissionsRender";
 import { Permissions } from "../util/Utils";
 import { usePermissions } from "../hooks/usePermissions";
 

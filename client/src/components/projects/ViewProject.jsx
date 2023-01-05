@@ -11,14 +11,12 @@ import {
 	TabPanel,
 	TabPanels,
 	Tabs,
-	Text,
 	useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ProjectService from "../../services/project-service";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import AuthService from "../../services/auth-service";
 import TicketService from "../../services/ticket-service";
 import {
 	TICKETS_DEFAULT_SORT,
@@ -35,7 +33,6 @@ import { Permissions } from "../../util/Utils";
 const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
 	const projectTickets = useSelector(getTickets);
-	const [isProjectAuthor, setisProjectAuthor] = useState(false);
 	const [viewTicket, setviewTicket] = useState(null);
 	const [isLoading, setisLoading] = useState(true);
 
@@ -49,9 +46,6 @@ const ViewProject = () => {
 
 		if (project) {
 			setProjectInfo(project);
-
-			const { _id } = AuthService.getCurrentUser();
-			setisProjectAuthor(project?.authorId === _id);
 		} else {
 			navigate("/404");
 		}
@@ -59,7 +53,6 @@ const ViewProject = () => {
 
 	const getProjectTickets = async () => {
 		await TicketService.getProjectTickets(projectID);
-		// setProjectTickets(tickets);
 
 		setTimeout(() => {
 			setisLoading(false);

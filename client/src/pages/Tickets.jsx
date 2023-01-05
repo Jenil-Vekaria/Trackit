@@ -1,11 +1,4 @@
-import {
-	Center,
-	Flex,
-	Heading,
-	Spinner,
-	useBoolean,
-	useDisclosure,
-} from "@chakra-ui/react";
+import { Flex, Heading, useDisclosure } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import "@inovua/reactdatagrid-community/index.css";
 import Table from "../components/others/Table";

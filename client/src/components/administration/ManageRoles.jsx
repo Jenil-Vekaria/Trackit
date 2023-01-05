@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Spacer, useDisclosure } from "@chakra-ui/react";
+import { Button, Flex, Spacer, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { getRoles } from "../../features/miscellaneousSlice";

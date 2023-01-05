@@ -6,7 +6,6 @@ import {
 	Flex,
 	FormControl,
 	FormErrorMessage,
-	FormHelperText,
 	FormLabel,
 	Icon,
 	Input,
