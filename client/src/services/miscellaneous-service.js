@@ -112,7 +112,7 @@ const deleteRole = async (roleId) => {
 
         store.dispatch(removeRole(roleId));
     } catch (error) {
-        console.error(error);
+        throw error.response.data.message;
     }
 };
 

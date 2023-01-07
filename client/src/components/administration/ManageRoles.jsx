@@ -2,7 +2,6 @@ import { Button, Flex, Spacer, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { getRoles } from "../../features/miscellaneousSlice";
-import { DEFINED_ROLES } from "../../util/Constants";
 import { MANAGE_ROLES } from "../../util/TableDataDisplay";
 import Table from "../others/Table";
 import CreateRole from "./CreateRole";
@@ -20,10 +19,6 @@ const ManageRoles = () => {
 	const closeModal = () => {
 		setRoleData(null);
 		onClose();
-	};
-
-	const canModifyPermissions = () => {
-		return !DEFINED_ROLES.includes(roleData?.name);
 	};
 
 	return (
@@ -44,12 +39,7 @@ const ManageRoles = () => {
 				</Button>
 			</Flex>
 
-			<CreateRole
-				isOpen={isOpen}
-				onClose={closeModal}
-				data={roleData}
-				canModifyPermission={canModifyPermissions()}
-			/>
+			<CreateRole isOpen={isOpen} onClose={closeModal} data={roleData} />
 		</>
 	);
 };

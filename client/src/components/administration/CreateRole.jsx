@@ -1,4 +1,5 @@
 import {
+	Alert,
 	Box,
 	Button,
 	Flex,
@@ -16,6 +17,7 @@ import {
 	ModalOverlay,
 	Spacer,
 	Switch,
+	useDisclosure,
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
 import React, { useRef, useState, useEffect } from "react";
@@ -24,11 +26,12 @@ import * as Constants from "../../util/Constants";
 import { CreateRoleData, CreateRoleSchema } from "../../util/ValidationSchemas";
 import AlertModal from "../others/AlertModal";
 
-const CreateRole = ({ data, isOpen, onClose, canModifyPermission = true }) => {
+const CreateRole = ({ data, isOpen, onClose }) => {
+	const alertDialogDisclosure = useDisclosure();
 	const formRef = useRef(null);
 	const roleData = data || CreateRoleData;
 	const [permissions, setPermissions] = useState([]);
-	const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
+	const [error, seterror] = useState(null);
 
 	useEffect(() => {
 		if (data) {
@@ -81,11 +84,21 @@ const CreateRole = ({ data, isOpen, onClose, canModifyPermission = true }) => {
 		}
 	};
 
-	const onRoleDelete = async () => {
-		await MiscellaneousService.deleteRole(data._id);
+	const closeCreateRoleDiaglog = () => {
 		setPermissions([]);
-		setOpenDeleteAlert(false);
+		seterror("");
 		onClose();
+	};
+
+	const onRoleDelete = async (closeAlertModal) => {
+		closeAlertModal();
+
+		try {
+			await MiscellaneousService.deleteRole(data._id);
+			closeCreateRoleDiaglog();
+		} catch (error) {
+			seterror(error);
+		}
 	};
 
 	const onFormSubmit = async (value, action) => {
@@ -101,7 +114,7 @@ const CreateRole = ({ data, isOpen, onClose, canModifyPermission = true }) => {
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} size="md">
+		<Modal isOpen={isOpen} onClose={closeCreateRoleDiaglog} size="md">
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>Create New Role</ModalHeader>
@@ -117,6 +130,16 @@ const CreateRole = ({ data, isOpen, onClose, canModifyPermission = true }) => {
 						>
 							{({ errors, touched }) => (
 								<>
+									{error && (
+										<Alert
+											status="error"
+											variant="left-accent"
+											mb={2}
+											fontSize="sm"
+										>
+											{error}
+										</Alert>
+									)}
 									<FormControl isInvalid={errors.name && touched.name}>
 										<FormLabel fontWeight="regular">Role Name</FormLabel>
 										<Field as={Input} name="name" type="text" required />
@@ -132,7 +155,6 @@ const CreateRole = ({ data, isOpen, onClose, canModifyPermission = true }) => {
 													size="lg"
 													value={permission.value}
 													onChange={onPermissionToggle}
-													disabled={!canModifyPermission}
 													defaultChecked={roleData.permissions.includes(
 														permission.value,
 													)}
@@ -157,8 +179,8 @@ const CreateRole = ({ data, isOpen, onClose, canModifyPermission = true }) => {
 					>
 						Save Role
 					</Button>
-					{data && canModifyPermission ? (
-						<Button colorScheme="red" onClick={() => setOpenDeleteAlert(true)}>
+					{data ? (
+						<Button colorScheme="red" onClick={alertDialogDisclosure.onOpen}>
 							Delete Role
 						</Button>
 					) : (
@@ -178,9 +200,8 @@ const CreateRole = ({ data, isOpen, onClose, canModifyPermission = true }) => {
 			<AlertModal
 				title={"Delete role"}
 				body="Are you sure you to delete this role?"
-				isOpen={openDeleteAlert}
-				onClose={onClose}
 				onCTA={onRoleDelete}
+				{...alertDialogDisclosure}
 			/>
 		</Modal>
 	);
