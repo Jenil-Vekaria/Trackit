@@ -32,17 +32,23 @@ const theme = extendTheme({
         lg: {
           dialog: {
             maxWidth: "60%",
-            maxHeight: "85%"
+            maxHeight: "85%",
+          },
+          body: {
+            overflowY: "auto"
           }
         },
         md: {
           dialog: {
             minWidth: "40%",
             minHeight: "50%"
+          },
+          body: {
+            overflowY: "auto"
           }
         }
       }
-    }
+    },
   }
 });
 

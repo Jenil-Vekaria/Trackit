@@ -1,5 +1,6 @@
 import * as permissionCheck from "../util/permissionCheck.js";
 import TicketType from "../models/ticketType.model.js";
+import Ticket from "../models/ticket.model.js";
 import { canPerformAction } from "../util/utils.js";
 
 export const getTicketType = async (req, res) => {
@@ -77,7 +78,13 @@ export const deleteTicketType = async (req, res) => {
         const ticketType = await TicketType.findOne({ name });
 
         if (!ticketType) {
-            return res.status(403).json({ message: "Ticket not found" });
+            return res.status(403).json({ message: "Ticket type not found" });
+        }
+
+        const totalTicketsWithThisTicketType = await Ticket.find({ type: ticketType._id }).count();
+
+        if (totalTicketsWithThisTicketType > 0) {
+            return res.status(405).json({ message: `Forbidden: ${totalTicketsWithThisTicketType} ticket(s) is associated with ticket type "${name}"` });
         }
 
         await ticketType.delete();

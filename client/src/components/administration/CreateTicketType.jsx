@@ -17,6 +17,7 @@ import {
 	ModalHeader,
 	ModalOverlay,
 	Text,
+	useDisclosure,
 } from "@chakra-ui/react";
 import {
 	CreateTicketTypeData,
@@ -35,6 +36,7 @@ const CreateTicketType = ({
 	onClose,
 	canDeleteTicketType = true,
 }) => {
+	const alertDialgoDisclosure = useDisclosure();
 	const [ticketType, setTicketType] = useState(CreateTicketTypeData);
 	const [iconColour, setIconColour] = useState("#000000");
 	const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
@@ -62,7 +64,7 @@ const CreateTicketType = ({
 		});
 	};
 
-	const closeModal = () => {
+	const closeCreateTicketTypeModal = () => {
 		setError("");
 		setIconColour("#000000");
 		setIconName("");
@@ -71,9 +73,12 @@ const CreateTicketType = ({
 		onClose();
 	};
 
-	const deleteTicketType = async () => {
+	const deleteTicketType = async (closeAlertModal) => {
+		closeAlertModal();
+
 		try {
 			await MiscellaneousService.deleteTicketType(ticketType.name);
+			closeCreateTicketTypeModal();
 		} catch (error) {
 			setError(error);
 		}
@@ -88,14 +93,14 @@ const CreateTicketType = ({
 			} else {
 				await MiscellaneousService.createTicketType(ticketTypeData);
 			}
-			closeModal();
+			closeCreateTicketTypeModal();
 		} catch (error) {
 			setError(error);
 		}
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={closeModal} size="lg">
+		<Modal isOpen={isOpen} onClose={closeCreateTicketTypeModal} size="lg">
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>{data ? "Update" : "Create"} Ticket Type</ModalHeader>
@@ -188,11 +193,11 @@ const CreateTicketType = ({
 						Save
 					</Button>
 					{data && canDeleteTicketType ? (
-						<Button colorScheme="red" onClick={() => setOpenDeleteAlert(true)}>
+						<Button colorScheme="red" onClick={alertDialgoDisclosure.onOpen}>
 							Delete
 						</Button>
 					) : (
-						<Button colorScheme="gray" onClick={closeModal}>
+						<Button colorScheme="gray" onClick={closeCreateTicketTypeModal}>
 							Cancel
 						</Button>
 					)}
@@ -202,9 +207,8 @@ const CreateTicketType = ({
 			<AlertModal
 				title={"Delete Ticket Type"}
 				body={`Are you sure you to delete this "${ticketType.name}" ticket type ?`}
-				isOpen={openDeleteAlert}
-				onClose={closeModal}
 				onCTA={deleteTicketType}
+				{...alertDialgoDisclosure}
 			/>
 		</Modal>
 	);
