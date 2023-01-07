@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
-import UserRole from '../models/userRole.model.js';
 import Role from '../models/role.model.js';
 import { validationResult } from "express-validator";
 
@@ -73,12 +72,15 @@ export const signup = async (req, res) => {
         //Hash the password
         const hashedPassword = await bcrypt.hash(password, +process.env.PASSWORD_SALT);
 
-        //Create user in database
-        const newUser = await User.create({ firstName, lastName, email, password: hashedPassword });
-
         //Create user role object
-        const developerRoleId = await Role.findOne({ name: "developer" });
-        await UserRole.create({ userId: newUser._id, roleId: developerRoleId._id });
+        const developerRoleObject = await Role.findOne({ name: "developer" });
+
+        if (!developerRoleObject) {
+            return res.status(404).json({ message: "No developer role found" });
+        }
+
+        //Create user in database
+        const newUser = await User.create({ firstName, lastName, email, password: hashedPassword, roleId: developerRoleObject._id });
 
         const accessToken = jwt.sign({ email: newUser.email, id: newUser._id }, process.env.SECRET_KEY, { expiresIn: process.env.JWT_TOKEN_EXPIRATION });
 
@@ -86,7 +88,8 @@ export const signup = async (req, res) => {
             firstName: newUser.firstName,
             lastName: newUser.lastName,
             email: newUser.email,
-            id: newUser._id,
+            _id: newUser._id,
+            roleId: newUser.roleId,
             accessToken
         });
 
