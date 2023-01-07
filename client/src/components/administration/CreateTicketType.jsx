@@ -185,11 +185,11 @@ const CreateTicketType = ({
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>
-						Save Ticket type
+						Save
 					</Button>
 					{data && canDeleteTicketType ? (
 						<Button colorScheme="red" onClick={() => setOpenDeleteAlert(true)}>
-							Delete Role
+							Delete
 						</Button>
 					) : (
 						<Button colorScheme="gray" onClick={closeModal}>
