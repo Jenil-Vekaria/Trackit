@@ -38,6 +38,54 @@
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Back-end**  | <p align="center"><img src="https://images.g2crowd.com/uploads/product/image/large_detail/large_detail_f0b606abb6d19089febc9faeeba5bc05/nodejs-development-services.png" width="100" height="100" /><br/>NodeJs</p> | <p align="center"><img src="https://w7.pngwing.com/pngs/925/447/png-transparent-express-js-node-js-javascript-mongodb-node-js-text-trademark-logo.png" width="100" height="100" /><br/>ExpressJS</p> | <p align="center"><img src="https://cdn.icon-icons.com/icons2/2415/PNG/512/mongodb_original_wordmark_logo_icon_146425.png" width="100" height="100" /><br/>MongoDB</p> | <p align="center"><img src="https://cdn.freebiesupply.com/logos/large/2x/jest-logo-png-transparent.png" width="100" height="100" /><br/>Jest</p> |
 
+## 🚀 Quick start
+
+Start developing locally.
+
+### Step 1: Clone the repo
+
+Fork the repository then clone it locally by doing
+
+```sh
+git clone https://github.com/Jenil-Vekaria/Trackit.git
+```
+
+### Step 2: Install Dependencies
+
+cd into the client and server directory, and install the dependencies
+
+```sh
+cd client & npm install
+```
+
+```sh
+cd server & npm install
+```
+
+### Step 3: Setup .env
+
+To run the server you will also need to provide the `.env` variables
+
+- create a new file <b>.env</b> in the root
+- open [.env.EXAMPLE](./server/.env.EXAMPLE)
+- copy the contents and paste it to the .env with valid keys
+
+#### You are all setup!
+
+Run client application
+
+```sh
+npm start
+```
+
+Run server application
+
+```sh
+nodemon server.js
+```
+
+### Give a ⭐, if you liked the project
+
 ## 📸 Screenshots
 
 #### TODO: Descriptions to be added
@@ -131,3 +179,9 @@
   <p>Create custom ticket type by giving ticket type name, selecting an icon, and the icon colour</p>
   <img src="./screenshots/admin_create_ticket_types.png"/>
 </div>
+
+## Author
+
+- Github: [@Jenil-Vekara](https://github.com/Jenil-Vekaria)
+- Portfolio: [Jenil-Vekaria.netlify.app](https://jenil-vekaria.netlify.app/)
+- LinkedIn: [@JenilVekaria](https://www.linkedin.com/in/jenilvekaria/)
