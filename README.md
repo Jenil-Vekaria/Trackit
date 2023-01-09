@@ -1,7 +1,7 @@
 <!-- INTRO SECTION -->
 <br />
 <p align="center">
-  <a href="https://entertainmentmovie.netlify.app/">
+  <a href="https://github.com/Jenil-Vekaria/Trackit">
     <img src="client/src/assests/Trackit_Background.png" alt="Trackit">
   </a>
 
