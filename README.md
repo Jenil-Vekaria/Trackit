@@ -75,6 +75,23 @@ To run the server you will also need to provide the `.env` variables
 - open [.env.EXAMPLE](./server/.env.EXAMPLE)
 - copy the contents and paste it to the .env with valid keys
 
+### Step 4: Seed database
+
+Make the following POST request to seed the database (Only can run this in `development` or `testing` environment)
+
+```sh
+http://localhost:5000/test/populate
+```
+
+##### Login Info
+
+| Email                        | Password | Role Type       |
+| ---------------------------- | -------- | --------------- |
+| james.smith@bugtracker.com   | password | Admin           |
+| michael.smith@bugtracker.com | password | Developer       |
+| robert.smith@bugtracker.com  | password | Project Manager |
+| maria.garcia@bugtracker.com  | password | Submitter       |
+
 #### You are all setup!
 
 Run client application

@@ -5,25 +5,25 @@ export const DBUsers = [
         firstName: "James",
         lastName: "Smith",
         email: "james.smith@bugtracker.com",
-        password: "random"
+        password: "password"
     },
     {
         firstName: "Michael",
         lastName: "Smith",
         email: "michael.smith@bugtracker.com",
-        password: "random"
+        password: "password"
     },
     {
         firstName: "Robert",
         lastName: "Smith",
         email: "robert.smith@bugtracker.com",
-        password: "random"
+        password: "password"
     },
     {
         firstName: "Maria",
         lastName: "Garcia",
         email: "maria.garcia@bugtracker.com",
-        password: "random"
+        password: "password"
     }
 ];
 
