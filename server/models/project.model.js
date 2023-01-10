@@ -11,10 +11,12 @@ const ProjectSchema = mongoose.Schema({
     },
     authorId: {
         type: mongoose.Types.ObjectId,
+        ref: "User",
         required: true
     },
     assignees: {
         type: [mongoose.Types.ObjectId],
+        ref: "User",
         required: true,
         default: []
     },

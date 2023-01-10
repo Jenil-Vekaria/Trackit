@@ -71,7 +71,9 @@ export const getUserProjects = async (req, res) => {
 
         // * Get all the user's projects
         // ? To find documents with array that contains specfic value, you can simply do "assginees: userId", it will return all documents with array containing userId
-        const projects = await Project.find({ assignees: userId });
+        const projects = await Project.find({ assignees: userId })
+            .populate({ path: "authorId", select: ["firstName", "lastName"] });
+        // .populate({ path: "assignees", select: ["firstName", "lastName, roleId"], populate: { path: "roleId", select: ["name"] } });
 
         return res.status(200).json({ projects });
 
@@ -92,7 +94,9 @@ export const getProjectInfo = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to view project" });
         }
 
-        const project = await Project.findById(projectId);
+        const project = await Project.findById(projectId)
+            .populate({ path: "authorId", select: ["firstName", "lastName"] });
+        // .populate({ path: "assignees", select: ["firstName", "lastName, roleId"], populate: { path: "roleId", select: ["name"] } });;
 
         if (!project) {
             return res.status(403).json({ message: "Project not found" });

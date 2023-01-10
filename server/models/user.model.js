@@ -15,6 +15,7 @@ const UserSchema = mongoose.Schema({
     },
     roleId: {
         type: mongoose.Types.ObjectId,
+        ref: "Role",
         required: true
     },
     password: {

@@ -34,7 +34,7 @@ export const PROJECTS_COLUMNS = [
         header: "Author",
         flex: 1,
         render: ({ value }) => {
-            return MiscellaneousService.getUserFullName(value);
+            return <span>{value.firstName} {value.lastName}</span>;
         },
         shouldComponentUpdate: () => true
     },
@@ -123,16 +123,6 @@ export const TICKETS_COLUMNS = [
             );
         }
     },
-    // {
-    //     name: "updatedOn",
-    //     header: "Modified",
-    //     headerEllipsis: false,
-    //     flex: 1,
-    //     render: ({ value }) => {
-    //         return moment(value).fromNow()
-    //     },
-    //     shouldComponentUpdate: () => true
-    // },
     {
         name: "createdBy",
         header: "Created By",
