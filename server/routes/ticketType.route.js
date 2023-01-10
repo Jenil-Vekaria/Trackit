@@ -1,7 +1,7 @@
 import express from 'express';
 import { addTicketType, deleteTicketType, updateTicketType, getTicketType } from '../controllers/ticketType.controller.js';
 import { validateResource } from "../middleware/middleware.js";
-import { createTicketTypeSchema } from '../schema/ticketType.schema.js';
+import { createTicketTypeSchema } from '../schema/validation.schema.js';
 
 const router = express.Router();
 

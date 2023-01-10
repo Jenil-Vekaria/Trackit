@@ -1,11 +1,5 @@
 import * as yup from 'yup';
 
-// check("email", "Invalid email").isEmail(),
-// check("password", "Password must be at least 6 characters long").isLength({ min: 6 }),
-// check("confirmPassword").not().isEmpty(),
-// check("firstName", "Invalid first name").not().isEmpty(),
-// check("lastName", "Invalid last name").not().isEmpty()
-
 export const signupSchema = yup.object().shape({
     firstName: yup.string().required("first name required"),
     lastName: yup.string().required("last name required"),
@@ -24,4 +18,16 @@ export const loginSchema = yup.object().shape({
     password: yup.string()
         .min(6, "Password must be at least 6 characters long")
         .required("Required"),
+});
+
+export const createTicketTypeSchema = yup.object().shape({
+    name: yup.string().required("ticket type name is required"),
+    iconName: yup.string().required("ticket type icon name is required"),
+    colour: yup.string()
+});
+
+export const createProjectSchema = yup.object().shape({
+    title: yup.string().required("project title required"),
+    description: yup.string(),
+    assignees: yup.array().required("Assignees required"),
 });

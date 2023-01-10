@@ -1,7 +1,7 @@
 import express from "express";
 import { addProject, deleteProject, getUserProjects, updateProject, getProjectInfo, getProjectStat } from "../controllers/project.controller.js";
 import { validateResource } from "../middleware/middleware.js";
-import { createProjectSchema } from "../schema/project.schema.js";
+import { createProjectSchema } from "../schema/validation.schema.js";
 
 const router = express.Router();
 
