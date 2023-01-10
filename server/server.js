@@ -1,9 +1,6 @@
 import mongoose from 'mongoose';
 import app from './app.js';
-
-const PORT = process.env.PORT || 5000;
-const MONGO_DB_CONNECTION = process.env.MONGO_DB_CONNECTION;
-
+import { PORT, MONGO_DB_CONNECTION, CURRENT_ENVIRONMENT } from "./config/config.js";
 
 //Connect to DB
 await mongoose.connect(MONGO_DB_CONNECTION,
@@ -13,7 +10,15 @@ await mongoose.connect(MONGO_DB_CONNECTION,
             console.error(error);
         }
         else {
-            app.listen(PORT, () => console.log(`Successfully Connected to MongoDB\n Running on http://localhost:${PORT}`));
+            app.listen(PORT, () => {
+                console.log("\n");
+                console.log("==========================================");
+                console.info(`🚀 Running Environment: ${CURRENT_ENVIRONMENT}`);
+                console.info(`✅ Connected to MongoDB: http://localhost:${PORT}`);
+                console.info(`🔗 Connection URL: ${MONGO_DB_CONNECTION}`);
+                console.log("==========================================");
+
+            });
         }
     }
 );
