@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import User from "../models/user.model";
 import Role from "../models/role.model";
 import bcrypt from 'bcrypt';
-import UserRole from "../models/userRole.model";
+// import UserRole from "../models/userRole.model";
 
 import { projectPayload, sampleRoles, sampleUsers } from "./data";
 import Project from "../models/project.model";
@@ -35,7 +35,7 @@ const seedDatabase = async () => {
         else
             role = await Role.findOne({ name: "submitter" });
 
-        await UserRole.create({ userId: newUser._id, roleId: role._id });
+        // await UserRole.create({ userId: newUser._id, roleId: role._id });
         // console.log(`Created ${user.firstName} ${user.lastName} (${newUser._id}): ${role.name} (${role._id})`);
         index++;
     }
