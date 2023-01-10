@@ -41,7 +41,7 @@ export const createTicketSchema = yup.object().shape({
     estimatedTimeUnit: yup.string().required("Ticket estimated time unit required")
 });
 
-export const createRoleSchema = Yup.object().shape({
+export const createRoleSchema = yup.object().shape({
     name: yup.string().min(1, "Role name cannot be empty").required("Required"),
     permissions: yup.array()
 });
