@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const TicketSchema = mongoose.Schema({
     projectId: {
         type: mongoose.Types.ObjectId,
+        ref: "Project",
         required: true
     },
     title: {
@@ -11,6 +12,7 @@ const TicketSchema = mongoose.Schema({
     },
     type: {
         type: mongoose.Types.ObjectId,
+        ref: "TicketType",
         required: true
     },
     description: {
@@ -36,9 +38,14 @@ const TicketSchema = mongoose.Schema({
         default: []
     },
     assignees: {
-        type: [mongoose.Types.ObjectId]
+        type: [mongoose.Types.ObjectId],
+        ref: "User"
     },
-    createdBy: mongoose.Types.ObjectId,
+    createdBy: {
+        type: mongoose.Types.ObjectId,
+        ref: "User",
+        required: true
+    },
     createdOn: {
         type: Date,
         default: Date.now()

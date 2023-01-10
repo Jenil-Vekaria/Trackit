@@ -13,7 +13,10 @@ export const getUserTickets = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to view the tickets" });
         }
 
-        const tickets = await Ticket.find({ assignees: userId });
+        const tickets = await Ticket.find({ assignees: userId })
+            .populate({ path: "projectId", select: { _id: 0, title: 1 } })
+            .populate({ path: "type", select: { __v: 0 } })
+            .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         return res.json({ tickets });
 
@@ -41,7 +44,10 @@ export const getProjectTickets = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to get project tickets" });
         }
 
-        const tickets = await Ticket.find({ projectId });
+        const tickets = await Ticket.find({ projectId })
+            .populate({ path: "projectId", select: { _id: 0, title: 1 } })
+            .populate({ path: "type", select: { _id: 0, __v: 0 } })
+            .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         return res.json({ tickets });
     } catch (error) {
@@ -61,7 +67,10 @@ export const getTicketInfo = async (req, res) => {
         }
 
         // Ensure the ticket exist
-        const ticket = await Ticket.findOne({ _id: ticketId });
+        const ticket = await Ticket.findOne({ _id: ticketId })
+            .populate({ path: "projectId", select: { _id: 0, title: 1 } })
+            .populate({ path: "type", select: { _id: 0, __v: 0 } })
+            .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         // Ensure the user belongs to the project
         const project = await Project.findById({ _id: ticket.projectId });
@@ -108,7 +117,12 @@ export const createTicket = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to add tickets to a project" });
         }
 
-        const ticket = await Ticket.create({ projectId, type, title, description, status, assignees, estimatedTime, estimatedTimeUnit, createdBy: userId });
+        const newTicket = await Ticket.create({ projectId, type, title, description, status, assignees, estimatedTime, estimatedTimeUnit, createdBy: userId });
+
+        const ticket = await Ticket.findById(newTicket._id)
+            .populate({ path: "projectId", select: { _id: 0, title: 1 } })
+            .populate({ path: "type", select: { _id: 0, __v: 0 } })
+            .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         return res.json({ ticket });
     } catch (error) {
@@ -166,7 +180,13 @@ export const updateTicket = async (req, res) => {
         ticket.updatedOn = Date.now();
 
 
-        const updatedTicket = await ticket.save({ validateBeforeSave: true });
+        await ticket.save({ validateBeforeSave: true });
+
+
+        const updatedTicket = await Ticket.findById(ticket._id)
+            .populate({ path: "projectId", select: { _id: 0, title: 1 } })
+            .populate({ path: "type", select: { _id: 0, __v: 0 } })
+            .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         return res.json({ ticket: updatedTicket });
 

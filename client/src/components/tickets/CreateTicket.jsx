@@ -55,7 +55,7 @@ const CreateTicket = ({
 }) => {
 	const ticketTypes = useSelector(getTicketType);
 	const allUsers = useSelector(getUsers(true));
-	const ticketInfo = ticket || CreateTicketData;
+	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
 	const canManageTickets = usePermissions(Permissions.canManageTicket);
 
 	const formRef = useRef();
@@ -66,7 +66,14 @@ const CreateTicket = ({
 
 	useEffect(() => {
 		if (ticket) {
-			setAssigneesId(ticket.assignees);
+			const ticketCopy = { ...ticket };
+
+			ticketCopy.assignees = ticket.assignees.map((assignee) => assignee._id);
+			ticketCopy.projectId = ticket.projectId._id;
+			ticketCopy.type = ticket.type._id;
+
+			setAssigneesId(ticketCopy.assignees);
+			setTicketInfo(ticketCopy);
 		}
 	}, [ticket]);
 
@@ -133,7 +140,7 @@ const CreateTicket = ({
 		closeModal();
 	};
 
-	//Every the signed in user's ticket is updated, refetch all the user's tickets and store in redux
+	//Every ime the signed in user's ticket is updated, refetch all the user's tickets and store in redux
 	const getMyTickets = async () => {
 		const { _id } = AuthService.getCurrentUser();
 
@@ -145,8 +152,9 @@ const CreateTicket = ({
 	const closeModal = () => {
 		setviewTicket(null);
 		setAssigneesId([]);
+		setTicketInfo(CreateTicketData);
 		setopenDeleteAlert(false);
-		getMyTickets();
+		// getMyTickets();
 		onClose();
 	};
 
@@ -159,7 +167,7 @@ const CreateTicket = ({
 						{ticket ? "Edit" : "Create"} Ticket
 					</Heading>
 					<Text fontSize="sm" color="purple" mt={2}>
-						{ProjectService.getProjectTitle(projectId)} | {ticketInfo.title}
+						{ticket?.projectId?.title} || {ticket?.title}
 					</Text>
 				</ModalHeader>
 				<ModalCloseButton onClick={closeModal} />

@@ -57,7 +57,7 @@ export const TICKETS_COLUMNS = [
         width: 55,
         headerEllipsis: false,
         render: ({ value }) => {
-            const { iconName, colour, name } = MiscellaneousService.getTicketTypeInfo(value);
+            const { iconName, colour, name } = value;
             return (
                 <Tooltip label={name}>
                     <span>
@@ -115,8 +115,8 @@ export const TICKETS_COLUMNS = [
             return (
                 <AvatarGroup size="sm" max={5}>
                     {
-                        value.map(assigneeId => (
-                            <TooltipAvatar key={assigneeId} name={MiscellaneousService.getUserFullName(assigneeId)} />
+                        value.map(assignee => (
+                            <TooltipAvatar key={assignee._id} name={assignee.firstName + " " + assignee.lastName} />
                         ))
                     }
                 </AvatarGroup>
