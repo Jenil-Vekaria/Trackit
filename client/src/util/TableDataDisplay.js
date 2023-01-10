@@ -194,7 +194,7 @@ export const MANAGE_USERS_COLUMNS = [
         header: "Role",
         flex: 1,
         render: ({ value }) => {
-            return MiscellaneousService.getRoleInfo(value).name || "No Data";
+            return value?.name || "No Data";
         },
         shouldComponentUpdate: () => true
     }

@@ -2,11 +2,11 @@ import User from "../models/user.model.js";
 import { canPerformAction } from '../util/utils.js';
 import * as permissionCheck from "../util/permissionCheck.js";
 import bcrypt from 'bcrypt';
-import mongoose from "mongoose";
 
 export const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find({}, { _id: 1, firstName: 1, lastName: 1, email: 1, roleId: 1 });
+        const users = await User.find({}, { _id: 1, firstName: 1, lastName: 1, email: 1, roleId: 1 })
+            .populate({ path: "roleId" });
         return res.json({ users });
     } catch (error) {
         return res.status(500).json({ error: error.message });
