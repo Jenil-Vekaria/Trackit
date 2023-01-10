@@ -1,17 +1,11 @@
 import express from 'express';
 import { signup, login } from '../controllers/auth.controller.js';
-import { check } from 'express-validator';
+import { validateResource } from "../middleware/middleware.js";
+import { signupSchema, loginSchema } from "../schema/auth.schema.js";
 
 const router = express.Router();
 
-router.post("/signup", [
-    check("email", "Invalid email").isEmail(),
-    check("password", "Password must be at least 6 characters long").isLength({ min: 6 }),
-    check("confirmPassword").not().isEmpty(),
-    check("firstName", "Invalid first name").not().isEmpty(),
-    check("lastName", "Invalid last name").not().isEmpty()
-], signup);
-
-router.post("/login", login);
+router.post("/signup", validateResource(signupSchema), signup);
+router.post("/login", validateResource(loginSchema), login);
 
 export default router;

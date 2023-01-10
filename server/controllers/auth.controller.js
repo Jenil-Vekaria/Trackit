@@ -10,10 +10,6 @@ import { validationResult } from "express-validator";
     200 - OK
 */
 
-const EXPIRATION = "1h";
-const PASSWORD_SALT = 12;
-
-
 export const login = async (req, res) => {
     const { email, password } = req.body;
 
@@ -30,7 +26,7 @@ export const login = async (req, res) => {
             return res.status(400).json({ message: "Please provide a valid email address and password" });
         }
 
-        const accessToken = jwt.sign({ email: existingUser.email, id: existingUser._id, roleId: existingUser.roleId }, process.env.SECRET_KEY, { expiresIn: EXPIRATION });
+        const accessToken = jwt.sign({ email: existingUser.email, id: existingUser._id, roleId: existingUser.roleId }, process.env.SECRET_KEY, { expiresIn: process.env.JWT_TOKEN_EXPIRATION });
 
         return res.status(200).json({
             firstName: existingUser.firstName,
@@ -73,7 +69,7 @@ export const signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, +process.env.PASSWORD_SALT);
 
         //Create user role object
-        const developerRoleObject = await Role.findOne({ name: "developer" });
+        const developerRoleObject = await Role.findOne({ name: "Developer" });
 
         if (!developerRoleObject) {
             return res.status(404).json({ message: "No developer role found" });
