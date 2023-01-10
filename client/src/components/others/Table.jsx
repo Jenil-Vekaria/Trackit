@@ -61,7 +61,7 @@ const Table = ({
 
 		setTimeout(() => {
 			setIsLoading(false);
-		}, 200);
+		}, 900);
 	}, [tableData]);
 
 	return (

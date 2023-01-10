@@ -34,7 +34,7 @@ const ViewProject = () => {
 	const [projectInfo, setProjectInfo] = useState({});
 	const projectTickets = useSelector(getTickets);
 	const [viewTicket, setviewTicket] = useState(null);
-	const [isLoading, setisLoading] = useState(true);
+	const [isLoading, setisLoading] = useState(false);
 
 	const { projectID } = useParams();
 	const { isOpen, onOpen, onClose } = useDisclosure();
@@ -54,9 +54,9 @@ const ViewProject = () => {
 	const getProjectTickets = async () => {
 		await TicketService.getProjectTickets(projectID);
 
-		setTimeout(() => {
-			setisLoading(false);
-		}, 100);
+		// setTimeout(() => {
+		// 	setisLoading(false);
+		// }, 100);
 	};
 
 	const onTicketClick = (rowProps, event) => {
