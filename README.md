@@ -42,7 +42,12 @@
 
 Start developing locally.
 
-### Step 1: Clone the repo
+### Step 1: Download Node.js and MongoDB
+
+Download: [MongoDB](https://www.mongodb.com/try/download/community)
+Download: [Node.js](https://nodejs.org/en/)
+
+### Step 2: Clone the repo
 
 Fork the repository then clone it locally by doing
 
