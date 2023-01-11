@@ -11,7 +11,7 @@ router.get("/:ticketId", getTicketInfo);
 
 router.post("/project/:projectId", validateResource(createTicketSchema), createTicket);
 
-router.patch("/project/:projectId", validateResource(createTicketSchema), updateTicket);
+router.patch("/project/:projectId", updateTicket);
 
 router.delete("/:ticketId", deleteTicket);
 

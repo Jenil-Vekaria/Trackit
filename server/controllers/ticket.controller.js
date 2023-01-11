@@ -1,7 +1,7 @@
 import Project from "../models/project.model.js";
 import Ticket from "../models/ticket.model.js";
 import * as permissionCheck from "../util/permissionCheck.js";
-import { canPerformAction } from "../util/utils.js";
+import { canPerformAction, validateObjectId } from "../util/utils.js";
 
 export const getUserTickets = async (req, res) => {
 
@@ -134,19 +134,9 @@ export const createTicket = async (req, res) => {
 export const updateTicket = async (req, res) => {
     const { projectId } = req.params;
 
-    const {
-        _id,
-        type,
-        title,
-        description,
-        status,
-        tags,
-        assignees,
-        estimatedTime,
-        estimatedTimeUnit
-    } = req.body;
-
     try {
+        validateObjectId(projectId, "Invalid project id", res);
+        validateObjectId(req.body._id, "Invalid ticket id", res);
 
         // Verify the permissions
         const userId = req.user._id;
@@ -162,28 +152,10 @@ export const updateTicket = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to add tickets to a project" });
         }
 
-        // Ensure the ticket exist
-        const ticket = await Ticket.findOne({ _id });
 
-        if (!ticket) {
-            return res.status(403).json({ message: "Ticket does not exist" });
-        }
+        await Ticket.findOneAndUpdate({ _id: req.body._id }, req.body);
 
-        ticket.type = type || ticket.type;
-        ticket.title = title || ticket.title;
-        ticket.description = description || ticket.description;
-        ticket.status = status || ticket.status;
-        ticket.tags = tags || ticket.tags;
-        ticket.assignees = assignees || ticket.assignees;
-        ticket.estimatedTime = estimatedTime || ticket.estimatedTime;
-        ticket.estimatedTimeUnit = estimatedTimeUnit || ticket.estimatedTimeUnit;
-        ticket.updatedOn = Date.now();
-
-
-        await ticket.save({ validateBeforeSave: true });
-
-
-        const updatedTicket = await Ticket.findById(ticket._id)
+        const updatedTicket = await Ticket.findById(req.body._id)
             .populate({ path: "projectId", select: { _id: 0, title: 1 } })
             .populate({ path: "type", select: { _id: 0, __v: 0 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
@@ -192,6 +164,7 @@ export const updateTicket = async (req, res) => {
 
 
     } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: error.message });
     }
 };
@@ -200,8 +173,6 @@ export const deleteTicket = async (req, res) => {
     const { ticketId } = req.params;
 
     try {
-        //Get user permssion
-        const userId = req.user._id;
 
         if (!canPerformAction(permissionCheck.canManageTicket, req.user)) {
             return res.status(403).json({ message: "Not authorized to delete the ticket" });

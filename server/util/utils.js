@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Role from "../models/role.model.js";
 
 export const getUserRole = async (roleId) => {
@@ -20,4 +21,10 @@ export const canPerformAction = async (permissionCheck, user) => {
     const roleObject = await getUserRole(roleId);
 
     return permissionCheck(roleObject.permissions);
+};
+
+export const validateObjectId = (id, message, res) => {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(403).json({ message });
+    }
 };
