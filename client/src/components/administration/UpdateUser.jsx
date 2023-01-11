@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
 	Alert,
 	Button,
@@ -35,7 +35,18 @@ const UpdateUser = ({
 	const roles = useSelector(getRoles);
 	const formRef = useRef(null);
 	const [error, setError] = useState(null);
+	const [userInfo, setUserInfo] = useState({});
 	const [showPassword, setShowPassword] = useBoolean();
+
+	useEffect(() => {
+		if (viewUser) {
+			const userInfoCopy = { ...viewUser };
+			userInfoCopy.roleId = viewUser.roleId?._id;
+			console.log(userInfoCopy);
+
+			setUserInfo(userInfoCopy);
+		}
+	}, [viewUser]);
 
 	const onUpdateUser = async (values, action) => {
 		try {
@@ -70,12 +81,13 @@ const UpdateUser = ({
 				<ModalCloseButton />
 				<ModalBody>
 					<Formik
-						initialValues={viewUser}
+						initialValues={userInfo}
 						validationSchema={
 							isUpdateMyProfile ? SignupSchema : ManageUserSchema
 						}
 						onSubmit={onUpdateUser}
 						innerRef={formRef}
+						enableReinitialize
 					>
 						{({ errors, touched }) => (
 							<Form>

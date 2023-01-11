@@ -7,11 +7,9 @@ export const usePermissions = (permissionCheck) => {
     const [permissions, setPermissions] = useState([]);
 
     useEffect(() => {
-        const currentUserRole = MiscellaneousService.getRoleInfo(
-            AuthService.getCurrentUser().roleId,
-        );
+        const user = AuthService.getCurrentUser();
 
-        setPermissions(currentUserRole.permissions);
+        setPermissions(user.roleId.permissions);
     }, []);
 
     return permissionCheck(permissions);

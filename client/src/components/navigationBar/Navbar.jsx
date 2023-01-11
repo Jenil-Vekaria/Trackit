@@ -138,10 +138,7 @@ const Navbar = () => {
 									<Heading as="h3" size="xs">
 										{user.firstName} {user.lastName}
 									</Heading>
-									<Text fontSize="sm">
-										{MiscellaneousService.getRoleInfo(user.roleId).name ||
-											"No Data"}
-									</Text>
+									<Text fontSize="sm">{user.roleId.name || "No Data"}</Text>
 								</Flex>
 							</Flex>
 						</PopoverTrigger>

@@ -11,6 +11,9 @@ const styles = {
     cursor: "pointer",
 };
 
+export const TICKETS_DEFAULT_SORT = { name: 'createdOn', dir: -1 };
+
+
 export const PROJECTS_COLUMNS = [
     {
         name: "title",
@@ -34,7 +37,7 @@ export const PROJECTS_COLUMNS = [
         header: "Author",
         flex: 1,
         render: ({ value }) => {
-            return <span>{value.firstName} {value.lastName}</span>;
+            return value.firstName + " " + value.lastName;
         },
         shouldComponentUpdate: () => true
     },
@@ -143,8 +146,6 @@ export const TICKETS_COLUMNS = [
     }
 ];
 
-export const TICKETS_DEFAULT_SORT = { name: 'createdOn', dir: -1 };
-
 export const USERS_COLUMNS = [
     {
         name: "_id",
@@ -161,7 +162,7 @@ export const USERS_COLUMNS = [
         header: "Role",
         flex: 1,
         render: ({ value }) => {
-            return MiscellaneousService.getRoleInfo(value).name;
+            return value.name;
         },
         shouldComponentUpdate: () => true
     }
