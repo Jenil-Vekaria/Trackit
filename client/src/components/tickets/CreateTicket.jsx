@@ -55,6 +55,7 @@ const CreateTicket = ({
 	const ticketTypes = useSelector(getTicketType);
 	const allUsers = useSelector(getUsers(true));
 	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
+
 	const canManageTickets = usePermissions(Permissions.canManageTicket);
 
 	const formRef = useRef();
@@ -83,11 +84,9 @@ const CreateTicket = ({
 	const getSelectedAssigneesId = () => {
 		const selectedAssignees = {};
 
-		if (ticket) {
-			ticket.assignees.forEach((assignee) => {
-				selectedAssignees[assignee] = true;
-			});
-		}
+		ticket?.assignees.forEach((assignee) => {
+			selectedAssignees[assignee._id] = true;
+		});
 
 		return selectedAssignees;
 	};
