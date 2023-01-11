@@ -21,5 +21,5 @@ export const projectSlice = createSlice({
 export const { setProjects, setProject } = projectSlice.actions;
 
 export const getProjects = (state) => state.project.data;
-
+export const getProjectInfo = (projectId) => (state) => state.project.data.filter(project => project._id === projectId)[0];
 export default projectSlice.reducer;

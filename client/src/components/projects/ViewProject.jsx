@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import ProjectService from "../../services/project-service";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import TicketService from "../../services/ticket-service";
 import {
@@ -23,64 +22,49 @@ import {
 	TICKETS_COLUMNS,
 } from "../../util/TableDataDisplay";
 import CreateTicket from "../tickets/CreateTicket";
-import { useDispatch, useSelector } from "react-redux";
-import { clearTickets, getTickets } from "../../features/ticketSlice.js";
+import { useSelector } from "react-redux";
+import { getTickets } from "../../features/ticketSlice.js";
 import Table from "../others/Table";
 import Dashboard from "../../pages/Dashboard";
 import PermissionsRender from "../others/PermissionsRender";
 import { Permissions } from "../../util/Utils";
+import { getProjectInfo } from "../../features/projectSlice";
 
 const ViewProject = () => {
-	const [projectInfo, setProjectInfo] = useState({});
-	const projectTickets = useSelector(getTickets);
-	const [viewTicket, setviewTicket] = useState(null);
-	const [isLoading, setisLoading] = useState(false);
-
 	const { projectID } = useParams();
 	const { isOpen, onOpen, onClose } = useDisclosure();
+
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
+	const tickets = useSelector(getTickets);
+	const projectInfo = useSelector(getProjectInfo(projectID));
 
-	const getProjectInfo = async () => {
-		const project = await ProjectService.getProjectInfo(projectID);
-
-		if (project) {
-			setProjectInfo(project);
-		} else {
-			navigate("/404");
-		}
-	};
+	const [projectTickets, setprojectTickets] = useState([]);
+	const [viewTicket, setviewTicket] = useState(null);
 
 	const getProjectTickets = async () => {
 		await TicketService.getProjectTickets(projectID);
-
-		// setTimeout(() => {
-		// 	setisLoading(false);
-		// }, 100);
 	};
 
-	const onTicketClick = (rowProps, event) => {
+	const onTicketClick = (rowProps, _) => {
 		setviewTicket(rowProps.data);
 		onOpen();
 	};
 
 	const navigateBack = () => {
-		dispatch(clearTickets());
 		navigate(-1);
 	};
 
 	useEffect(() => {
-		getProjectInfo();
+		if (!projectInfo) {
+			navigate("/404");
+		}
+
 		getProjectTickets();
 	}, []);
 
-	if (isLoading) {
-		return (
-			<Center w="100%">
-				<Spinner color="purple" size="xl" />
-			</Center>
-		);
-	}
+	useEffect(() => {
+		setprojectTickets(tickets);
+	}, [tickets]);
 
 	return (
 		<Flex w="100%" direction="column">

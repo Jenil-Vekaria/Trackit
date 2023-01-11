@@ -171,7 +171,7 @@ const CreateTicket = ({
 						{ticket ? "Edit" : "Create"} Ticket
 					</Heading>
 					<Text fontSize="sm" color="purple" mt={2}>
-						{ticket?.projectId?.title} || {ticket?.title}
+						{ticket?.projectId?.title} {ticket ? "|" : ""} {ticket?.title}
 					</Text>
 				</ModalHeader>
 				<ModalCloseButton onClick={closeModal} />

@@ -1,6 +1,6 @@
 import { Flex, Heading, Button, Spacer, useDisclosure } from "@chakra-ui/react";
 import { getProjects } from "../../features/projectSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link, Link as ReachLink, useNavigate } from "react-router-dom";
 import { PROJECTS_COLUMNS } from "../../util/TableDataDisplay";
 import React, { useEffect } from "react";
@@ -11,12 +11,15 @@ import { Permissions } from "../../util/Utils";
 
 const ViewAllProjects = () => {
 	const projects = useSelector(getProjects);
-	const dispatch = useDispatch();
 	const disclosure = useDisclosure();
 	const navigate = useNavigate();
 
+	const getMyProjects = async () => {
+		await ProjectService.getMyProjects();
+	};
+
 	useEffect(() => {
-		dispatch(ProjectService.getMyProjects());
+		getMyProjects();
 	}, []);
 
 	const handleRowClick = (rowData) => {

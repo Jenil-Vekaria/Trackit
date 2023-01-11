@@ -1,7 +1,7 @@
 import axios from "axios";
 import AuthService from "./auth-service";
 import { store } from "../app/store";
-import { addTicket, setTicket, setTickets, removeTicket, setMyTickets } from "../features/ticketSlice.js";
+import { addTicket, setTicket, setTickets, removeTicket, setMyTickets, clearTickets } from "../features/ticketSlice.js";
 
 const API = axios.create({ baseURL: process.env.REACT_APP_API_ENDPOINT + "/ticket" });
 
@@ -18,8 +18,10 @@ const getUserTickets = async () => {
     const { _id } = AuthService.getCurrentUser();
 
     try {
+        store.dispatch(clearTickets());
         const { data: { tickets } } = await API.get(`/user/${_id}`);
-        store.dispatch(setMyTickets(tickets));
+        store.dispatch(setTickets(tickets));
+
         return tickets;
     } catch (error) {
         console.error(error);
@@ -28,8 +30,8 @@ const getUserTickets = async () => {
 
 const getProjectTickets = async (projectId) => {
     try {
+        store.dispatch(clearTickets());
         const { data: { tickets } } = await API.get(`/project/${projectId}`);
-
         store.dispatch(setTickets(tickets));
 
         return tickets;
@@ -64,7 +66,7 @@ const updateTicket = async (data, projectId) => {
         store.dispatch(setTicket(ticket));
 
     } catch (error) {
-        console.error(error);
+        throw error.response.data.message;
     }
 };
 

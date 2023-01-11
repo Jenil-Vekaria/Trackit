@@ -6,26 +6,33 @@ import { TICKETS_COLUMNS } from "../util/TableDataDisplay";
 import TicketService from "../services/ticket-service";
 import CreateTicket from "../components/tickets/CreateTicket";
 import { useSelector } from "react-redux";
-import { getMyTickets } from "../features/ticketSlice";
+import { getTickets } from "../features/ticketSlice";
 
 const Tickets = () => {
-	const myTickets = useSelector(getMyTickets);
+	const tickets = useSelector(getTickets);
+	const [myTickets, setmyTickets] = useState([]);
 	const [viewTicket, setViewTicket] = useState(null);
 	const [viewTicketProjectId, setViewTicketProjectId] = useState(null);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const getUserTickets = async () => {
 		await TicketService.getUserTickets();
+		// setmyTickets(tickets);
+		// setTimeout(() => setmyTickets(tickets), 30);
 	};
 
 	const onTicketClick = (rowProps, event) => {
 		setViewTicket(rowProps.data);
-		setViewTicketProjectId(rowProps.data.projectId);
+		setViewTicketProjectId(rowProps.data.projectId._id);
 		onOpen();
 	};
 	useEffect(() => {
 		getUserTickets();
 	}, []);
+
+	useEffect(() => {
+		setmyTickets(tickets);
+	}, [tickets]);
 
 	return (
 		<Flex w="100%" direction="column" padding={10}>
