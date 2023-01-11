@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Role from "../models/role.model.js";
 import User from "../models/user.model.js";
 import * as permissionCheck from "../util/permissionCheck.js";
@@ -51,10 +50,6 @@ export const deleteRole = async (req, res) => {
             return res.status(403).json({ error: "Not authorized to delete roles" });
         }
 
-        if (!mongoose.Types.ObjectId.isValid(roleId)) {
-            return res.status(404).json({ error: "No roles found with that id" });
-        }
-
         const totalUserWithThisRole = await User.find({ roleId }).count();
 
         if (totalUserWithThisRole > 0) {
@@ -77,10 +72,6 @@ export const updateRole = async (req, res) => {
         //Get user permissions
         if (!canPerformAction(permissionCheck.canManageProject, req.user)) {
             return res.status(403).json({ error: "Not authorized to modify roles" });
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(roleId)) {
-            return res.status(404).json({ error: "No roles found with that id" });
         }
 
         const updatedRole = await Role.findOneAndUpdate({ _id: roleId }, { name, permissions }, { new: true });

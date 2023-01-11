@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Comment from "../models/comment.model.js";
 import { canPerformAction } from "../util/utils.js";
 import * as permissionCheck from "../util/permissionCheck.js";
@@ -7,11 +6,6 @@ export const getComments = async (req, res) => {
     const { ticketId } = req.params;
 
     try {
-
-        if (!mongoose.Types.ObjectId.isValid(ticketId)) {
-            return res.status(403).json({ message: "Invalid ticket id" });
-        }
-
         const comments = await Comment.find({ ticketId }, { _id: 1, text: 1, userId: 1, updatedOn: 1, createdOn: 1 });
 
         return res.json({ comments });
@@ -54,10 +48,6 @@ export const updateComment = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to comment" });
         }
 
-        if (!mongoose.Types.ObjectId.isValid(commentId)) {
-            return res.status(403).json({ message: "Invalid comment id" });
-        }
-
         const updatedComment = await Comment.findOneAndUpdate({ _id: commentId }, { text, updatedOn: Date.now() });
 
         return res.json({ comment: updatedComment });
@@ -72,12 +62,8 @@ export const deleteComment = async (req, res) => {
     const { commentId } = req.params;
 
     try {
-        if (!(await canPerformAction(permissionCheck.canManageComments, req.user))) {
+        if (!canPerformAction(permissionCheck.canManageComments, req.user)) {
             return res.status(403).json({ message: "Not authorized to comment" });
-        }
-
-        if (!mongoose.Types.ObjectId.isValid(commentId)) {
-            return res.status(403).json({ message: "Invalid comment id" });
         }
 
         await Comment.findOneAndDelete({ _id: commentId });
