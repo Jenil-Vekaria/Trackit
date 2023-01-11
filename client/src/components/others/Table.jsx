@@ -23,7 +23,7 @@ const Table = ({
 }) => {
 	const [dataSource, setDataSource] = useState([]);
 	const [dataFields, setDataFields] = useState([]);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	const gridStyle = { minHeight: height };
 
 	const getDataSourceFields = () => {
@@ -56,12 +56,22 @@ const Table = ({
 	}, []);
 
 	useEffect(() => {
-		setIsLoading(true);
-		setDataSource(tableData);
+		/*
+			I want the table loading sign when rendering new data but don't want to show it when some specific data (row) is updated
+			All the table data is in dataSource:
+				if data exist in the dataSource (updating specific row), update dataSource
+				if data does not exist in dataSource (new data), show loading sign
+		*/
+		if (dataSource.length > 0) {
+			setDataSource(tableData);
+		} else {
+			setIsLoading(true);
 
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 900);
+			setTimeout(() => {
+				setDataSource(tableData);
+				setIsLoading(false);
+			}, 500);
+		}
 	}, [tableData]);
 
 	return (
@@ -72,28 +82,28 @@ const Table = ({
 				handleSearchInputChange={handleSearchInputChange}
 			/>
 
-			{isLoading ? (
+			{/* {isLoading ? (
 				<Center w="100%">
 					<Spinner color="purple" size="xl" />
 				</Center>
-			) : (
-				<ReactDataGrid
-					idProperty="_id"
-					style={gridStyle}
-					dataSource={dataSource}
-					columns={columns}
-					defaultSortInfo={defaultSortInfo}
-					sortable={sortable}
-					onRowClick={onRowClick}
-					checkboxColumn={!disableCheckBox && hasCheckboxColumn}
-					checkboxOnlyRowSelect={hasCheckboxColumn}
-					defaultSelected={selectedRow}
-					onSelectionChange={onSelectionChange}
-					showColumnMenuTool={false}
-					loading={isLoading}
-					rowHeight={rowHeight}
-				/>
-			)}
+			) : ( */}
+			<ReactDataGrid
+				idProperty="_id"
+				style={gridStyle}
+				dataSource={dataSource}
+				columns={columns}
+				defaultSortInfo={defaultSortInfo}
+				sortable={sortable}
+				onRowClick={onRowClick}
+				checkboxColumn={!disableCheckBox && hasCheckboxColumn}
+				checkboxOnlyRowSelect={hasCheckboxColumn}
+				defaultSelected={selectedRow}
+				onSelectionChange={onSelectionChange}
+				showColumnMenuTool={false}
+				loading={isLoading}
+				rowHeight={rowHeight}
+			/>
+			{/* )} */}
 		</>
 	);
 };

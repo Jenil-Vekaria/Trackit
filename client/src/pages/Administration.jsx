@@ -27,9 +27,9 @@ const Administration = () => {
 	};
 
 	useEffect(() => {
-		setisLoading(true);
+		// setisLoading(true);
 		fetchAdminData();
-		setTimeout(() => setisLoading(false), 200);
+		// setTimeout(() => setisLoading(false), 200);
 	}, []);
 
 	if (isLoading) {
