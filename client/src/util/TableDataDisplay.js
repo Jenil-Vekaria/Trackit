@@ -55,7 +55,7 @@ export const PROJECTS_COLUMNS = [
 export const TICKETS_COLUMNS = [
     {
         name: "type",
-        searchInField: ["type"],
+        searchInField: ["type.name"],
         header: "Type",
         width: 55,
         headerEllipsis: false,
@@ -83,7 +83,6 @@ export const TICKETS_COLUMNS = [
     },
     {
         name: "description",
-        searchInField: ["description"],
         defaultVisible: false,
         header: "Description",
         flex: 3,
