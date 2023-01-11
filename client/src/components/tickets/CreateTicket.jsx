@@ -54,9 +54,7 @@ const CreateTicket = ({
 	projectId,
 }) => {
 	const ticketTypes = useSelector(getTicketType);
-	const projectAssignees = ProjectService.getProjectAssignees(
-		ticket?.projectId._id,
-	);
+	const projectAssignees = ProjectService.getProjectAssignees(projectId);
 	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
 
 	const canManageTickets = usePermissions(Permissions.canManageTicket);
@@ -173,7 +171,7 @@ const CreateTicket = ({
 						{ticket ? "Edit" : "Create"} Ticket
 					</Heading>
 					<Text fontSize="sm" color="purple" mt={2}>
-						{ticket?.projectId?.title} || {ticket?.title}
+						{ticket?.projectId?.title} {ticket ? "|" : ""} {ticket?.title}
 					</Text>
 				</ModalHeader>
 				<ModalCloseButton onClick={closeModal} />

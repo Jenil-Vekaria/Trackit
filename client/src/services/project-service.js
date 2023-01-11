@@ -14,10 +14,10 @@ API.interceptors.request.use((req) => {
     return req;
 });
 
-const getMyProjects = () => async (dispatch) => {
+const getMyProjects = async () => {
     try {
         const response = await API.get("/");
-        dispatch(setProjects(response.data.projects));
+        store.dispatch(setProjects(response.data.projects));
     } catch (error) {
         console.error(error);
     }
