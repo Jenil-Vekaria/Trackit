@@ -39,7 +39,6 @@ import TicketService from "../../services/ticket-service";
 import AlertModal from "../others/AlertModal";
 import { USERS_COLUMNS } from "../../util/TableDataDisplay";
 import Table from "../others/Table";
-import ProjectService from "../../services/project-service";
 import AuthService from "../../services/auth-service";
 import { usePermissions } from "../../hooks/usePermissions";
 import { Permissions } from "../../util/Utils";
@@ -159,7 +158,12 @@ const CreateTicket = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={closeModal} size="lg">
+		<Modal
+			closeOnOverlayClick={false}
+			isOpen={isOpen}
+			onClose={closeModal}
+			size="lg"
+		>
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>

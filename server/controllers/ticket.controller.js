@@ -46,7 +46,7 @@ export const getProjectTickets = async (req, res) => {
 
         const tickets = await Ticket.find({ projectId })
             .populate({ path: "projectId", select: { _id: 0, title: 1 } })
-            .populate({ path: "type", select: { _id: 0, __v: 0 } })
+            .populate({ path: "type", select: { __v: 0 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         return res.json({ tickets });
@@ -69,7 +69,7 @@ export const getTicketInfo = async (req, res) => {
         // Ensure the ticket exist
         const ticket = await Ticket.findOne({ _id: ticketId })
             .populate({ path: "projectId", select: { _id: 0, title: 1 } })
-            .populate({ path: "type", select: { _id: 0, __v: 0 } })
+            .populate({ path: "type", select: { __v: 0 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         // Ensure the user belongs to the project
@@ -121,7 +121,7 @@ export const createTicket = async (req, res) => {
 
         const ticket = await Ticket.findById(newTicket._id)
             .populate({ path: "projectId", select: { _id: 0, title: 1 } })
-            .populate({ path: "type", select: { _id: 0, __v: 0 } })
+            .populate({ path: "type", select: { __v: 0 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         return res.json({ ticket });
@@ -156,7 +156,7 @@ export const updateTicket = async (req, res) => {
 
         const updatedTicket = await Ticket.findById(req.body._id)
             .populate({ path: "projectId", select: { _id: 0, title: 1 } })
-            .populate({ path: "type", select: { _id: 0, __v: 0 } })
+            .populate({ path: "type", select: { __v: 0 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         return res.json({ ticket: updatedTicket });
