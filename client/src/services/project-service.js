@@ -77,7 +77,15 @@ const getProjectStats = async (projectId) => {
         console.error(error);
 
     }
+};
 
+const getProjectAssignees = (projectId) => {
+    const state = store.getState();
+    const [project] = state.project.data.filter(project => project._id === projectId);
+
+    const projectAssignees = state.miscellaneous.users.filter(user => project.assignees.includes(user._id));
+
+    return projectAssignees;
 };
 
 const ProjectService = {
@@ -87,7 +95,8 @@ const ProjectService = {
     updateProject,
     deleteProject,
     getProjectTitle,
-    getProjectStats
+    getProjectStats,
+    getProjectAssignees
 };
 
 export default ProjectService;

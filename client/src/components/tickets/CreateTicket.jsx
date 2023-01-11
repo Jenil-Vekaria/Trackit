@@ -44,6 +44,7 @@ import { usePermissions } from "../../hooks/usePermissions";
 import { Permissions } from "../../util/Utils";
 import PermissionsRender from "../others/PermissionsRender";
 import CommentSection from "../comment/CommentSection";
+import ProjectService from "../../services/project-service";
 
 const CreateTicket = ({
 	isOpen,
@@ -53,7 +54,7 @@ const CreateTicket = ({
 	projectId,
 }) => {
 	const ticketTypes = useSelector(getTicketType);
-	const allUsers = useSelector(getUsers(true));
+	const projectAssignees = ProjectService.getProjectAssignees(projectId);
 	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
 
 	const canManageTickets = usePermissions(Permissions.canManageTicket);
@@ -328,7 +329,7 @@ const CreateTicket = ({
 
 							<TabPanel>
 								<Table
-									tableData={allUsers}
+									tableData={projectAssignees}
 									columns={USERS_COLUMNS}
 									searchPlaceholder={"Search for users"}
 									height={300}
