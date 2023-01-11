@@ -32,7 +32,7 @@ export const addProject = async (req, res) => {
             return res.status(400).json({ message: "Project already exist with that title" });
         }
 
-        if (assignees.length == 0) {
+        if (!assignees.includes(userId)) {
             assignees.push(userId);
         }
 
@@ -137,6 +137,25 @@ export const updateProject = async (req, res) => {
         if (!project) {
             return res.status(403).json({ message: "Not authorized to modify projects" });
         }
+
+        //Get all the removed assginee
+        const removedAssignees = project.assignees.filter(assigneeId => !assignees.includes(assigneeId.toString()));
+
+        //Unassign all their tickets
+        const updateTicketAssigneesPromise = removedAssignees.map(assigneeId => {
+            const updateTicketPromise = new Promise(async (resolve, reject) => {
+                try {
+                    await Ticket.updateMany({ assignees: assigneeId }, { $pull: { assignees: mongoose.Types.ObjectId(assigneeId) } });
+                    resolve();
+                } catch (error) {
+                    reject(error);
+                }
+            });
+
+            return updateTicketPromise;
+        });
+
+        await Promise.all(updateTicketAssigneesPromise);
 
         project.title = title;
         project.description = description;
