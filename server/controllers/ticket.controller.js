@@ -135,7 +135,6 @@ export const updateTicket = async (req, res) => {
     const { projectId } = req.params;
 
     try {
-        validateObjectId(projectId, "Invalid project id", res);
         validateObjectId(req.body._id, "Invalid ticket id", res);
 
         // Verify the permissions

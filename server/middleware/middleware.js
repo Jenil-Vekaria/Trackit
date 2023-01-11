@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import User from '../models/user.model.js';
 
 export const authMiddleware = async (req, res, next) => {
@@ -49,6 +50,16 @@ export const validateResource = (resourceSchema) => {
             .catch((err) => {
                 res.status(400).json({ error: err.errors[0] });
             });
+    };
+};
+
+export const validateParamId = (paramId) => {
+    return (req, res, next) => {
+        if (!mongoose.Types.ObjectId.isValid(req.params[paramId])) {
+            return res.status(403).json({ message: `Invalid ${paramId}` });
+        }
+
+        next();
     };
 }
 
