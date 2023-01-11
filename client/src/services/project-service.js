@@ -80,6 +80,9 @@ const getProjectStats = async (projectId) => {
 };
 
 const getProjectAssignees = (projectId) => {
+    if (!projectId)
+        return;
+
     const state = store.getState();
     const [project] = state.project.data.filter(project => project._id === projectId);
 

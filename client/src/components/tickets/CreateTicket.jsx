@@ -54,7 +54,9 @@ const CreateTicket = ({
 	projectId,
 }) => {
 	const ticketTypes = useSelector(getTicketType);
-	const projectAssignees = ProjectService.getProjectAssignees(projectId);
+	const projectAssignees = ProjectService.getProjectAssignees(
+		ticket?.projectId._id,
+	);
 	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
 
 	const canManageTickets = usePermissions(Permissions.canManageTicket);
