@@ -138,6 +138,11 @@ export const updateProject = async (req, res) => {
             return res.status(403).json({ message: "Not authorized to modify projects" });
         }
 
+        //! Prevent self-remove from project
+        if (!assignees.includes(userId)) {
+            assignees.push(userId);
+        }
+
         //Get all the removed assginee
         const removedAssignees = project.assignees.filter(assigneeId => !assignees.includes(assigneeId.toString()));
 
