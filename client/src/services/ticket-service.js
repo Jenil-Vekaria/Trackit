@@ -1,7 +1,7 @@
 import axios from "axios";
 import AuthService from "./auth-service";
 import { store } from "../app/store";
-import { addTicket, setTicket, setTickets, removeTicket, setMyTickets, clearTickets } from "../features/ticketSlice.js";
+import { addTicket, setTicket, setTickets, removeTicket, clearTickets } from "../features/ticketSlice.js";
 
 const API = axios.create({ baseURL: process.env.REACT_APP_API_ENDPOINT + "/ticket" });
 
@@ -56,7 +56,7 @@ const createTicket = async (data, projectId) => {
 
         store.dispatch(addTicket(ticket));
     } catch (error) {
-        console.error(error);
+        throw error.response.data.message;
     }
 };
 
@@ -77,6 +77,7 @@ const deleteTicket = async (ticketId) => {
         store.dispatch(removeTicket({ ticketId }));
     } catch (error) {
         console.error(error);
+        throw error.response.data.message;
     }
 };
 

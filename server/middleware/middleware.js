@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import User from '../models/user.model.js';
+import { getUserRole } from "../util/utils.js";
 
 export const authMiddleware = async (req, res, next) => {
     const token = req.headers['x-access-token'];
@@ -61,5 +62,19 @@ export const validateParamId = (paramId) => {
 
         next();
     };
+};
+
+export const checkUserPermissions = (objectName, permissionCheck) => async (req, res, next) => {
+    const roleId = req.user.roleId;
+    const roleObject = await getUserRole(roleId);
+
+    const isPermitted = permissionCheck(roleObject.permissions);
+
+    if (isPermitted) {
+        next();
+    }
+    else {
+        return res.status(403).json({ message: `Not permitted to create/modify ${objectName}` });
+    }
 }
 

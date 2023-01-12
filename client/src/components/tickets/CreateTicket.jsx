@@ -34,12 +34,11 @@ import {
 
 import { useRef } from "react";
 import { TICKET_STATUS } from "../../util/Constants";
-import { getTicketType, getUsers } from "../../features/miscellaneousSlice.js";
+import { getTicketType } from "../../features/miscellaneousSlice.js";
 import TicketService from "../../services/ticket-service";
 import AlertModal from "../others/AlertModal";
 import { USERS_COLUMNS } from "../../util/TableDataDisplay";
 import Table from "../others/Table";
-import AuthService from "../../services/auth-service";
 import { usePermissions } from "../../hooks/usePermissions";
 import { Permissions } from "../../util/Utils";
 import PermissionsRender from "../others/PermissionsRender";
@@ -135,17 +134,12 @@ const CreateTicket = ({
 	};
 
 	const onTicketDelete = async () => {
-		await TicketService.deleteTicket(ticket._id);
-		closeModal();
-	};
-
-	//Every ime the signed in user's ticket is updated, refetch all the user's tickets and store in redux
-	const getMyTickets = async () => {
-		const { _id } = AuthService.getCurrentUser();
-
-		if (assigneesId.includes(_id) || ticketInfo.createdBy === _id) {
-			await TicketService.getUserTickets();
+		try {
+			await TicketService.deleteTicket(ticket._id);
+		} catch (error) {
+			seterror(error);
 		}
+		closeModal();
 	};
 
 	const closeModal = () => {
@@ -153,7 +147,7 @@ const CreateTicket = ({
 		setAssigneesId([]);
 		setTicketInfo(CreateTicketData);
 		setopenDeleteAlert(false);
-		// getMyTickets();
+		seterror("");
 		onClose();
 	};
 

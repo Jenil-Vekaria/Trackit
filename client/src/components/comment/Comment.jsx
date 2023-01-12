@@ -21,8 +21,6 @@ import moment from "moment";
 import PermissionsRender from "../others/PermissionsRender";
 import { Permissions } from "../../util/Utils";
 
-//_id = commentId
-
 const Comment = ({
 	_id,
 	username,
@@ -31,6 +29,7 @@ const Comment = ({
 	getTicketComments,
 	updatedOn,
 	createdOn,
+	seterror,
 }) => {
 	const [isEditing, setisEditing] = useState(false);
 	const [comment, setcomment] = useState(text);
@@ -38,13 +37,15 @@ const Comment = ({
 	const signedInUserId = AuthService.getCurrentUser()?._id;
 	const isSignedInUsersComment = userId === signedInUserId;
 	const isCommentEdited = createdOn !== updatedOn;
+
 	const onCommentEditSaveClick = async () => {
+		seterror("");
 		if (isEditing) {
 			try {
 				await CommentService.updateTicketComment(_id, { text: comment });
 				getTicketComments();
 			} catch (error) {
-				console.log(error);
+				seterror(error);
 			}
 		}
 
@@ -53,9 +54,14 @@ const Comment = ({
 	};
 
 	const onCommentDeleteClick = async () => {
-		onClose();
-		await CommentService.deleteTicketComment(_id);
-		getTicketComments();
+		seterror("");
+		try {
+			onClose();
+			await CommentService.deleteTicketComment(_id);
+			getTicketComments();
+		} catch (error) {
+			seterror(error);
+		}
 	};
 
 	const getCommentDateTime = () => {

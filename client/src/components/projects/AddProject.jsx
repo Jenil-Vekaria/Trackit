@@ -35,17 +35,22 @@ import ProjectService from "../../services/project-service";
 import AlertModal from "../others/AlertModal";
 import { getUsers } from "../../features/miscellaneousSlice.js";
 import Table from "../others/Table";
-import { usePermissions } from "../../hooks/usePermissions";
-import { Permissions } from "../../util/Utils";
-import PermissionsRender from "../others/PermissionsRender";
+import AuthService from "../../services/auth-service";
+
+/*
+You can edit project if
+	u r project author
+
+*/
 
 const AddProject = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
-	const canUpdateProjectInfo = usePermissions(Permissions.canManageProject);
+	const [isProjectAuthor, setisProjectAuthor] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const { projectID } = useParams();
+	const isNewProject = !projectID;
 	const allUsers = useSelector(getUsers(true));
 	const formRef = useRef();
 	const toast = useToast();
@@ -70,15 +75,23 @@ const AddProject = () => {
 	};
 
 	const onProjectDelete = async (onClose) => {
+		try {
+			await ProjectService.deleteProject(projectInfo._id);
+			navigate(-2);
+		} catch (error) {
+			seterror(error);
+		}
 		onClose();
-		await ProjectService.deleteProject(projectInfo._id);
-		navigate(-2);
 	};
 
 	const getProjectInfo = async () => {
 		setisLoading(true);
-		const { _id, title, description, assignees } =
+		const { _id, title, description, assignees, authorId } =
 			await ProjectService.getProjectInfo(projectID);
+
+		const isCurrentUserProjectAuthor =
+			AuthService.getCurrentUser()._id === authorId._id;
+		setisProjectAuthor(isCurrentUserProjectAuthor);
 		setProjectInfo({
 			_id,
 			title,
@@ -92,41 +105,26 @@ const AddProject = () => {
 		}, 100);
 	};
 
-	const onHandleFormSubmit = (values, action) => {
+	const onHandleFormSubmit = async (values, _) => {
 		values.assignees = assigneesId;
 
-		if (projectID) {
-			ProjectService.updateProject(values)
-				.then((result) => {
-					toast({
-						title: "Project Updated",
-						status: "success",
-						duration: 4000,
-						isClosable: true,
-					});
+		try {
+			if (projectID) {
+				await ProjectService.updateProject(values);
+			} else {
+				await ProjectService.createProject(values);
+			}
 
-					navigate(-1);
-				})
-				.catch((error) => {
-					console.info(error.response.data.message);
-				});
-		} else {
-			ProjectService.addProject(values)
-				.then((result) => {
-					toast({
-						title: "Project created",
-						status: "success",
-						duration: 4000,
-						isClosable: true,
-					});
+			toast({
+				title: `Project ${projectID ? "Updated" : "Created"}`,
+				status: "success",
+				duration: 4000,
+				isClosable: true,
+			});
 
-					dispatch(ProjectService.getMyProjects());
-					navigate(-1);
-				})
-				.catch((error) => {
-					console.log(error);
-					seterror(error.response.data.message);
-				});
+			navigate(-1);
+		} catch (error) {
+			seterror(error);
 		}
 	};
 	useEffect(() => {
@@ -194,7 +192,7 @@ const AddProject = () => {
 														name="title"
 														type="text"
 														border="2px"
-														disabled={!canUpdateProjectInfo}
+														disabled={!isNewProject && !isProjectAuthor}
 													/>
 													<FormErrorMessage>{errors.title}</FormErrorMessage>
 												</FormControl>
@@ -211,7 +209,7 @@ const AddProject = () => {
 														type="text"
 														border="2px"
 														height="100%"
-														disabled={!canUpdateProjectInfo}
+														disabled={!isNewProject && !isProjectAuthor}
 													/>
 													<FormErrorMessage>
 														{errors.description}
@@ -234,14 +232,14 @@ const AddProject = () => {
 							sortable={false}
 							selectedRow={getSelectedAssigneesId()}
 							onSelectionChange={onAssigneeClick}
-							disableCheckBox={!canUpdateProjectInfo}
+							disableCheckBox={!isNewProject && !isProjectAuthor}
 						/>
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
 
 			<Flex mt={3} justify="flex-end" gap={3}>
-				<PermissionsRender permissionCheck={Permissions.canManageProject}>
+				{isNewProject || isProjectAuthor ? (
 					<Button
 						colorScheme="purple"
 						onClick={() => {
@@ -250,16 +248,14 @@ const AddProject = () => {
 					>
 						{projectID ? "Save" : "Create"} Project
 					</Button>
-				</PermissionsRender>
+				) : null}
 
-				{projectID ? (
-					<PermissionsRender permissionCheck={Permissions.canManageProject}>
-						<Button colorScheme="red" onClick={() => onOpen()}>
-							Delete Project
-						</Button>
-					</PermissionsRender>
+				{projectID && isProjectAuthor ? (
+					<Button colorScheme="red" onClick={() => onOpen()}>
+						Delete Project
+					</Button>
 				) : (
-					<Button onClick={() => navigate(-1)}>Cancel</Button>
+					<Button onClick={() => navigate(-1)}>Close</Button>
 				)}
 			</Flex>
 

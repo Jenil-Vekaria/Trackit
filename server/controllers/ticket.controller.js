@@ -1,17 +1,12 @@
 import Project from "../models/project.model.js";
 import Ticket from "../models/ticket.model.js";
-import * as permissionCheck from "../util/permissionCheck.js";
-import { canPerformAction, validateObjectId } from "../util/utils.js";
+import { validateObjectId } from "../util/utils.js";
 
 export const getUserTickets = async (req, res) => {
 
     const { userId } = req.params;
 
     try {
-        // Verify the permissions
-        if (!req.user._id.equals(userId)) {
-            return res.status(403).json({ message: "Not authorized to view the tickets" });
-        }
 
         const tickets = await Ticket.find({ assignees: userId })
             .populate({ path: "projectId", select: { title: 1 } })
@@ -30,12 +25,7 @@ export const getProjectTickets = async (req, res) => {
     const { projectId } = req.params;
 
     try {
-        // Verify the permissions
         const userId = req.user._id;
-
-        if (!canPerformAction(permissionCheck.canManageTicket, req.user)) {
-            return res.status(403).json({ message: "Not authorized to get project tickets" });
-        }
 
         // Ensure the user belongs to the project
         const project = await Project.findById(projectId);
@@ -60,11 +50,6 @@ export const getTicketInfo = async (req, res) => {
 
     try {
         const userId = req.user._id;
-
-        // Verify the permissions
-        if (!canPerformAction(permissionCheck.canManageTicket, req.user)) {
-            return res.status(403).json({ message: "Not authorized to view the ticket" });
-        }
 
         // Ensure the ticket exist
         const ticket = await Ticket.findOne({ _id: ticketId })
@@ -103,12 +88,7 @@ export const createTicket = async (req, res) => {
     } = req.body;
 
     try {
-        // Verify the permissions
         const userId = req.user._id;
-
-        if (!canPerformAction(permissionCheck.canManageTicket, req.user)) {
-            return res.status(403).json({ message: "Not authorized to add tickets to a project" });
-        }
 
         // Ensure the user belongs to the project
         const project = await Project.findOne({ _id: projectId });
@@ -135,14 +115,9 @@ export const updateTicket = async (req, res) => {
     const { projectId } = req.params;
 
     try {
-        validateObjectId(req.body._id, "Invalid ticket id", res);
-
-        // Verify the permissions
         const userId = req.user._id;
 
-        if (!canPerformAction(permissionCheck.canManageTicket, req.user)) {
-            return res.status(403).json({ message: "Not authorized to add tickets to a project" });
-        }
+        validateObjectId(req.body._id, "Invalid ticket id", res);
 
         // Ensure the user belongs to the project
         const project = await Project.findById(projectId);
@@ -172,11 +147,6 @@ export const deleteTicket = async (req, res) => {
     const { ticketId } = req.params;
 
     try {
-
-        if (!canPerformAction(permissionCheck.canManageTicket, req.user)) {
-            return res.status(403).json({ message: "Not authorized to delete the ticket" });
-        }
-
         const ticket = await Ticket.findOne({ _id: ticketId });
 
         if (!ticket) {

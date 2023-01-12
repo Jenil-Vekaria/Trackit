@@ -18,12 +18,7 @@ export const addProject = async (req, res) => {
     const description = req.body.description || "";
 
     try {
-        //Get user permssion
         const userId = req.user._id;
-
-        if (!canPerformAction(permissionCheck.canManageProject, req.user)) {
-            return res.status(403).json({ message: "Not authorized to add projects" });
-        }
 
         //Verify if duplicate project exist with same project title
         const existingProject = await Project.findOne({ title, authorId: userId });
@@ -126,10 +121,6 @@ export const updateProject = async (req, res) => {
     try {
         //Get user permssion
         const userId = req.user._id;
-
-        if (!canPerformAction(permissionCheck.canManageProjectMember, req.user)) {
-            return res.status(403).json({ message: "Not authorized to modify projects" });
-        }
 
         //Authorize - ensure signed in user is the project author
         const project = await Project.findOne({ _id: projectId, authorId: userId });

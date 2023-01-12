@@ -9,6 +9,9 @@ export const projectSlice = createSlice({
         setProjects: (state, action) => {
             state.data = action.payload;
         },
+        addProject: (state, action) => {
+            state.data.push(action.payload);
+        },
         setProject: (state, action) => {
             state.data = state.data.map(project => {
                 if (project._id === action.payload._id) return action.payload;
@@ -18,7 +21,7 @@ export const projectSlice = createSlice({
     }
 });
 
-export const { setProjects, setProject } = projectSlice.actions;
+export const { setProjects, setProject, addProject } = projectSlice.actions;
 
 export const getProjects = (state) => state.project.data;
 export const getProjectInfo = (projectId) => (state) => state.project.data.filter(project => project._id === projectId)[0];

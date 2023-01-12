@@ -1,6 +1,6 @@
 import axios from "axios";
 import AuthService from "./auth-service";
-import { setProject, setProjects } from "../features/projectSlice";
+import { setProject, setProjects, addProject } from "../features/projectSlice";
 import { store } from "../app/store.js";
 
 const API = axios.create({ baseURL: process.env.REACT_APP_API_ENDPOINT + "/project" });
@@ -23,12 +23,13 @@ const getMyProjects = async () => {
     }
 };
 
-const addProject = async (data) => {
+const createProject = async (data) => {
     try {
         const response = await API.post("/", data);
-        return response;
+        store.dispatch(addProject(response.data.newProject));
     } catch (error) {
         console.error(error);
+        throw error.response.data.message;
     }
 };
 
@@ -39,6 +40,7 @@ const updateProject = async (data) => {
         return response.data.project;
     } catch (error) {
         console.error(error);
+        throw error.response.data.message;
     }
 };
 
@@ -57,6 +59,7 @@ const deleteProject = async (projectId) => {
         await API.delete(`/${projectId}`);
     } catch (error) {
         console.error(error);
+        throw error.response.data.message;
     }
 };
 
@@ -93,7 +96,7 @@ const getProjectAssignees = (projectId) => {
 
 const ProjectService = {
     getMyProjects,
-    addProject,
+    createProject,
     getProjectInfo,
     updateProject,
     deleteProject,

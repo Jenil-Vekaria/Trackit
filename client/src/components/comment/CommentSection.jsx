@@ -6,6 +6,7 @@ import {
 	InputRightElement,
 	FormControl,
 	FormErrorMessage,
+	Alert,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -21,6 +22,7 @@ import { Permissions } from "../../util/Utils";
 
 const CommentSection = ({ ticketId }) => {
 	const [comments, setComments] = useState([]);
+	const [error, seterror] = useState("");
 
 	const getTicketComments = async () => {
 		if (ticketId) {
@@ -34,12 +36,14 @@ const CommentSection = ({ ticketId }) => {
 	}, []);
 
 	const onComment = async (values, { resetForm }) => {
+		seterror("");
+
 		try {
 			await CommentService.createTicketComment(ticketId, values);
 			resetForm();
 			getTicketComments();
 		} catch (error) {
-			console.log(error);
+			seterror(error);
 		}
 	};
 	return (
@@ -56,11 +60,16 @@ const CommentSection = ({ ticketId }) => {
 					<Comment
 						key={comment._id}
 						getTicketComments={getTicketComments}
+						seterror={seterror}
 						{...comment}
 					/>
 				))}
 			</Flex>
-
+			{error && (
+				<Alert status="error" variant="left-accent" mb={2} fontSize="sm">
+					{error}
+				</Alert>
+			)}
 			<PermissionsRender permissionCheck={Permissions.canManageComments}>
 				<Formik
 					initialValues={CreateCommentData}
