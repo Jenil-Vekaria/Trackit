@@ -22,13 +22,13 @@
 - Project management
 - Ticket management
 - User assignment
-- Search
 - Statistics
-- Comments
+- Searching
+- Commenting
 - Role based organization (Create custom permissions)
 - Ticket Type field (Create custom ticket type)
-- Attachments (TODO)
-- Change tracker (TODO)
+- Attachments (Coming soon)
+- Change tracker (Coming soon)
 
 <!-- TECHNOLOGY SECTION -->
 
@@ -109,8 +109,6 @@ nodemon server.js
 ### Give a ⭐, if you liked the project
 
 ## 📸 Screenshots
-
-#### TODO: Descriptions to be added
 
 <div>
   <h3>Login</h3>
