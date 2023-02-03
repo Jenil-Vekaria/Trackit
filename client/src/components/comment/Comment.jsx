@@ -65,15 +65,15 @@ const Comment = ({
 	};
 
 	const getCommentDateTime = () => {
-		const now = moment(new Date());
+		const now = moment();
 		const end = moment(updatedOn);
 		const duration = moment.duration(now.diff(end));
 		const days = duration.asDays();
 
 		if (days >= 1) {
-			return moment(updatedOn).format("MMM D, YYYY hh:mm A");
+			return end.format("MMM D, YYYY hh:mm A");
 		} else {
-			return moment(updatedOn).fromNow();
+			return end.fromNow();
 		}
 	};
 

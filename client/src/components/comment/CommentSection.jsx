@@ -26,6 +26,7 @@ const CommentSection = ({ ticketId }) => {
 
 	const getTicketComments = async () => {
 		if (ticketId) {
+			setComments([]);
 			const comments = await CommentService.getTicketComments(ticketId);
 			setComments(comments);
 		}
