@@ -30,7 +30,7 @@ import {
 	CreateProjectSchema,
 } from "../../util/ValidationSchemas";
 import { USERS_COLUMNS } from "../../util/TableDataDisplay";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import ProjectService from "../../services/project-service";
 import AlertModal from "../others/AlertModal";
 import { getUsers } from "../../features/miscellaneousSlice.js";
@@ -45,7 +45,6 @@ You can edit project if
 
 const AddProject = () => {
 	const navigate = useNavigate();
-	const dispatch = useDispatch();
 	const [isProjectAuthor, setisProjectAuthor] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 

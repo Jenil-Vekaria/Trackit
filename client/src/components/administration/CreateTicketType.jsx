@@ -39,7 +39,6 @@ const CreateTicketType = ({
 	const alertDialgoDisclosure = useDisclosure();
 	const [ticketType, setTicketType] = useState(CreateTicketTypeData);
 	const [iconColour, setIconColour] = useState("#000000");
-	const [openDeleteAlert, setOpenDeleteAlert] = useState(false);
 	const [iconName, setIconName] = useState("");
 	const [error, setError] = useState("");
 	const formRef = useRef(null);
@@ -69,7 +68,6 @@ const CreateTicketType = ({
 		setIconColour("#000000");
 		setIconName("");
 		setTicketType(CreateTicketTypeData);
-		setOpenDeleteAlert(false);
 		onClose();
 	};
 

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import AuthService from "../services/auth-service";
-import MiscellaneousService from "../services/miscellaneous-service";
 
 
 export const usePermissions = (permissionCheck) => {

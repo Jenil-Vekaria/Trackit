@@ -4,7 +4,6 @@ import ReactDataGrid from "@inovua/reactdatagrid-community";
 import "@inovua/reactdatagrid-community/index.css";
 
 import { getFieldValue } from "../../util/GetObjectProperty";
-import { Center, Spinner } from "@chakra-ui/react";
 
 const Table = ({
 	tableData,

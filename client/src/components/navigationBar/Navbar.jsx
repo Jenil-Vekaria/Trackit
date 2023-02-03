@@ -19,7 +19,6 @@ import {
 import NavItem from "./NavItem";
 import { useLocation } from "react-router-dom";
 import AuthService from "../../services/auth-service";
-import MiscellaneousService from "../../services/miscellaneous-service";
 import UpdateUser from "../administration/UpdateUser";
 import logo from "../../assests/Trackit_Plain.png";
 import { Permissions } from "../../util/Utils";

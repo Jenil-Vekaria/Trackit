@@ -1,15 +1,13 @@
 import {
-	Center,
 	Flex,
 	Heading,
-	Spinner,
 	Tab,
 	TabList,
 	TabPanel,
 	TabPanels,
 	Tabs,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import ManageRoles from "../components/administration/ManageRoles";
 import ManageTicketTypes from "../components/administration/ManageTicketTypes";
 import ManageUsers from "../components/administration/ManageUsers";
@@ -18,7 +16,6 @@ import { Permissions } from "../util/Utils";
 import { usePermissions } from "../hooks/usePermissions";
 
 const Administration = () => {
-	const [isLoading, setisLoading] = useState(false);
 	const canManagerOtherUsers = usePermissions(Permissions.canUpdateUserProfile);
 	const canManageCustomFields = usePermissions(Permissions.canManageRole);
 
@@ -27,18 +24,8 @@ const Administration = () => {
 	};
 
 	useEffect(() => {
-		// setisLoading(true);
 		fetchAdminData();
-		// setTimeout(() => setisLoading(false), 200);
 	}, []);
-
-	if (isLoading) {
-		return (
-			<Center w="100%">
-				<Spinner color="purple" size="xl" />
-			</Center>
-		);
-	}
 
 	return (
 		<Flex w="100%" direction="column" p={10}>
