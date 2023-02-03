@@ -18,6 +18,7 @@
 		"express": "^4.18.2",
 		"express-validator": "^6.14.2",
 		"jsonwebtoken": "^9.0.0",
+		"moment": "^2.29.4",
 		"mongoose": "^6.8.2",
 		"nodemon": "^2.0.20",
 		"yup": "^0.32.11"

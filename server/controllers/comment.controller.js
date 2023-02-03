@@ -28,8 +28,7 @@ export const createComment = async (req, res) => {
 
         const userId = req.user._id;
 
-        const newComment = await Comment.create({ ticketId, userId, text });
-
+        const newComment = await Comment.create({ ticketId, userId, text, createdOn: Date.now(), updatedOn: Date.now() });
         return res.json({ comment: newComment });
 
     } catch (error) {

@@ -14,12 +14,12 @@ const CommentSchema = mongoose.Schema({
         type: mongoose.Types.ObjectId
     },
     createdOn: {
-        type: Date,
-        default: Date.now()
+        required: true,
+        type: Date
     },
     updatedOn: {
-        type: Date,
-        default: Date.now()
+        required: true,
+        type: Date
     }
 });
 
