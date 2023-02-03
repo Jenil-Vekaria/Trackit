@@ -45,7 +45,7 @@ Start developing locally.
 ### Step 1: Download Node.js and MongoDB
 
 Download: [MongoDB](https://www.mongodb.com/try/download/community)
-Download: [Node.js](https://nodejs.org/en/)
+Download: [Node.js - 18.14.0](https://nodejs.org/en/)
 
 ### Step 2: Clone the repo
 
