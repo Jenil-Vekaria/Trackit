@@ -3,7 +3,7 @@ import decode from 'jwt-decode';
 import { setLogin } from "../features/authSlice.js";
 import { store, persistor } from "../app/store.js";
 
-const API_URL = process.env.REACT_APP_API_ENDPOINT + "/auth";
+const API_URL = process.env.NEXT_PUBLIC_API_ENDPOINT + "/auth";
 
 const signup = (user) => {
     /*

@@ -3,7 +3,7 @@ import AuthService from "./auth-service";
 import { store } from "../app/store";
 import { addTicket, setTicket, setTickets, removeTicket, clearTickets } from "../features/ticketSlice.js";
 
-const API = axios.create({ baseURL: process.env.REACT_APP_API_ENDPOINT + "/ticket" });
+const API = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_ENDPOINT + "/ticket" });
 
 API.interceptors.request.use((req) => {
     const { accessToken } = AuthService.getCurrentUser();

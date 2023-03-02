@@ -22,7 +22,6 @@ import {
 	Spinner,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
-import { useNavigate, useParams } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -36,20 +35,15 @@ import AlertModal from "../others/AlertModal";
 import { getUsers } from "../../features/miscellaneousSlice.js";
 import Table from "../others/Table";
 import AuthService from "../../services/auth-service";
+import { useRouter } from "next/router";
 
-/*
-You can edit project if
-	u r project author
-
-*/
-
-const AddProject = () => {
-	const navigate = useNavigate();
+const AddEditProject = () => {
+	const router = useRouter();
 	const [isProjectAuthor, setisProjectAuthor] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
-	const { projectID } = useParams();
-	const isNewProject = !projectID;
+	const projectId = router.query.projectId;
+	const isNewProject = !projectId;
 	const allUsers = useSelector(getUsers(true));
 	const formRef = useRef();
 	const toast = useToast();
@@ -76,7 +70,8 @@ const AddProject = () => {
 	const onProjectDelete = async (onClose) => {
 		try {
 			await ProjectService.deleteProject(projectInfo._id);
-			navigate(-2);
+			router.back();
+			router.back();
 		} catch (error) {
 			seterror(error);
 		}
@@ -86,7 +81,7 @@ const AddProject = () => {
 	const getProjectInfo = async () => {
 		setisLoading(true);
 		const { _id, title, description, assignees, authorId } =
-			await ProjectService.getProjectInfo(projectID);
+			await ProjectService.getProjectInfo(projectId);
 
 		const isCurrentUserProjectAuthor =
 			AuthService.getCurrentUser()._id === authorId._id;
@@ -108,26 +103,26 @@ const AddProject = () => {
 		values.assignees = assigneesId;
 
 		try {
-			if (projectID) {
+			if (projectId) {
 				await ProjectService.updateProject(values);
 			} else {
 				await ProjectService.createProject(values);
 			}
 
 			toast({
-				title: `Project ${projectID ? "Updated" : "Created"}`,
+				title: `Project ${projectId ? "Updated" : "Created"}`,
 				status: "success",
 				duration: 4000,
 				isClosable: true,
 			});
 
-			navigate(-1);
+			router.back();
 		} catch (error) {
 			seterror(error);
 		}
 	};
 	useEffect(() => {
-		if (projectID) {
+		if (projectId) {
 			getProjectInfo();
 		}
 	}, []);
@@ -141,16 +136,16 @@ const AddProject = () => {
 	}
 
 	return (
-		<Flex w="100%" h="100%" direction="column">
+		<Flex w="100%" h="100%" direction="column" padding={10}>
 			<Flex w="100%" h="fit-content">
 				<Heading as="h1" size="lg">
-					{projectID ? "Edit" : "Add"} Project
+					{projectId ? "Edit" : "Add"} Project
 				</Heading>
 				<Spacer />
 				<IconButton
 					icon={<CloseIcon />}
 					variant="ghost"
-					onClick={() => navigate(-1)}
+					onClick={() => router.back()}
 				/>
 			</Flex>
 
@@ -245,16 +240,16 @@ const AddProject = () => {
 							formRef.current?.submitForm();
 						}}
 					>
-						{projectID ? "Save" : "Create"} Project
+						{projectId ? "Save" : "Create"} Project
 					</Button>
 				) : null}
 
-				{projectID && isProjectAuthor ? (
+				{projectId && isProjectAuthor ? (
 					<Button colorScheme="red" onClick={() => onOpen()}>
 						Delete Project
 					</Button>
 				) : (
-					<Button onClick={() => navigate(-1)}>Close</Button>
+					<Button onClick={() => router.back()}>Close</Button>
 				)}
 			</Flex>
 
@@ -269,4 +264,4 @@ const AddProject = () => {
 	);
 };
 
-export default AddProject;
+export default AddEditProject;

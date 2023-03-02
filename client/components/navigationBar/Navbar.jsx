@@ -7,7 +7,6 @@ import {
 	Flex,
 	Heading,
 	IconButton,
-	Image,
 	Popover,
 	PopoverArrow,
 	PopoverBody,
@@ -17,15 +16,16 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import NavItem from "./NavItem";
-import { useLocation } from "react-router-dom";
+import { useRouter } from "next/router";
 import AuthService from "../../services/auth-service";
 import UpdateUser from "../administration/UpdateUser";
 import logo from "../../assests/Trackit_Plain.png";
 import { Permissions } from "../../util/Utils";
 import { usePermissions } from "../../hooks/usePermissions";
+import Image from "next/image";
 const Navbar = () => {
 	const [navSize, setNavSize] = useState("large");
-	const location = useLocation();
+	const router = useRouter();
 	const user = AuthService.getCurrentUser();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const canManageOtherUsers = usePermissions(Permissions.canUpdateUserProfile);
@@ -76,7 +76,7 @@ const Navbar = () => {
 					alignItems={navSize === "small" ? "center" : "flex-start"}
 					as="nav"
 				>
-					<Image src={logo} />
+					<Image src={logo} alt="track it logo" />
 					<IconButton
 						background="none"
 						mt={5}
@@ -107,8 +107,8 @@ const Navbar = () => {
 								name={item.name}
 								path={item.path}
 								active={
-									location.pathname.includes(item.path) ||
-									(item.path === "/dashboard" && location.pathname === "/")
+									router.pathname.includes(item.path) ||
+									(item.path === "/dashboard" && router.pathname === "/")
 								}
 							/>
 						);

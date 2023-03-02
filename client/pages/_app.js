@@ -4,6 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { extendTheme } from '@chakra-ui/react';
 import { store, persistor } from "../app/store.js";
 import { PersistGate } from 'redux-persist/integration/react';
+import Layout from "@/components/layout.jsx";
 
 const theme = extendTheme({
 	styles: {
@@ -55,7 +56,9 @@ const App = ({ Component, pageProps }) => {
 		<Provider store={store}>
 			<PersistGate loading={null} persistor={persistor}>
 				<ChakraProvider theme={theme}>
-					<Component {...pageProps} />
+					<Layout>
+						<Component {...pageProps} />
+					</Layout>
 				</ChakraProvider>
 			</PersistGate>
 		</Provider >

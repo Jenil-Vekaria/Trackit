@@ -1,14 +1,6 @@
-import {
-	Flex,
-	Icon,
-	Menu,
-	MenuButton,
-	Text,
-	Link,
-	Tooltip,
-} from "@chakra-ui/react";
+import { Flex, Icon, Menu, MenuButton, Text, Tooltip } from "@chakra-ui/react";
 import React from "react";
-import { Link as ReachLink } from "next/link";
+import Link from "next/link";
 
 const NavItem = ({ navSize, name, icon, path, active }) => {
 	return (
@@ -23,13 +15,13 @@ const NavItem = ({ navSize, name, icon, path, active }) => {
 			<Menu placement="right" border="1px solid red">
 				<Tooltip label={navSize === "small" && name}>
 					<Link
-						p={2}
-						_hover={{ textDecor: "none", backgroundColor: "purple.200" }}
-						background={active && "purple.200"}
-						w={navSize === "large" && "100%"}
-						borderRadius={10}
-						to={path}
-						as={ReachLink}
+						// p={2}
+						// _hover={{ textDecor: "none", backgroundColor: "purple.200" }}
+						// background={active && "purple.200"}
+						// w={navSize === "large" && "100%"}
+						// borderRadius={10}
+						href={path}
+						// as={ReachLink}
 					>
 						<MenuButton>
 							<Flex alignItems="center">

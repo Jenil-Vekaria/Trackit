@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import {
 	Box,
@@ -24,10 +24,11 @@ export const Login = () => {
 		seterror("");
 
 		try {
+			console.log("LOGIN");
 			await AuthService.login(values);
 			await MiscellaneousService.fetchInitialData();
 
-			router.push("/projects");
+			router.push("/tickets");
 			window.location.reload();
 		} catch (error) {
 			seterror(error.response.data.message);

@@ -12,35 +12,34 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import TicketService from "../../services/ticket-service";
 import {
 	TICKETS_DEFAULT_SORT,
 	TICKETS_COLUMNS,
-} from "../../util/TableDataDisplay";
-import CreateTicket from "../tickets/CreateTicket";
+} from "../../../util/TableDataDisplay";
 import { useSelector } from "react-redux";
-import { getTickets } from "../../features/ticketSlice.js";
-import Table from "../others/Table";
-import Dashboard from "../../pages/dashboard";
-import PermissionsRender from "../others/PermissionsRender";
-import { Permissions } from "../../util/Utils";
-import { getProjectInfo } from "../../features/projectSlice";
-
+import { getTickets } from "../../../features/ticketSlice.js";
+import { Permissions } from "../../../util/Utils";
+import { getProjectInfo } from "../../../features/projectSlice";
+import { useRouter } from "next/router";
+import CreateTicket from "@/components/tickets/CreateTicket";
+import Table from "@/components/others/Table";
+import PermissionsRender from "@/components/others/PermissionsRender";
+import TicketService from "@/services/ticket-service";
+import Link from "next/link";
 const ViewProject = () => {
-	const { projectID } = useParams();
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
-	const navigate = useNavigate();
+	const router = useRouter();
+	const projectId = router.query.projectId;
 	const tickets = useSelector(getTickets);
-	const projectInfo = useSelector(getProjectInfo(projectID));
+	const projectInfo = useSelector(getProjectInfo(projectId));
 
 	const [projectTickets, setprojectTickets] = useState([]);
 	const [viewTicket, setviewTicket] = useState(null);
 
 	const getProjectTickets = async () => {
-		await TicketService.getProjectTickets(projectID);
+		await TicketService.getProjectTickets(projectId);
 	};
 
 	const onTicketClick = (rowProps, _) => {
@@ -49,13 +48,13 @@ const ViewProject = () => {
 	};
 
 	const navigateBack = () => {
-		navigate(-1);
+		router.back();
 	};
 
 	useEffect(() => {
-		if (!projectInfo) {
-			navigate("/404");
-		}
+		// if (!projectInfo) {
+		// 	router.push("/404");
+		// }
 
 		getProjectTickets();
 	}, []);
@@ -65,7 +64,7 @@ const ViewProject = () => {
 	}, [tickets]);
 
 	return (
-		<Flex w="100%" direction="column">
+		<Flex w="100%" direction="column" padding={10}>
 			<Flex w="100%" h="fit-content">
 				<Heading as="h1" size="lg">
 					<IconButton
@@ -86,12 +85,9 @@ const ViewProject = () => {
 					</Button>
 				</PermissionsRender>
 
-				<Button
-					colorScheme="purple"
-					onClick={() => navigate(`/projects/${projectID}/edit`)}
-				>
-					Project Info
-				</Button>
+				<Link href={`/projects/${projectId}/edit`} passHref>
+					<Button colorScheme="purple">Project Info</Button>
+				</Link>
 			</Flex>
 
 			<Tabs variant="soft-rounded" colorScheme="purple" mt={5} h="100%">
@@ -111,9 +107,7 @@ const ViewProject = () => {
 							height="92%"
 						/>
 					</TabPanel>
-					<TabPanel>
-						<Dashboard />
-					</TabPanel>
+					<TabPanel>{/* <Dashboard /> */}</TabPanel>
 				</TabPanels>
 			</Tabs>
 			<br />
@@ -122,7 +116,7 @@ const ViewProject = () => {
 				onClose={onClose}
 				ticket={viewTicket}
 				setviewTicket={setviewTicket}
-				projectId={projectID}
+				projectId={projectId}
 			/>
 		</Flex>
 	);

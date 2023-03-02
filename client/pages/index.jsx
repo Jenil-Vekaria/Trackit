@@ -1,7 +1,7 @@
-import Auth from "./Auth";
+import Auth from "./auth";
 
 const Root = () => {
-	return <Auth />;
+	// return <Auth />;
 };
 
 export default Root;
