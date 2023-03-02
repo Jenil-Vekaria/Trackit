@@ -1,0 +1,26 @@
+* {
+	padding: 0;
+	box-sizing: border-box;
+	margin: 0;
+	outline: 0;
+	list-style: none;
+	text-decoration: none;
+}
+
+
+:root {
+	--color-primary: #5a67d8;
+	--color-secondary: #a0aec0;
+
+	--color-primary-hover: rgb(87, 98, 199);
+	--color-secondary-hoover: #f8f9fb;
+	--transition: all 100ms ease;
+
+	--color-white: #ffff;
+	--color-red: #e74c3c;
+	--color-red-light: #ff7979;
+}
+
+a {
+	text-decoration: none;
+}
