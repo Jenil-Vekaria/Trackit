@@ -39,7 +39,7 @@ export const Login = () => {
 			p={[8, 10]}
 			mt={[10]}
 			mx="auto"
-			background={["white"]}
+			background="secondary"
 			borderRadius={10}
 			boxShadow="md"
 		>
@@ -70,12 +70,12 @@ export const Login = () => {
 
 						<Flex direction="row" justifyContent="space-between" mt={4}>
 							<Checkbox>Remember me</Checkbox>
-							<Button variant="link" fontWeight="semibold" colorScheme="purple">
+							<Button variant="link" fontWeight="semibold" colorScheme="blue">
 								Forgot Password?
 							</Button>
 						</Flex>
 
-						<Button colorScheme="purple" w="full" mt={10} type="submit">
+						<Button colorScheme="blue" w="full" mt={10} type="submit">
 							Login
 						</Button>
 					</Form>

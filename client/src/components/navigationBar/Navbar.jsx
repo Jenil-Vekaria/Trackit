@@ -13,6 +13,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 	Text,
+	useColorModeValue,
 	useDisclosure,
 } from "@chakra-ui/react";
 import NavItem from "./NavItem";
@@ -63,11 +64,10 @@ const Navbar = () => {
 			<Flex
 				pos="sticky"
 				h="100vh"
-				// boxShadow="lg"
 				direction="column"
 				justifyContent="space-between"
 				w={navSize === "small" ? "75px" : "250px"}
-				background="white"
+				background="secondary"
 				boxShadow="xl"
 			>
 				<Flex
@@ -77,18 +77,6 @@ const Navbar = () => {
 					as="nav"
 				>
 					<Image src={logo} alt="track it logo" />
-					<IconButton
-						background="none"
-						mt={5}
-						_hover={{
-							background: "none",
-						}}
-						icon={<FiMenu />}
-						onClick={() => {
-							if (navSize === "small") setNavSize("large");
-							else setNavSize("small");
-						}}
-					/>
 
 					{menuItems.map((item, index) => {
 						if (

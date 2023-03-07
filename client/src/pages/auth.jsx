@@ -22,7 +22,7 @@ export const Auth = () => {
 					</Text>
 					<Button
 						variant="link"
-						colorScheme="purple"
+						colorScheme="blue"
 						onClick={() => setisLogin((prevValue) => !prevValue)}
 					>
 						{isLogin ? "Sign up" : "Login"}

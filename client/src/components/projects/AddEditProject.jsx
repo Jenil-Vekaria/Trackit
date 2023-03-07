@@ -80,8 +80,13 @@ const AddEditProject = () => {
 
 	const getProjectInfo = async () => {
 		setisLoading(true);
-		const { _id, title, description, assignees, authorId } =
-			await ProjectService.getProjectInfo(projectId);
+		const {
+			_id,
+			title,
+			description,
+			assignees,
+			authorId,
+		} = await ProjectService.getProjectInfo(projectId);
 
 		const isCurrentUserProjectAuthor =
 			AuthService.getCurrentUser()._id === authorId._id;
@@ -130,7 +135,7 @@ const AddEditProject = () => {
 	if (isLoading) {
 		return (
 			<Center w="100%">
-				<Spinner color="purple" size="xl" />
+				<Spinner color="blue" size="xl" />
 			</Center>
 		);
 	}
@@ -149,7 +154,7 @@ const AddEditProject = () => {
 				/>
 			</Flex>
 
-			<Tabs variant="soft-rounded" colorScheme="purple" mt={10}>
+			<Tabs variant="enclosed" size="sm" colorScheme="blue" mt={10}>
 				<TabList>
 					<Tab>Project Info</Tab>
 					<Tab>Contributors</Tab>
@@ -235,18 +240,18 @@ const AddEditProject = () => {
 			<Flex mt={3} justify="flex-end" gap={3}>
 				{isNewProject || isProjectAuthor ? (
 					<Button
-						colorScheme="purple"
+						colorScheme="blue"
 						onClick={() => {
 							formRef.current?.submitForm();
 						}}
 					>
-						{projectId ? "Save" : "Create"} Project
+						{projectId ? "Save" : "Create"}
 					</Button>
 				) : null}
 
 				{projectId && isProjectAuthor ? (
 					<Button colorScheme="red" onClick={() => onOpen()}>
-						Delete Project
+						Delete
 					</Button>
 				) : (
 					<Button onClick={() => router.back()}>Close</Button>

@@ -41,7 +41,7 @@ const Tickets = () => {
 				<title>Tickets</title>
 			</Head>
 			<Flex w="100%" h="fit-content">
-				<Heading as="h1" size="lg">
+				<Heading as="h1" size="lg" fontWeight={600}>
 					My Tickets
 				</Heading>
 			</Flex>

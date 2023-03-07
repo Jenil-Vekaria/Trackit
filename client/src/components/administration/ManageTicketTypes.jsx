@@ -33,8 +33,8 @@ const ManageTicketTypes = () => {
 			<br />
 			<Spacer />
 			<Flex justify="flex-end">
-				<Button colorScheme="purple" pos="right" onClick={() => onOpen()}>
-					Add New Ticket Type
+				<Button colorScheme="blue" pos="right" onClick={() => onOpen()}>
+					Add Ticket Type
 				</Button>
 			</Flex>
 

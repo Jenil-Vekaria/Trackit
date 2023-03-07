@@ -78,7 +78,7 @@ const getProjectStats = async (projectId) => {
         return data.stat;
     } catch (error) {
         console.error(error);
-
+        throw error.response.data.message;
     }
 };
 

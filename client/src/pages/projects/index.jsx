@@ -35,15 +35,16 @@ const ViewAllProjects = () => {
 				<title>Projects</title>
 			</Head>
 			<Flex w="100%" h="fit-content">
-				<Heading as="h1" size="lg">
+				<Heading as="h1" size="lg" fontWeight={600}>
 					Projects
 				</Heading>
 				<Spacer />
 				<PermissionsRender permissionCheck={Permissions.canManageProject}>
 					<Link href="/projects/add" passHref>
 						<Button
-							colorScheme="purple"
+							colorScheme="blue"
 							variant="solid"
+							fontWeight={500}
 							onClick={disclosure.onOpen}
 						>
 							Add Project

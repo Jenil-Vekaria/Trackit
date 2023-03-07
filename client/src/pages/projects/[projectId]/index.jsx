@@ -35,6 +35,7 @@ const ViewProject = () => {
 
 	const router = useRouter();
 	const projectId = router.query.projectId;
+
 	const tickets = useSelector(getTickets);
 	const projectInfo = useSelector(getProjectInfo(projectId));
 
@@ -51,15 +52,13 @@ const ViewProject = () => {
 	};
 
 	const navigateBack = () => {
-		router.back();
+		router.replace("/projects");
 	};
 
 	useEffect(() => {
-		// if (!projectInfo) {
-		// 	router.push("/404");
-		// }
-
-		getProjectTickets();
+		if (projectId) {
+			getProjectTickets();
+		}
 	}, []);
 
 	useEffect(() => {
@@ -67,12 +66,12 @@ const ViewProject = () => {
 	}, [tickets]);
 
 	return (
-		<Flex w="100%" direction="column" padding={10}>
+		<Flex w="100%" direction="column" padding={8}>
 			<Head>
 				<title>{projectInfo?.title || "Projects"}</title>
 			</Head>
 			<Flex w="100%" h="fit-content">
-				<Heading as="h1" size="lg">
+				<Heading as="h1" size="md" fontWeight={600}>
 					<IconButton
 						icon={<ArrowBackIcon />}
 						variant="link"
@@ -86,17 +85,17 @@ const ViewProject = () => {
 				<Spacer />
 
 				<PermissionsRender permissionCheck={Permissions.canManageTicket}>
-					<Button colorScheme="whatsapp" mr={5} onClick={() => onOpen()}>
+					<Button colorScheme="blue" size="md" mr={5} onClick={() => onOpen()}>
 						Add Ticket
 					</Button>
 				</PermissionsRender>
 
 				<Link href={`/projects/${projectId}/edit`} passHref>
-					<Button colorScheme="purple">Project Info</Button>
+					<Button colorScheme="teal">Project Info</Button>
 				</Link>
 			</Flex>
 
-			<Tabs variant="soft-rounded" colorScheme="purple" mt={5} h="100%">
+			<Tabs variant="enclosed" size="sm" colorScheme="blue" mt={2} h="100%">
 				<TabList>
 					<Tab>Tickets</Tab>
 					<Tab>Overview</Tab>
@@ -114,7 +113,7 @@ const ViewProject = () => {
 						/>
 					</TabPanel>
 					<TabPanel>
-						<Dashboard />
+						{projectId ? <Dashboard projectId={projectId} /> : null}
 					</TabPanel>
 				</TabPanels>
 			</Tabs>

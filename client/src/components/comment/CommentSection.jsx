@@ -90,7 +90,7 @@ const CommentSection = ({ ticketId }) => {
 										<IconButton
 											size="sm"
 											variant="link"
-											colorScheme="purple"
+											colorScheme="blue"
 											icon={<IoMdSend size={20} />}
 											type="submit"
 										/>

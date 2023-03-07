@@ -164,13 +164,13 @@ const CreateTicket = ({
 					<Heading as="h3" size="md">
 						{ticket ? "Edit" : "Create"} Ticket
 					</Heading>
-					<Text fontSize="sm" color="purple" mt={2}>
-						{ticket?.projectId?.title} {ticket ? "|" : ""} {ticket?.title}
+					<Text fontSize="sm" as="i" fontWeight={400} mt={2}>
+						Project: {ticket?.projectId?.title}
 					</Text>
 				</ModalHeader>
 				<ModalCloseButton onClick={closeModal} />
 				<ModalBody overflowY="auto">
-					<Tabs variant="soft-rounded" colorScheme="purple" isFitted>
+					<Tabs variant="enclosed" size="sm" colorScheme="blue">
 						<TabList>
 							<Tab>Ticket Info</Tab>
 							{ticket ? <Tab>Comments</Tab> : null}
@@ -341,19 +341,19 @@ const CreateTicket = ({
 				<PermissionsRender permissionCheck={Permissions.canManageTicket}>
 					<ModalFooter>
 						<Button
-							colorScheme="purple"
+							colorScheme="blue"
 							type="submit"
 							mr={3}
 							onClick={() => formRef.current?.handleSubmit()}
 						>
-							{ticket ? "Save" : "Create"} Ticket
+							{ticket ? "Save" : "Create"}
 						</Button>
 						{ticket ? (
 							<Button
 								colorScheme="red"
 								onClick={() => setopenDeleteAlert(true)}
 							>
-								Delete Ticket
+								Delete
 							</Button>
 						) : (
 							<Button onClick={closeModal}>Cancel</Button>

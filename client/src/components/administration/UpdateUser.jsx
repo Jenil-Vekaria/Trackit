@@ -42,7 +42,6 @@ const UpdateUser = ({
 		if (viewUser) {
 			const userInfoCopy = { ...viewUser };
 			userInfoCopy.roleId = viewUser.roleId?._id;
-			console.log(userInfoCopy);
 
 			setUserInfo(userInfoCopy);
 		}
@@ -205,7 +204,7 @@ const UpdateUser = ({
 
 				<ModalFooter>
 					<Button
-						colorScheme="purple"
+						colorScheme="blue"
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>

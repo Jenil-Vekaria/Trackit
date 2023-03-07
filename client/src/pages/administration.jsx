@@ -34,13 +34,13 @@ const Administration = () => {
 				<title>Administration</title>
 			</Head>
 			<Flex w="100%" h="fit-content">
-				<Heading as="h1" size="lg">
+				<Heading as="h1" size="lg" fontWeight={600}>
 					Administration
 				</Heading>
 			</Flex>
 			<br />
 
-			<Tabs isFitted variant="soft-rounded" colorScheme="purple">
+			<Tabs variant="enclosed" size="sm" colorScheme="blue">
 				<TabList>
 					{canManagerOtherUsers ? <Tab>Manage Users</Tab> : null}
 					{canManageCustomFields ? <Tab>Manage Roles</Tab> : null}

@@ -29,9 +29,8 @@ import { useRouter } from "next/router";
 
 ChartJS.register(ArcElement, Tooltip, Legend, Colors);
 
-const Dashboard = () => {
+const Dashboard = ({ projectId }) => {
 	const router = useRouter();
-	const projectId = router.query.projectId;
 
 	const [projectStats, setProjectStats] = useState([]);
 	const [ticketTypeChartData, setTicketTypeChartData] = useState(null);
@@ -40,7 +39,7 @@ const Dashboard = () => {
 	const iconColor = useColorModeValue("white");
 
 	const iconBackground = [
-		useColorModeValue("purple.300"),
+		useColorModeValue("blue.300"),
 		useColorModeValue("green.300"),
 		useColorModeValue("red.300"),
 		useColorModeValue("blue.300"),
@@ -153,30 +152,36 @@ const Dashboard = () => {
 	};
 
 	const getProjectStats = async () => {
-		const stat = await ProjectService.getProjectStats(projectId);
-		setProjectStats(createStatInfo(stat));
-		setTicketTypeChartData(createTicketTypeChartData(stat));
-		setTicketStatusChartData(createTicketStatusChartData(stat));
+		try {
+			const stat = await ProjectService.getProjectStats(projectId);
+			setProjectStats(createStatInfo(stat));
+			setTicketTypeChartData(createTicketTypeChartData(stat));
+			setTicketStatusChartData(createTicketStatusChartData(stat));
 
-		setTimeout(() => setisLoading(false), 100);
+			setTimeout(() => setisLoading(false), 100);
+		} catch (error) {
+			router.replace("/projects");
+		}
 	};
 
 	useEffect(() => {
-		getProjectStats();
-	}, [projectId]);
+		if (projectId) {
+			getProjectStats();
+		}
+	}, []);
 
 	return (
 		<Flex w="100%" direction="column">
 			<Flex w="100%" grow="2" justifyContent="space-evenly" gap={3}>
-				{projectStats.map((stat) => (
-					<StatCard {...stat} />
+				{projectStats.map((stat, index) => (
+					<StatCard {...stat} key={index} />
 				))}
 			</Flex>
 			<br />
 
 			{isLoading ? (
 				<Center w="100%">
-					<Spinner color="purple" size="xl" />
+					<Spinner color="blue" size="xl" />
 				</Center>
 			) : (
 				<Flex h="100%" justifyContent="space-evenly">

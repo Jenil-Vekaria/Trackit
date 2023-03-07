@@ -7,7 +7,6 @@ import TooltipAvatar from "../components/others/TooltipAvatar";
 
 const styles = {
     fontWeight: "500",
-    color: "purple",
     cursor: "pointer",
 };
 
@@ -46,6 +45,11 @@ export const PROJECTS_COLUMNS = [
         searchInField: ["createdOn"],
         header: "Created On",
         flex: 1,
+        headerProps: {
+            style: {
+                backgroundColor: "#334154"
+            }
+        },
         render: ({ value }) => {
             return moment(value).format("MMMM DD, YYYY");
         }
@@ -69,6 +73,7 @@ export const TICKETS_COLUMNS = [
                 </Tooltip>
             );
         },
+
         shouldComponentUpdate: () => true
     },
     {
@@ -79,6 +84,7 @@ export const TICKETS_COLUMNS = [
         render: ({ value }) => {
             return <span style={styles}>{value}</span>;
         },
+
         shouldComponentUpdate: () => true
     },
     {
@@ -86,6 +92,7 @@ export const TICKETS_COLUMNS = [
         defaultVisible: false,
         header: "Description",
         flex: 3,
+
         shouldComponentUpdate: () => true
     },
     {
@@ -107,6 +114,7 @@ export const TICKETS_COLUMNS = [
                     return <Badge colorScheme='green'>{value}</Badge>;
             }
         },
+
         shouldComponentUpdate: () => true
     },
     {
@@ -123,7 +131,8 @@ export const TICKETS_COLUMNS = [
                     }
                 </AvatarGroup>
             );
-        }
+        },
+
     },
     {
         name: "createdBy",
@@ -131,7 +140,8 @@ export const TICKETS_COLUMNS = [
         flex: 1,
         render: ({ value }) => {
             return MiscellaneousService.getUserFullName(value);
-        }
+        },
+
     },
     {
         name: "createdOn",
@@ -141,6 +151,7 @@ export const TICKETS_COLUMNS = [
         render: ({ value }) => {
             return moment(value).format("MMMM DD, YYYY");
         },
+
         shouldComponentUpdate: () => true
     }
 ];

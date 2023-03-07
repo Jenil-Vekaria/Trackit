@@ -47,7 +47,7 @@ export const SignUp = () => {
 			p={[8, 10]}
 			mt={[10]}
 			mx="auto"
-			background={["white"]}
+			background="hover"
 			borderRadius={10}
 			boxShadow="md"
 		>
@@ -115,7 +115,7 @@ export const SignUp = () => {
 							<FormErrorMessage>{errors.confirmPassword}</FormErrorMessage>
 						</FormControl>
 
-						<Button colorScheme="purple" w="full" mt={10} type="submit">
+						<Button colorScheme="blue" w="full" mt={10} type="submit">
 							Sign up
 						</Button>
 					</Form>

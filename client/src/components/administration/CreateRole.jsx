@@ -151,7 +151,7 @@ const CreateRole = ({ data, isOpen, onClose }) => {
 												<FormLabel>{permission.name}</FormLabel>
 												<Spacer />
 												<Switch
-													colorScheme="purple"
+													colorScheme="blue"
 													size="lg"
 													value={permission.value}
 													onChange={onPermissionToggle}
@@ -173,7 +173,7 @@ const CreateRole = ({ data, isOpen, onClose }) => {
 
 				<ModalFooter>
 					<Button
-						colorScheme="purple"
+						colorScheme="blue"
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>
