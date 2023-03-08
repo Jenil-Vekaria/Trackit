@@ -42,7 +42,6 @@ const UpdateUser = ({
 		if (viewUser) {
 			const userInfoCopy = { ...viewUser };
 			userInfoCopy.roleId = viewUser.roleId?._id;
-			console.log(userInfoCopy);
 
 			setUserInfo(userInfoCopy);
 		}
@@ -205,11 +204,11 @@ const UpdateUser = ({
 
 				<ModalFooter>
 					<Button
-						colorScheme="purple"
+						colorScheme="blue"
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>
-						Save User
+						Save
 					</Button>
 					{isUpdateMyProfile ? (
 						<Button
@@ -224,7 +223,7 @@ const UpdateUser = ({
 						</Button>
 					) : (
 						<Tooltip label="Not Implemeted">
-							<Button colorScheme="red">Delete User</Button>
+							<Button colorScheme="red">Delete</Button>
 						</Tooltip>
 					)}
 				</ModalFooter>

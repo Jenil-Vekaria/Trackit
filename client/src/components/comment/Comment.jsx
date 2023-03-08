@@ -108,7 +108,7 @@ const Comment = ({
 				<Spacer />
 			</Flex>
 
-			<PermissionsRender permissionCheck={Permissions.canManageComments}>
+			<PermissionsRender permissionCheck={Permissions.canManageTickets}>
 				{isSignedInUsersComment ? (
 					<Popover isOpen={isOpen}>
 						<PopoverTrigger>

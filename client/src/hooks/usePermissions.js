@@ -3,13 +3,13 @@ import AuthService from "../services/auth-service";
 
 
 export const usePermissions = (permissionCheck) => {
-    const [permissions, setPermissions] = useState([]);
+    const [permissionsList, setPermissionsList] = useState([]);
 
     useEffect(() => {
         const user = AuthService.getCurrentUser();
 
-        setPermissions(user.roleId.permissions);
+        setPermissionsList(user.roleId.permissions);
     }, []);
 
-    return permissionCheck(permissions);
+    return permissionCheck(permissionsList);
 };

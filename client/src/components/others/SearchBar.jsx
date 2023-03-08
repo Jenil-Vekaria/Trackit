@@ -25,7 +25,6 @@ const SearchBar = ({
 				<Input
 					variant={variant || "filled"}
 					placeholder={placeholder}
-					border="2px"
 					onChange={handleSearchInputChange}
 				/>
 			</InputGroup>

@@ -1,4 +1,3 @@
-import * as permissionCheck from "../util/permissionCheck.js";
 import Project from "../models/project.model.js";
 import User from "../models/user.model.js";
 import Ticket from "../models/ticket.model.js";
@@ -84,14 +83,16 @@ export const getUserProjects = async (req, res) => {
 export const getProjectInfo = async (req, res) => {
     const { projectId } = req.params;
     try {
+        const userId = req.user._id;
 
-        if (!canPerformAction(permissionCheck.canManageProject, req.user)) {
-            return res.status(403).json({ message: "Not authorized to view project" });
-        }
-
+        // Ensure the user belongs to the project
         const project = await Project.findById(projectId)
             .populate({ path: "authorId", select: ["firstName", "lastName"] });
         // .populate({ path: "assignees", select: ["firstName", "lastName, roleId"], populate: { path: "roleId", select: ["name"] } });;
+
+        if (!project.assignees.includes(userId)) {
+            return res.status(403).json({ message: "Not authorized to view project" });
+        }
 
         if (!project) {
             return res.status(403).json({ message: "Project not found" });
@@ -215,10 +216,6 @@ export const getProjectStat = async (req, res) => {
     try {
         //Get user permssion
         const userId = req.user._id;
-
-        if (!canPerformAction(permissionCheck.canManageProject, req.user)) {
-            return res.status(403).json({ message: "Not authorized to view project" });
-        }
 
         //Ensure - ensure signed in belongs to the project
         const project = await Project.findOne({ _id: projectId, assignees: userId });

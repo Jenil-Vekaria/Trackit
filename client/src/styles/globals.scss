@@ -1,0 +1,17 @@
+$INOVUA_DATAGRID_ACCENT_COLOR: #151c29 !default;
+$INOVUA_DATAGRID_BORDER_COLOR: #ffffff00 !default;
+$INOVUA_DATAGRID_HEADER_BG: #334154 !default;
+$INOVUA_DATAGRID_BG_COLOR: $INOVUA_DATAGRID_ACCENT_COLOR !default;
+
+$INOVUA_DATAGRID_ROW_ODD_BG_COLOR: $INOVUA_DATAGRID_ACCENT_COLOR !default;
+$INOVUA_DATAGRID_ROW_EVEN_BG_COLOR: $INOVUA_DATAGRID_ACCENT_COLOR !default;
+
+$INOVUA_DATAGRID_CELL_BORDER_COLOR: #28374e !default;
+
+.InovuaReactDataGrid__header {
+    background: $INOVUA_DATAGRID_HEADER_BG;
+    border-radius: 10px 10px 0 0;
+    border: $INOVUA_DATAGRID_HEADER_BG;
+}
+
+@import '@inovua/reactdatagrid-community/style/theme/default-dark/index.scss';

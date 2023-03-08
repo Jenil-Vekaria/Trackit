@@ -7,7 +7,7 @@ import TooltipAvatar from "../components/others/TooltipAvatar";
 
 const styles = {
     fontWeight: "500",
-    color: "purple",
+    // color: "#CBD5E0",
     cursor: "pointer",
 };
 
@@ -18,34 +18,39 @@ export const PROJECTS_COLUMNS = [
     {
         name: "title",
         searchInField: ["title"],
-        header: "Title",
+        header: "TITLE",
         flex: 3,
         render: ({ value }) => {
             return <span style={styles}>{value}</span>;
-        },
-        shouldComponentUpdate: () => true
+        }
     },
     {
         name: "description",
         searchInField: ["description"],
-        header: "Description",
+        header: "DESCRIPTION",
         flex: 3,
-        shouldComponentUpdate: () => true
+        render: ({ value }) => {
+            return value || "--No Description--";
+        }
     },
     {
         name: "authorId",
-        header: "Author",
+        header: "AUTHOR",
         flex: 1,
         render: ({ value }) => {
             return value.firstName + " " + value.lastName;
-        },
-        shouldComponentUpdate: () => true
+        }
     },
     {
         name: "createdOn",
         searchInField: ["createdOn"],
-        header: "Created On",
+        header: "CREATED ON",
         flex: 1,
+        headerProps: {
+            style: {
+                backgroundColor: "#334154"
+            }
+        },
         render: ({ value }) => {
             return moment(value).format("MMMM DD, YYYY");
         }
@@ -56,7 +61,7 @@ export const TICKETS_COLUMNS = [
     {
         name: "type",
         searchInField: ["type.name"],
-        header: "Type",
+        header: "TYPE",
         width: 55,
         headerEllipsis: false,
         render: ({ value }) => {
@@ -69,29 +74,26 @@ export const TICKETS_COLUMNS = [
                 </Tooltip>
             );
         },
-        shouldComponentUpdate: () => true
     },
     {
         name: "title",
         searchInField: ["title"],
-        header: "Title",
+        header: "TITLE",
         flex: 3,
         render: ({ value }) => {
             return <span style={styles}>{value}</span>;
         },
-        shouldComponentUpdate: () => true
     },
     {
         name: "description",
         defaultVisible: false,
-        header: "Description",
+        header: "DESCRIPTION",
         flex: 3,
-        shouldComponentUpdate: () => true
     },
     {
         name: "status",
         searchInField: ["status"],
-        header: "Status",
+        header: "STATUS",
         flex: 1,
         render: ({ value }) => {
             switch (value) {
@@ -107,11 +109,10 @@ export const TICKETS_COLUMNS = [
                     return <Badge colorScheme='green'>{value}</Badge>;
             }
         },
-        shouldComponentUpdate: () => true
     },
     {
         name: "assignees",
-        header: "Assignee(s)",
+        header: "ASSIGNEES",
         flex: 1,
         render: ({ value }) => {
             return (
@@ -123,25 +124,26 @@ export const TICKETS_COLUMNS = [
                     }
                 </AvatarGroup>
             );
-        }
+        },
+
     },
     {
         name: "createdBy",
-        header: "Created By",
+        header: "CREATED BY",
         flex: 1,
         render: ({ value }) => {
             return MiscellaneousService.getUserFullName(value);
-        }
+        },
+
     },
     {
         name: "createdOn",
         searchInField: ["createdOn"],
-        header: "Created On",
+        header: "CREATED ON",
         flex: 1,
         render: ({ value }) => {
             return moment(value).format("MMMM DD, YYYY");
         },
-        shouldComponentUpdate: () => true
     }
 ];
 
@@ -149,21 +151,19 @@ export const USERS_COLUMNS = [
     {
         name: "_id",
         searchInField: ["firstName", "lastName"],
-        header: "Name",
+        header: "NAME",
         flex: 1,
         render: ({ value }) => {
             return MiscellaneousService.getUserFullName(value);
-        },
-        shouldComponentUpdate: () => true
+        }
     },
     {
         name: "roleId",
-        header: "Role",
+        header: "ROLE",
         flex: 1,
         render: ({ value }) => {
             return value.name;
-        },
-        shouldComponentUpdate: () => true
+        }
     }
 ];
 
@@ -171,7 +171,7 @@ export const MANAGE_USERS_COLUMNS = [
     {
         name: "_id",
         searchInField: ["firstName", "lastName"],
-        header: "Name",
+        header: "NAME",
         flex: 1,
         render: ({ value }) => {
 
@@ -180,30 +180,28 @@ export const MANAGE_USERS_COLUMNS = [
                     {MiscellaneousService.getUserFullName(value)}
                 </span>
             );
-        },
-        shouldComponentUpdate: () => true
+        }
     },
     {
         name: "email",
         searchInField: ["email"],
-        header: "Email",
+        header: "EMAIL",
         flex: 1
     },
     {
         name: "roleId",
-        header: "Role",
+        header: "ROLE",
         flex: 1,
         render: ({ value }) => {
             return value?.name || "No Data";
-        },
-        shouldComponentUpdate: () => true
+        }
     }
 ];
 
 export const MANAGE_ROLES = [
     {
         name: "name",
-        header: "Role Name",
+        header: "ROLE NAME",
         searchInField: ["name"],
         render: ({ value }) => {
 
@@ -217,12 +215,18 @@ export const MANAGE_ROLES = [
     },
     {
         name: "permissions",
-        header: "Permissions",
+        header: "PERMISSIONS",
         flex: 5,
         render: ({ value }) => {
-            return value.map((permission, index) =>
-                <p key={index}>{permission}</p>
-            );
+            if (value.length > 0) {
+                return value.map((permission, index) =>
+                    <p key={index}>{permission}</p>
+                );
+            }
+            else {
+                return "--No Permissions--";
+            }
+
         }
     }
 ];
@@ -230,7 +234,7 @@ export const MANAGE_ROLES = [
 export const MANAGE_TICKET_TYPES_COLUMNS = [
     {
         name: "_id",
-        header: "Icon",
+        header: "ICON",
         searchInField: ["name"],
         width: 55,
         headerEllipsis: false,
@@ -243,7 +247,7 @@ export const MANAGE_TICKET_TYPES_COLUMNS = [
     },
     {
         name: "name",
-        header: "Icon Name",
+        header: "ICON NAME",
         flex: 1,
         searchInField: ["iconName"],
         render: ({ value }) => <span style={styles}>{value}</span>
@@ -253,13 +257,13 @@ export const MANAGE_TICKET_TYPES_COLUMNS = [
 export const ICONS_COLUMNS = [
     {
         name: "icon",
-        header: "Icon",
+        header: "ICON",
         headerEllipsis: false,
         width: 55,
     },
     {
         name: "name",
-        header: "Name",
+        header: "NAME",
         searchInField: ["name"],
         flex: 1,
         render: ({ value }) => <span style={styles}>{value}</span>

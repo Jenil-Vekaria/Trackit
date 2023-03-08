@@ -1,0 +1,16 @@
+Difficulty on this projects?
+
+#1
+
+I needed a way to efficiently render all the tickets without needing to fetch data everytime I create or update a ticket.
+What I did was to incorporate redux toolkit to store all the fetched data on local storage and update the data in the redux storage accordingly whenever a 
+ticket was modified. Additionally, I added redux persist on top of it so that the data is presisted whenever the page reloads.
+
+#2
+
+In the project there were some common data that was needed by components across the application and I wanted avoid passing down those data down as props into 
+child components. What I did was to incorporate redux toolkit to store all common data on local storage, so that components can directly access this global state
+without needing to access passdown props. 
+
+So issue was solved, however the data was persisting whenever the page reloaded. What I did was to add redux-persist on top of it to persist all my data. As a result
+I was able to access all my global state, as well as persist them

@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Role from "../models/role.model.js";
+import * as Constants from './constants.js';
 
 export const getUserRole = async (roleId) => {
 
@@ -27,4 +28,16 @@ export const validateObjectId = (id, message, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(403).json({ message });
     }
+};
+
+
+
+const canManageTickets = (permissionsList) => permissionsList.includes(Constants.MANAGE_TICKET);
+const canManageProjects = (permissionsList) => permissionsList.includes(Constants.MANAGE_PROJECT);
+const canManageAdminPage = (permissionsList) => permissionsList.includes(Constants.MANAGE_ADMIN_PAGE);
+
+export const Permissions = {
+    canManageTickets,
+    canManageProjects,
+    canManageAdminPage
 };

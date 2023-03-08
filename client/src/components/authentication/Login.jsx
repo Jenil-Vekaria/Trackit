@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import {
 	Box,
@@ -12,13 +12,13 @@ import {
 	Alert,
 } from "@chakra-ui/react";
 import { LoginData, LoginSchema } from "../../util/ValidationSchemas";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/router";
 import AuthService from "../../services/auth-service";
 import MiscellaneousService from "../../services/miscellaneous-service";
 
 export const Login = () => {
 	const [error, seterror] = useState("");
-	const navigate = useNavigate();
+	const router = useRouter();
 
 	const onHandleFormSubmit = async (values) => {
 		seterror("");
@@ -27,8 +27,7 @@ export const Login = () => {
 			await AuthService.login(values);
 			await MiscellaneousService.fetchInitialData();
 
-			navigate("/projects");
-			window.location.reload();
+			router.reload();
 		} catch (error) {
 			seterror(error.response.data.message);
 		}
@@ -40,7 +39,7 @@ export const Login = () => {
 			p={[8, 10]}
 			mt={[10]}
 			mx="auto"
-			background={["white"]}
+			background="secondary"
 			borderRadius={10}
 			boxShadow="md"
 		>
@@ -71,12 +70,12 @@ export const Login = () => {
 
 						<Flex direction="row" justifyContent="space-between" mt={4}>
 							<Checkbox>Remember me</Checkbox>
-							<Button variant="link" fontWeight="semibold" colorScheme="purple">
+							<Button variant="link" fontWeight="semibold" colorScheme="blue">
 								Forgot Password?
 							</Button>
 						</Flex>
 
-						<Button colorScheme="purple" w="full" mt={10} type="submit">
+						<Button colorScheme="blue" w="full" mt={10} type="submit">
 							Login
 						</Button>
 					</Form>

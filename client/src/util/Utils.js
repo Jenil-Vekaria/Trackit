@@ -1,24 +1,13 @@
-export const ADD_TICKET = "PERMISSION_ADD_TICKET";
-export const ADD_PROJECT = "PERMISSION_ADD_PROJECT";
-export const ADD_MEMBER_TO_PROJECT = "PERMISSION_ADD_MEMBER_TO_PROJECT";
-export const ADD_COMMENT = "PERMISSION_ADD_COMMENT";
-export const MANAGE_ROLE = "PERMISSION_MANAGE_ROLE";
-export const UPDATE_USER_PROFILE = "PERMISSION_UPDATE_USER_PROFILE";
+import * as Constants from "./Constants.js";
 
-const canManageTicket = (permissions) => permissions.includes(ADD_TICKET);
-const canManageProject = (permissions) => permissions.includes(ADD_PROJECT);
-const canManageProjectMember = (permissions) => permissions.includes(ADD_MEMBER_TO_PROJECT);
-const canManageComments = (permissions) => permissions.includes(ADD_COMMENT);
-const canManageRole = (permissions) => permissions.includes(MANAGE_ROLE);
-const canUpdateUserProfile = (permissions) => permissions.includes(UPDATE_USER_PROFILE);
+const canManageTickets = (permissionsList) => permissionsList.includes(Constants.MANAGE_TICKET);
+const canManageProjects = (permissionsList) => permissionsList.includes(Constants.MANAGE_PROJECT);
+const canManageAdminPage = (permissionsList) => permissionsList.includes(Constants.MANAGE_ADMIN_PAGE);
 
 export const Permissions = {
-    canManageTicket,
-    canManageProject,
-    canManageProjectMember,
-    canManageComments,
-    canManageRole,
-    canUpdateUserProfile
+    canManageTickets,
+    canManageProjects,
+    canManageAdminPage
 };
 
 export const hexToRgb = (hex, opacity) => {

@@ -184,7 +184,7 @@ const CreateTicketType = ({
 
 				<ModalFooter>
 					<Button
-						colorScheme="purple"
+						colorScheme="blue"
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>

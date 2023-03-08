@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import ReactDataGrid from "@inovua/reactdatagrid-community";
-import "@inovua/reactdatagrid-community/index.css";
+import "@inovua/reactdatagrid-community/style/base.scss";
+// import "@inovua/reactdatagrid-community/style/theme/default-dark/index.scss";
 
 import { getFieldValue } from "../../util/GetObjectProperty";
 
@@ -17,7 +18,7 @@ const Table = ({
 	selectedRow,
 	onSelectionChange,
 	height = 400,
-	rowHeight = 40,
+	rowHeight = 45,
 	disableCheckBox = false,
 }) => {
 	const [dataSource, setDataSource] = useState([]);
@@ -83,12 +84,13 @@ const Table = ({
 
 			{/* {isLoading ? (
 				<Center w="100%">
-					<Spinner color="purple" size="xl" />
+					<Spinner color="blue" size="xl" />
 				</Center>
 			) : ( */}
 			<ReactDataGrid
 				idProperty="_id"
 				style={gridStyle}
+				theme="default-dark"
 				dataSource={dataSource}
 				columns={columns}
 				defaultSortInfo={defaultSortInfo}
@@ -101,6 +103,8 @@ const Table = ({
 				showColumnMenuTool={false}
 				loading={isLoading}
 				rowHeight={rowHeight}
+				showCellBorders="horizontal"
+				showZebraRows={false}
 			/>
 			{/* )} */}
 		</>

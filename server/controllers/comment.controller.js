@@ -1,6 +1,4 @@
 import Comment from "../models/comment.model.js";
-import { canPerformAction } from "../util/utils.js";
-import * as permissionCheck from "../util/permissionCheck.js";
 
 export const getComments = async (req, res) => {
     const { ticketId } = req.params;
@@ -21,11 +19,6 @@ export const createComment = async (req, res) => {
     const { text } = req.body;
 
     try {
-
-        if (!(await canPerformAction(permissionCheck.canManageComments, req.user))) {
-            return res.status(403).json({ message: "Not authorized to comment" });
-        }
-
         const userId = req.user._id;
 
         const newComment = await Comment.create({ ticketId, userId, text, createdOn: Date.now(), updatedOn: Date.now() });
@@ -43,10 +36,6 @@ export const updateComment = async (req, res) => {
 
     try {
 
-        if (!(await canPerformAction(permissionCheck.canManageComments, req.user))) {
-            return res.status(403).json({ message: "Not authorized to comment" });
-        }
-
         const updatedComment = await Comment.findOneAndUpdate({ _id: commentId }, { text, updatedOn: Date.now() });
 
         return res.json({ comment: updatedComment });
@@ -61,10 +50,6 @@ export const deleteComment = async (req, res) => {
     const { commentId } = req.params;
 
     try {
-        if (!canPerformAction(permissionCheck.canManageComments, req.user)) {
-            return res.status(403).json({ message: "Not authorized to comment" });
-        }
-
         await Comment.findOneAndDelete({ _id: commentId });
 
         return res.sendStatus(200);

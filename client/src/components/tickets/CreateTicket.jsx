@@ -23,6 +23,7 @@ import {
 	useToast,
 	Heading,
 	Text,
+	useDisclosure,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect } from "react";
@@ -51,12 +52,14 @@ const CreateTicket = ({
 	ticket,
 	setviewTicket,
 	projectId,
+	projectTitle,
 }) => {
+	const alertModalDisclosure = useDisclosure();
 	const ticketTypes = useSelector(getTicketType);
-	const projectAssignees = ProjectService.getProjectAssignees(projectId);
+	const [projectAssignees, setProjectAssignees] = useState([]);
 	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
 
-	const canManageTickets = usePermissions(Permissions.canManageTicket);
+	const canManageTickets = usePermissions(Permissions.canManageTickets);
 
 	const formRef = useRef();
 	const toast = useToast();
@@ -72,6 +75,7 @@ const CreateTicket = ({
 			ticketCopy.projectId = ticket.projectId._id;
 			ticketCopy.type = ticket.type._id;
 
+			setProjectAssignees(ProjectService.getProjectAssignees(projectId));
 			setAssigneesId(ticketCopy.assignees);
 			setTicketInfo(ticketCopy);
 		}
@@ -136,10 +140,16 @@ const CreateTicket = ({
 	const onTicketDelete = async () => {
 		try {
 			await TicketService.deleteTicket(ticket._id);
+			closeModal();
 		} catch (error) {
+			closeAlert();
 			seterror(error);
 		}
-		closeModal();
+	};
+
+	const closeAlert = () => {
+		setopenDeleteAlert(false);
+		alertModalDisclosure.onClose();
 	};
 
 	const closeModal = () => {
@@ -164,13 +174,13 @@ const CreateTicket = ({
 					<Heading as="h3" size="md">
 						{ticket ? "Edit" : "Create"} Ticket
 					</Heading>
-					<Text fontSize="sm" color="purple" mt={2}>
-						{ticket?.projectId?.title} {ticket ? "|" : ""} {ticket?.title}
+					<Text fontSize="sm" as="i" fontWeight={400} mt={2}>
+						Project: {projectTitle || ""}
 					</Text>
 				</ModalHeader>
 				<ModalCloseButton onClick={closeModal} />
 				<ModalBody overflowY="auto">
-					<Tabs variant="soft-rounded" colorScheme="purple" isFitted>
+					<Tabs variant="enclosed" size="sm" colorScheme="blue">
 						<TabList>
 							<Tab>Ticket Info</Tab>
 							{ticket ? <Tab>Comments</Tab> : null}
@@ -338,22 +348,22 @@ const CreateTicket = ({
 					</Tabs>
 				</ModalBody>
 
-				<PermissionsRender permissionCheck={Permissions.canManageTicket}>
+				<PermissionsRender permissionCheck={Permissions.canManageTickets}>
 					<ModalFooter>
 						<Button
-							colorScheme="purple"
+							colorScheme="blue"
 							type="submit"
 							mr={3}
 							onClick={() => formRef.current?.handleSubmit()}
 						>
-							{ticket ? "Save" : "Create"} Ticket
+							{ticket ? "Save" : "Create"}
 						</Button>
 						{ticket ? (
 							<Button
 								colorScheme="red"
 								onClick={() => setopenDeleteAlert(true)}
 							>
-								Delete Ticket
+								Delete
 							</Button>
 						) : (
 							<Button onClick={closeModal}>Cancel</Button>
@@ -366,7 +376,7 @@ const CreateTicket = ({
 				title={"Delete ticket"}
 				body="Are you sure you to delete this ticket?"
 				isOpen={openDeleteAlert}
-				onClose={closeModal}
+				onClose={closeAlert}
 				onCTA={onTicketDelete}
 			/>
 		</Modal>

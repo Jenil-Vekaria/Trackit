@@ -12,35 +12,41 @@ import {
 	useDisclosure,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import TicketService from "../../services/ticket-service";
-import {
-	TICKETS_DEFAULT_SORT,
-	TICKETS_COLUMNS,
-} from "../../util/TableDataDisplay";
-import CreateTicket from "../tickets/CreateTicket";
+import { TICKETS_DEFAULT_SORT, TICKETS_COLUMNS } from "@/util/TableDataDisplay";
 import { useSelector } from "react-redux";
-import { getTickets } from "../../features/ticketSlice.js";
-import Table from "../others/Table";
-import Dashboard from "../../pages/Dashboard";
-import PermissionsRender from "../others/PermissionsRender";
-import { Permissions } from "../../util/Utils";
-import { getProjectInfo } from "../../features/projectSlice";
+import { getProjectInfo } from "@/features/projectSlice";
+import { useRouter } from "next/router";
+import CreateTicket from "@/components/tickets/CreateTicket";
+import Table from "@/components/others/Table";
+import PermissionsRender from "@/components/others/PermissionsRender";
+import TicketService from "@/services/ticket-service";
+import Link from "next/link";
+import Dashboard from "@/components/projects/dashboard";
+import Head from "next/head";
+import { getTickets } from "@/features/ticketSlice";
+import { Permissions } from "@/util/Utils";
+import PageNotFound from "@/pages/404";
 
-const ViewProject = () => {
-	const { projectID } = useParams();
+const ViewProject = ({ projectId }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
-	const navigate = useNavigate();
+	const router = useRouter();
+
 	const tickets = useSelector(getTickets);
-	const projectInfo = useSelector(getProjectInfo(projectID));
+	const projectInfo = useSelector(getProjectInfo(projectId));
 
 	const [projectTickets, setprojectTickets] = useState([]);
 	const [viewTicket, setviewTicket] = useState(null);
 
+	const [is404, setIs404] = useState(false);
+
 	const getProjectTickets = async () => {
-		await TicketService.getProjectTickets(projectID);
+		try {
+			await TicketService.getProjectTickets(projectId);
+		} catch (error) {
+			setIs404(true);
+		}
 	};
 
 	const onTicketClick = (rowProps, _) => {
@@ -49,25 +55,30 @@ const ViewProject = () => {
 	};
 
 	const navigateBack = () => {
-		navigate(-1);
+		router.replace("/projects");
 	};
 
 	useEffect(() => {
-		if (!projectInfo) {
-			navigate("/404");
+		if (projectId) {
+			getProjectTickets();
 		}
-
-		getProjectTickets();
 	}, []);
 
 	useEffect(() => {
 		setprojectTickets(tickets);
 	}, [tickets]);
 
+	if (is404) {
+		return <PageNotFound />;
+	}
+
 	return (
-		<Flex w="100%" direction="column">
+		<Flex w="100%" direction="column" px={8} py={6}>
+			<Head>
+				<title>{projectInfo?.title || "Projects"}</title>
+			</Head>
 			<Flex w="100%" h="fit-content">
-				<Heading as="h1" size="lg">
+				<Heading as="h1" size="md" fontWeight={600}>
 					<IconButton
 						icon={<ArrowBackIcon />}
 						variant="link"
@@ -80,21 +91,18 @@ const ViewProject = () => {
 
 				<Spacer />
 
-				<PermissionsRender permissionCheck={Permissions.canManageTicket}>
-					<Button colorScheme="whatsapp" mr={5} onClick={() => onOpen()}>
+				<PermissionsRender permissionCheck={Permissions.canManageTickets}>
+					<Button colorScheme="blue" size="md" mr={5} onClick={() => onOpen()}>
 						Add Ticket
 					</Button>
 				</PermissionsRender>
 
-				<Button
-					colorScheme="purple"
-					onClick={() => navigate(`/projects/${projectID}/edit`)}
-				>
-					Project Info
-				</Button>
+				<Link href={`/projects/${projectId}/edit`} passHref>
+					<Button colorScheme="teal">Project Info</Button>
+				</Link>
 			</Flex>
 
-			<Tabs variant="soft-rounded" colorScheme="purple" mt={5} h="100%">
+			<Tabs variant="enclosed" size="sm" colorScheme="blue" mt={2} h="100%">
 				<TabList>
 					<Tab>Tickets</Tab>
 					<Tab>Overview</Tab>
@@ -112,7 +120,7 @@ const ViewProject = () => {
 						/>
 					</TabPanel>
 					<TabPanel>
-						<Dashboard />
+						{projectId ? <Dashboard projectId={projectId} /> : null}
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
@@ -122,7 +130,8 @@ const ViewProject = () => {
 				onClose={onClose}
 				ticket={viewTicket}
 				setviewTicket={setviewTicket}
-				projectId={projectID}
+				projectId={projectId}
+				projectTitle={projectInfo?.title}
 			/>
 		</Flex>
 	);

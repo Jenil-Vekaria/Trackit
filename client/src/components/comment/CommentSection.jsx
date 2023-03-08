@@ -26,7 +26,6 @@ const CommentSection = ({ ticketId }) => {
 
 	const getTicketComments = async () => {
 		if (ticketId) {
-			setComments([]);
 			const comments = await CommentService.getTicketComments(ticketId);
 			setComments(comments);
 		}
@@ -71,7 +70,7 @@ const CommentSection = ({ ticketId }) => {
 					{error}
 				</Alert>
 			)}
-			<PermissionsRender permissionCheck={Permissions.canManageComments}>
+			<PermissionsRender permissionCheck={Permissions.canManageTickets}>
 				<Formik
 					initialValues={CreateCommentData}
 					validationSchema={CreateCommentSchema}
@@ -91,7 +90,7 @@ const CommentSection = ({ ticketId }) => {
 										<IconButton
 											size="sm"
 											variant="link"
-											colorScheme="purple"
+											colorScheme="blue"
 											icon={<IoMdSend size={20} />}
 											type="submit"
 										/>

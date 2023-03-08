@@ -34,8 +34,8 @@ const ManageRoles = () => {
 			<br />
 			<Spacer />
 			<Flex justify="flex-end">
-				<Button colorScheme="purple" pos="right" onClick={() => onOpen()}>
-					Add New Role
+				<Button colorScheme="blue" pos="right" onClick={() => onOpen()}>
+					Add Role
 				</Button>
 			</Flex>
 
