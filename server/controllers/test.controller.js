@@ -35,8 +35,6 @@ const populate = async () => {
 };
 export const seedDatabase = async (_, res) => {
     try {
-        console.log('❌ Clearing database...');
-
         if (mongoose.connection?.readyState === 1) {
             console.log('❌ Clearing database...');
             mongoose.connection.dropDatabase();

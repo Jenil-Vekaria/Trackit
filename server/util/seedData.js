@@ -18,12 +18,6 @@ export const DBUsers = [
         lastName: "Smith",
         email: "robert.smith@bugtracker.com",
         password: "password"
-    },
-    {
-        firstName: "Maria",
-        lastName: "Garcia",
-        email: "maria.garcia@bugtracker.com",
-        password: "password"
     }
 ];
 
@@ -31,37 +25,22 @@ export const DBRole = [
     {
         name: "Admin",
         permissions: [
-            Permissions.ADD_COMMENT,
-            Permissions.ADD_MEMBER_TO_PROJECT,
-            Permissions.ADD_PROJECT,
-            Permissions.ADD_TICKET,
-            Permissions.MANAGE_ROLE,
-            Permissions.UPDATE_USER_PROFILE,
+            Permissions.MANAGE_TICKET,
+            Permissions.MANAGE_PROJECT,
+            Permissions.MANAGE_ADMIN_PAGE
         ]
     },
     {
         name: "Developer",
         permissions: [
-            Permissions.ADD_COMMENT,
-            Permissions.ADD_PROJECT,
-            Permissions.ADD_TICKET,
-        ]
-    },
-    {
-        name: "Project Manager",
-        permissions: [
-            Permissions.ADD_COMMENT,
-            Permissions.ADD_MEMBER_TO_PROJECT,
-            Permissions.ADD_PROJECT,
-            Permissions.ADD_TICKET,
-            Permissions.MANAGE_ROLE,
+            Permissions.MANAGE_TICKET,
+            Permissions.MANAGE_PROJECT,
         ]
     },
     {
         name: "Submitter",
         permissions: [
-            Permissions.ADD_COMMENT,
-            Permissions.ADD_TICKET
+            Permissions.MANAGE_TICKET,
         ]
     },
 ];
