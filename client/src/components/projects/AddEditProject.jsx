@@ -140,7 +140,7 @@ const AddEditProject = ({ projectId }) => {
 	return (
 		<Flex w="100%" h="100%" direction="column" padding={10}>
 			<Flex w="100%" h="fit-content">
-				<Heading as="h1" size="lg">
+				<Heading as="h1" size="lg" fontWeight={600}>
 					{projectId ? "Edit" : "Add"} Project
 				</Heading>
 				<Spacer />

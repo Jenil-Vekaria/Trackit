@@ -177,11 +177,11 @@ const CreateRole = ({ data, isOpen, onClose }) => {
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>
-						Save Role
+						Save
 					</Button>
 					{data ? (
 						<Button colorScheme="red" onClick={alertDialogDisclosure.onOpen}>
-							Delete Role
+							Delete
 						</Button>
 					) : (
 						<Button

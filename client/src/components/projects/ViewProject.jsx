@@ -73,7 +73,7 @@ const ViewProject = ({ projectId }) => {
 	}
 
 	return (
-		<Flex w="100%" direction="column" padding={8}>
+		<Flex w="100%" direction="column" px={8} py={6}>
 			<Head>
 				<title>{projectInfo?.title || "Projects"}</title>
 			</Head>
@@ -131,6 +131,7 @@ const ViewProject = ({ projectId }) => {
 				ticket={viewTicket}
 				setviewTicket={setviewTicket}
 				projectId={projectId}
+				projectTitle={projectInfo.title}
 			/>
 		</Flex>
 	);

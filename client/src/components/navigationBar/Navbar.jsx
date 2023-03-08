@@ -7,6 +7,10 @@ import {
 	Flex,
 	Heading,
 	IconButton,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
 	Popover,
 	PopoverArrow,
 	PopoverBody,
@@ -109,44 +113,23 @@ const Navbar = () => {
 						display={navSize === "small" ? "none" : "flex"}
 					/>
 
-					<Popover placement="right-end">
-						<PopoverTrigger>
+					<Menu matchWidth={true}>
+						<MenuButton>
 							<Flex mt={4} align="center" cursor="pointer">
-								<Avatar
-									size="sm"
-									name={user.firstName + " " + user.lastName}
-									alignItems={navSize === "small" ? "center" : "flex-start"}
-								/>
-								<Flex
-									direction="column"
-									ml={4}
-									display={navSize === "small" ? "none" : "flex"}
-								>
+								<Avatar size="sm" name={user.firstName + " " + user.lastName} />
+								<Flex direction="column" ml={4} align="left">
 									<Heading as="h3" size="xs">
 										{user.firstName} {user.lastName}
 									</Heading>
 									<Text fontSize="sm">{user.roleId.name || "No Data"}</Text>
 								</Flex>
 							</Flex>
-						</PopoverTrigger>
-
-						<PopoverContent w="fit-content">
-							<PopoverBody>
-								<PopoverArrow />
-								<Button variant="link" p={1} onClick={onProfileClick}>
-									Profile
-								</Button>
-								<Divider />
-								<Button
-									variant="link"
-									p={1}
-									onClick={() => AuthService.logout()}
-								>
-									Logout
-								</Button>
-							</PopoverBody>
-						</PopoverContent>
-					</Popover>
+						</MenuButton>
+						<MenuList>
+							<MenuItem onClick={onProfileClick}>Profile</MenuItem>
+							<MenuItem onClick={() => AuthService.logout()}>Logout</MenuItem>
+						</MenuList>
+					</Menu>
 				</Flex>
 			</Flex>
 

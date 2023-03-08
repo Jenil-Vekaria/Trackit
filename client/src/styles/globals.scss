@@ -11,6 +11,7 @@ $INOVUA_DATAGRID_CELL_BORDER_COLOR: #28374e !default;
 
 .InovuaReactDataGrid__header {
     background: $INOVUA_DATAGRID_HEADER_BG;
+    border-radius: 10px 10px 0 0;
     border: $INOVUA_DATAGRID_HEADER_BG;
 }
 

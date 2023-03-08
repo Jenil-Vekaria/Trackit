@@ -51,9 +51,10 @@ const CreateTicket = ({
 	ticket,
 	setviewTicket,
 	projectId,
+	projectTitle,
 }) => {
 	const ticketTypes = useSelector(getTicketType);
-	let projectAssignees = [];
+	const [projectAssignees, setProjectAssignees] = useState([]);
 	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
 
 	const canManageTickets = usePermissions(Permissions.canManageTicket);
@@ -72,7 +73,7 @@ const CreateTicket = ({
 			ticketCopy.projectId = ticket.projectId._id;
 			ticketCopy.type = ticket.type._id;
 
-			projectAssignees = ProjectService.getProjectAssignees(projectId);
+			setProjectAssignees(ProjectService.getProjectAssignees(projectId));
 			setAssigneesId(ticketCopy.assignees);
 			setTicketInfo(ticketCopy);
 		}
@@ -166,7 +167,7 @@ const CreateTicket = ({
 						{ticket ? "Edit" : "Create"} Ticket
 					</Heading>
 					<Text fontSize="sm" as="i" fontWeight={400} mt={2}>
-						Project: {ticket?.projectId?.title}
+						Project: {projectTitle || ""}
 					</Text>
 				</ModalHeader>
 				<ModalCloseButton onClick={closeModal} />

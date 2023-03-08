@@ -208,7 +208,7 @@ const UpdateUser = ({
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>
-						Save User
+						Save
 					</Button>
 					{isUpdateMyProfile ? (
 						<Button
@@ -223,7 +223,7 @@ const UpdateUser = ({
 						</Button>
 					) : (
 						<Tooltip label="Not Implemeted">
-							<Button colorScheme="red">Delete User</Button>
+							<Button colorScheme="red">Delete</Button>
 						</Tooltip>
 					)}
 				</ModalFooter>
