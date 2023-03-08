@@ -23,6 +23,7 @@ import {
 	useToast,
 	Heading,
 	Text,
+	useDisclosure,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect } from "react";
@@ -53,6 +54,7 @@ const CreateTicket = ({
 	projectId,
 	projectTitle,
 }) => {
+	const alertModalDisclosure = useDisclosure();
 	const ticketTypes = useSelector(getTicketType);
 	const [projectAssignees, setProjectAssignees] = useState([]);
 	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
@@ -138,10 +140,16 @@ const CreateTicket = ({
 	const onTicketDelete = async () => {
 		try {
 			await TicketService.deleteTicket(ticket._id);
+			closeModal();
 		} catch (error) {
+			closeAlert();
 			seterror(error);
 		}
-		closeModal();
+	};
+
+	const closeAlert = () => {
+		setopenDeleteAlert(false);
+		alertModalDisclosure.onClose();
 	};
 
 	const closeModal = () => {
@@ -368,7 +376,7 @@ const CreateTicket = ({
 				title={"Delete ticket"}
 				body="Are you sure you to delete this ticket?"
 				isOpen={openDeleteAlert}
-				onClose={closeModal}
+				onClose={closeAlert}
 				onCTA={onTicketDelete}
 			/>
 		</Modal>
