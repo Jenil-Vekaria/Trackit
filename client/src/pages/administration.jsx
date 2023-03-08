@@ -15,6 +15,7 @@ import MiscellaneousService from "../services/miscellaneous-service";
 import { Permissions } from "../util/Utils";
 import { usePermissions } from "../hooks/usePermissions";
 import Head from "next/head";
+import PageNotFound from "./404";
 
 const Administration = () => {
 	const canManagerOtherUsers = usePermissions(Permissions.canUpdateUserProfile);
@@ -27,6 +28,10 @@ const Administration = () => {
 	useEffect(() => {
 		fetchAdminData();
 	}, []);
+
+	if (!canManagerOtherUsers && !canManageCustomFields) {
+		return <PageNotFound />;
+	}
 
 	return (
 		<Flex w="100%" direction="column" p={10}>

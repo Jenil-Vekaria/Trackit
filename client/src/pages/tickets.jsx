@@ -18,8 +18,6 @@ const Tickets = () => {
 
 	const getUserTickets = async () => {
 		await TicketService.getUserTickets();
-		setmyTickets(tickets);
-		setTimeout(() => setmyTickets(tickets), 30);
 	};
 
 	const onTicketClick = (rowProps, event) => {

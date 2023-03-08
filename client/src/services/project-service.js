@@ -51,6 +51,7 @@ const getProjectInfo = async (projectId) => {
         return project;
     } catch (error) {
         console.error(error);
+        throw error.response.data.message;
     }
 };
 

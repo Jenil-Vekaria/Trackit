@@ -36,13 +36,13 @@ import { getUsers } from "../../features/miscellaneousSlice.js";
 import Table from "../others/Table";
 import AuthService from "../../services/auth-service";
 import { useRouter } from "next/router";
+import PageNotFound from "@/pages/404";
 
-const AddEditProject = () => {
+const AddEditProject = ({ projectId }) => {
 	const router = useRouter();
 	const [isProjectAuthor, setisProjectAuthor] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
-	const projectId = router.query.projectId;
 	const isNewProject = !projectId;
 	const allUsers = useSelector(getUsers(true));
 	const formRef = useRef();
@@ -52,6 +52,8 @@ const AddEditProject = () => {
 	const [projectInfo, setProjectInfo] = useState(CreateProjectData);
 	const [error, seterror] = useState("");
 	const [isLoading, setisLoading] = useState(false);
+
+	const [is404, setIs404] = useState(false);
 
 	const getSelectedAssigneesId = () => {
 		const selectedAssignees = {};
@@ -79,29 +81,28 @@ const AddEditProject = () => {
 	};
 
 	const getProjectInfo = async () => {
-		setisLoading(true);
-		const {
-			_id,
-			title,
-			description,
-			assignees,
-			authorId,
-		} = await ProjectService.getProjectInfo(projectId);
+		try {
+			const {
+				_id,
+				title,
+				description,
+				assignees,
+				authorId,
+			} = await ProjectService.getProjectInfo(projectId);
 
-		const isCurrentUserProjectAuthor =
-			AuthService.getCurrentUser()._id === authorId._id;
-		setisProjectAuthor(isCurrentUserProjectAuthor);
-		setProjectInfo({
-			_id,
-			title,
-			description,
-			assignees,
-		});
-		setAssigneesId(assignees);
-
-		setTimeout(() => {
-			setisLoading(false);
-		}, 100);
+			const isCurrentUserProjectAuthor =
+				AuthService.getCurrentUser()._id === authorId._id;
+			setisProjectAuthor(isCurrentUserProjectAuthor);
+			setProjectInfo({
+				_id,
+				title,
+				description,
+				assignees,
+			});
+			setAssigneesId(assignees);
+		} catch (error) {
+			setIs404(true);
+		}
 	};
 
 	const onHandleFormSubmit = async (values, _) => {
@@ -132,12 +133,8 @@ const AddEditProject = () => {
 		}
 	}, []);
 
-	if (isLoading) {
-		return (
-			<Center w="100%">
-				<Spinner color="blue" size="xl" />
-			</Center>
-		);
+	if (is404) {
+		return <PageNotFound />;
 	}
 
 	return (

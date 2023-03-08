@@ -13,14 +13,9 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import {
-	TICKETS_DEFAULT_SORT,
-	TICKETS_COLUMNS,
-} from "../../../util/TableDataDisplay";
+import { TICKETS_DEFAULT_SORT, TICKETS_COLUMNS } from "@/util/TableDataDisplay";
 import { useSelector } from "react-redux";
-import { getTickets } from "../../../features/ticketSlice.js";
-import { Permissions } from "../../../util/Utils";
-import { getProjectInfo } from "../../../features/projectSlice";
+import { getProjectInfo } from "@/features/projectSlice";
 import { useRouter } from "next/router";
 import CreateTicket from "@/components/tickets/CreateTicket";
 import Table from "@/components/others/Table";
@@ -29,12 +24,14 @@ import TicketService from "@/services/ticket-service";
 import Link from "next/link";
 import Dashboard from "@/components/projects/dashboard";
 import Head from "next/head";
+import { getTickets } from "@/features/ticketSlice";
+import { Permissions } from "@/util/Utils";
+import PageNotFound from "@/pages/404";
 
-const ViewProject = () => {
+const ViewProject = ({ projectId }) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	const router = useRouter();
-	const projectId = router.query.projectId;
 
 	const tickets = useSelector(getTickets);
 	const projectInfo = useSelector(getProjectInfo(projectId));
@@ -42,8 +39,14 @@ const ViewProject = () => {
 	const [projectTickets, setprojectTickets] = useState([]);
 	const [viewTicket, setviewTicket] = useState(null);
 
+	const [is404, setIs404] = useState(false);
+
 	const getProjectTickets = async () => {
-		await TicketService.getProjectTickets(projectId);
+		try {
+			await TicketService.getProjectTickets(projectId);
+		} catch (error) {
+			setIs404(true);
+		}
 	};
 
 	const onTicketClick = (rowProps, _) => {
@@ -64,6 +67,10 @@ const ViewProject = () => {
 	useEffect(() => {
 		setprojectTickets(tickets);
 	}, [tickets]);
+
+	if (is404) {
+		return <PageNotFound />;
+	}
 
 	return (
 		<Flex w="100%" direction="column" padding={8}>

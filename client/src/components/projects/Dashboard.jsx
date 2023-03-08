@@ -160,7 +160,7 @@ const Dashboard = ({ projectId }) => {
 
 			setTimeout(() => setisLoading(false), 100);
 		} catch (error) {
-			router.replace("/projects");
+			// router.replace("/projects");
 		}
 	};
 

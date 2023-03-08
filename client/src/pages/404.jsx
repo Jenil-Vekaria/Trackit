@@ -10,7 +10,7 @@ const PageNotFound = () => {
 			<Head>
 				<title>Page not found</title>
 			</Head>
-			<Image src={pageNotFound} width={450} />
+			<Image src={pageNotFound} width={450} alt="404 Page Not Found" />
 		</Center>
 	);
 };

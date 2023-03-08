@@ -37,6 +37,7 @@ const getProjectTickets = async (projectId) => {
         return tickets;
     } catch (error) {
         console.error(error);
+        throw error.response.data.message;
     }
 };
 
