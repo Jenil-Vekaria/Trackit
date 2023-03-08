@@ -25,24 +25,21 @@ import {
 import { Pie } from "react-chartjs-2";
 import MiscellaneousService from "../../services/miscellaneous-service";
 import { hexToRgb } from "../../util/Utils";
-import { useRouter } from "next/router";
 
 ChartJS.register(ArcElement, Tooltip, Legend, Colors);
 
 const Dashboard = ({ projectId }) => {
-	const router = useRouter();
-
 	const [projectStats, setProjectStats] = useState([]);
 	const [ticketTypeChartData, setTicketTypeChartData] = useState(null);
 	const [ticketStatusChartData, setTicketStatusChartData] = useState(null);
 	const [isLoading, setisLoading] = useState(true);
-	const iconColor = useColorModeValue("white");
+	const iconColor = useColorModeValue("white", "white");
 
-	const iconBackground = [
-		useColorModeValue("blue.300"),
-		useColorModeValue("green.300"),
-		useColorModeValue("red.300"),
-		useColorModeValue("blue.300"),
+	const iconBackgroundColor = [
+		"purple.300",
+		"green.300",
+		"red.300",
+		"blue.300",
 	];
 
 	const createStatInfo = (stat) => {
@@ -50,28 +47,28 @@ const Dashboard = ({ projectId }) => {
 			{
 				name: "Total Tickets",
 				icon: BsFillFileTextFill,
-				iconBackground: iconBackground[0],
+				iconBackground: iconBackgroundColor[0],
 				iconColor,
 				value: stat.ticketCount,
 			},
 			{
 				name: "My Tickets",
 				icon: BsPersonFill,
-				iconBackground: iconBackground[1],
+				iconBackground: iconBackgroundColor[1],
 				iconColor,
 				value: stat.myTicketCount,
 			},
 			{
 				name: "Unassigned Tickets",
 				icon: BsQuestionLg,
-				iconBackground: iconBackground[2],
+				iconBackground: iconBackgroundColor[2],
 				iconColor,
 				value: stat.unassignedTicketCount,
 			},
 			{
 				name: "Assigned Tickets",
 				icon: BsPersonCheckFill,
-				iconBackground: iconBackground[3],
+				iconBackground: iconBackgroundColor[3],
 				iconColor,
 				value: stat.assignedTicketCount,
 			},
@@ -167,6 +164,7 @@ const Dashboard = ({ projectId }) => {
 	useEffect(() => {
 		if (projectId) {
 			getProjectStats();
+			console.log(projectStats);
 		}
 	}, []);
 

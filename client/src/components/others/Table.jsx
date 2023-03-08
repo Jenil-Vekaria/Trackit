@@ -90,7 +90,7 @@ const Table = ({
 			<ReactDataGrid
 				idProperty="_id"
 				style={gridStyle}
-				theme="orange-dark"
+				theme="default-dark"
 				dataSource={dataSource}
 				columns={columns}
 				defaultSortInfo={defaultSortInfo}

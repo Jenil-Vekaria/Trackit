@@ -34,7 +34,7 @@
 
 ## 🛠️Technologies
 
-| **Front-end** | <p align="center"><img src="https://www.svgrepo.com/show/303500/react-1-logo.svg" width="100" height="100" /><br/> React</p>                                                                                        | <p align="center"><img src="https://avatars.githubusercontent.com/u/54212428?s=200&v=4" width="100" height="100" /><br/>Chakra UI</p>                                                                | <p align="center"><img src="https://axios-http.com/assets/logo.svg" width="100" height="100" /><br/>Axios</p>                                                          | <p align="center"><img src="https://raw.githubusercontent.com/reduxjs/redux/master/logo/logo.png" width="100" height="100" /><br/>Redux</p>      |
+| **Front-end** | <p align="center"><img src="https://www.rlogical.com/wp-content/uploads/2021/08/Rlogical-Blog-Images-thumbnail-1.png" width="100" height="100" /><br/>NextJs</p>                                                    | <p align="center"><img src="https://avatars.githubusercontent.com/u/54212428?s=200&v=4" width="100" height="100" /><br/>Chakra UI</p>                                                                | <p align="center"><img src="https://axios-http.com/assets/logo.svg" width="100" height="100" /><br/>Axios</p>                                                          | <p align="center"><img src="https://raw.githubusercontent.com/reduxjs/redux/master/logo/logo.png" width="100" height="100" /><br/>Redux</p>      |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Back-end**  | <p align="center"><img src="https://images.g2crowd.com/uploads/product/image/large_detail/large_detail_f0b606abb6d19089febc9faeeba5bc05/nodejs-development-services.png" width="100" height="100" /><br/>NodeJs</p> | <p align="center"><img src="https://w7.pngwing.com/pngs/925/447/png-transparent-express-js-node-js-javascript-mongodb-node-js-text-trademark-logo.png" width="100" height="100" /><br/>ExpressJS</p> | <p align="center"><img src="https://cdn.icon-icons.com/icons2/2415/PNG/512/mongodb_original_wordmark_logo_icon_146425.png" width="100" height="100" /><br/>MongoDB</p> | <p align="center"><img src="https://cdn.freebiesupply.com/logos/large/2x/jest-logo-png-transparent.png" width="100" height="100" /><br/>Jest</p> |
 
@@ -69,7 +69,7 @@ cd server & npm install
 
 ### Step 3: Setup .env
 
-To run the server you will also need to provide the `.env` variables
+To run the server, you will need the `.env` variables
 
 - create a new file <b>.env</b> in the root
 - open [.env.EXAMPLE](./server/.env.EXAMPLE)
@@ -85,19 +85,18 @@ http://localhost:5000/test/populate
 
 ##### Login Info
 
-| Email                        | Password | Role Type       |
-| ---------------------------- | -------- | --------------- |
-| james.smith@bugtracker.com   | password | Admin           |
-| michael.smith@bugtracker.com | password | Developer       |
-| robert.smith@bugtracker.com  | password | Project Manager |
-| maria.garcia@bugtracker.com  | password | Submitter       |
+| Email                        | Password | Role      | Permissions                        |
+| ---------------------------- | -------- | --------- | ---------------------------------- |
+| james.smith@bugtracker.com   | password | Admin     | Manage admin page/projects/tickets |
+| michael.smith@bugtracker.com | password | Developer | Manage projects/tickets            |
+| robert.smith@bugtracker.com  | password | Submitter | Manage tickets                     |
 
 #### You are all setup!
 
 Run client application
 
 ```sh
-npm start
+npm run dev
 ```
 
 Run server application

@@ -7,7 +7,7 @@ import { Permissions } from "../util/utils.js";
 const router = express.Router();
 
 router.get("/", getUserProjects);
-router.get("/stat/:projectId", validateParamId("projectId"), getProjectStat);
+router.get("/stat/:projectId", [checkUserPermissions("projects", Permissions.canManageProjects), validateParamId("projectId")], getProjectStat);
 router.get("/:projectId", validateParamId("projectId"), getProjectInfo);
 
 router.post("/",

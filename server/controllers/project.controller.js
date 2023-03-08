@@ -217,10 +217,6 @@ export const getProjectStat = async (req, res) => {
         //Get user permssion
         const userId = req.user._id;
 
-        if (!canPerformAction(permissionCheck.canManageProject, req.user)) {
-            return res.status(403).json({ message: "Not authorized to view project" });
-        }
-
         //Ensure - ensure signed in belongs to the project
         const project = await Project.findOne({ _id: projectId, assignees: userId });
 

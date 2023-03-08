@@ -7,6 +7,7 @@ import TooltipAvatar from "../components/others/TooltipAvatar";
 
 const styles = {
     fontWeight: "500",
+    // color: "#CBD5E0",
     cursor: "pointer",
 };
 
