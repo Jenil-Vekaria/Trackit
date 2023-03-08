@@ -54,6 +54,7 @@ const theme = extendTheme({
 					dialog: {
 						minWidth: "40%",
 						minHeight: "50%",
+						backgroundColor: "#182130",
 					},
 					body: {
 						overflowY: "auto",

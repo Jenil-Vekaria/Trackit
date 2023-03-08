@@ -1,6 +1,4 @@
 import User from "../models/user.model.js";
-import { canPerformAction } from '../util/utils.js';
-import * as permissionCheck from "../util/permissionCheck.js";
 import bcrypt from 'bcrypt';
 
 export const getAllUsers = async (req, res) => {
@@ -17,10 +15,6 @@ export const updateUser = async (req, res) => {
     const userData = req.body;
 
     try {
-        if (!canPerformAction(permissionCheck.canUpdateUserProfile, req.user)) {
-            return res.status(403).json({ message: "You do not have permission update user profile" });
-        }
-
         //ensure email is not a duplicate
         const existingEmailUser = await User.findOne({ email: userData.email });
 

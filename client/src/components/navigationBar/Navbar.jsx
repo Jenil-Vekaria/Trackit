@@ -33,15 +33,9 @@ const Navbar = () => {
 	const router = useRouter();
 	const user = AuthService.getCurrentUser();
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const canManageOtherUsers = usePermissions(Permissions.canUpdateUserProfile);
-	const canManageCustomFields = usePermissions(Permissions.canManageRole);
+	const canManageAdminPage = usePermissions(Permissions.canManageAdminPage);
 
 	const menuItems = [
-		// {
-		// 	path: "/dashboard",
-		// 	name: "Dashboard",
-		// 	icon: FiHome,
-		// },
 		{
 			path: "/projects",
 			name: "Projects",
@@ -83,11 +77,7 @@ const Navbar = () => {
 					<Image src={logo} alt="track it logo" />
 
 					{menuItems.map((item, index) => {
-						if (
-							item.name === "Administration" &&
-							!canManageOtherUsers &&
-							!canManageCustomFields
-						) {
+						if (item.name === "Administration" && !canManageAdminPage) {
 							return <></>;
 						}
 

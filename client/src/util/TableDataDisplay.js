@@ -217,9 +217,15 @@ export const MANAGE_ROLES = [
         header: "PERMISSIONS",
         flex: 5,
         render: ({ value }) => {
-            return value.map((permission, index) =>
-                <p key={index}>{permission}</p>
-            );
+            if (value.length > 0) {
+                return value.map((permission, index) =>
+                    <p key={index}>{permission}</p>
+                );
+            }
+            else {
+                return "--No Permissions--";
+            }
+
         }
     }
 ];

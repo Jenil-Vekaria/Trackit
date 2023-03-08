@@ -1,4 +1,3 @@
-import * as permissionCheck from "../util/permissionCheck.js";
 import Project from "../models/project.model.js";
 import User from "../models/user.model.js";
 import Ticket from "../models/ticket.model.js";

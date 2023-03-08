@@ -70,7 +70,7 @@ const CommentSection = ({ ticketId }) => {
 					{error}
 				</Alert>
 			)}
-			<PermissionsRender permissionCheck={Permissions.canManageComments}>
+			<PermissionsRender permissionCheck={Permissions.canManageTickets}>
 				<Formik
 					initialValues={CreateCommentData}
 					validationSchema={CreateCommentSchema}

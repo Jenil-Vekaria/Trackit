@@ -12,14 +12,13 @@ import ManageRoles from "../components/administration/ManageRoles";
 import ManageTicketTypes from "../components/administration/ManageTicketTypes";
 import ManageUsers from "../components/administration/ManageUsers";
 import MiscellaneousService from "../services/miscellaneous-service";
-import { Permissions } from "../util/Utils";
+import { Permissions } from "@/util/Utils";
 import { usePermissions } from "../hooks/usePermissions";
 import Head from "next/head";
 import PageNotFound from "./404";
 
 const Administration = () => {
-	const canManagerOtherUsers = usePermissions(Permissions.canUpdateUserProfile);
-	const canManageCustomFields = usePermissions(Permissions.canManageRole);
+	const canManageAdminPage = usePermissions(Permissions.canManageAdminPage);
 
 	const fetchAdminData = async () => {
 		await MiscellaneousService.fetchInitialData();
@@ -29,7 +28,7 @@ const Administration = () => {
 		fetchAdminData();
 	}, []);
 
-	if (!canManagerOtherUsers && !canManageCustomFields) {
+	if (!canManageAdminPage) {
 		return <PageNotFound />;
 	}
 
@@ -47,29 +46,23 @@ const Administration = () => {
 
 			<Tabs variant="enclosed" size="sm" colorScheme="blue">
 				<TabList>
-					{canManagerOtherUsers ? <Tab>Manage Users</Tab> : null}
-					{canManageCustomFields ? <Tab>Manage Roles</Tab> : null}
-					{canManageCustomFields ? <Tab>Manage Ticket Type</Tab> : null}
+					<Tab>Manage Users</Tab>
+					<Tab>Manage Roles</Tab>
+					<Tab>Manage Ticket Type</Tab>
 				</TabList>
 
 				<TabPanels>
-					{canManagerOtherUsers ? (
-						<TabPanel>
-							<ManageUsers />
-						</TabPanel>
-					) : null}
+					<TabPanel>
+						<ManageUsers />
+					</TabPanel>
 
-					{canManageCustomFields ? (
-						<TabPanel>
-							<ManageRoles />
-						</TabPanel>
-					) : null}
+					<TabPanel>
+						<ManageRoles />
+					</TabPanel>
 
-					{canManageCustomFields ? (
-						<TabPanel>
-							<ManageTicketTypes />
-						</TabPanel>
-					) : null}
+					<TabPanel>
+						<ManageTicketTypes />
+					</TabPanel>
 				</TabPanels>
 			</Tabs>
 		</Flex>

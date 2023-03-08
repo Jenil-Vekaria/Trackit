@@ -91,7 +91,7 @@ const ViewProject = ({ projectId }) => {
 
 				<Spacer />
 
-				<PermissionsRender permissionCheck={Permissions.canManageTicket}>
+				<PermissionsRender permissionCheck={Permissions.canManageTickets}>
 					<Button colorScheme="blue" size="md" mr={5} onClick={() => onOpen()}>
 						Add Ticket
 					</Button>
@@ -131,7 +131,7 @@ const ViewProject = ({ projectId }) => {
 				ticket={viewTicket}
 				setviewTicket={setviewTicket}
 				projectId={projectId}
-				projectTitle={projectInfo.title}
+				projectTitle={projectInfo?.title}
 			/>
 		</Flex>
 	);

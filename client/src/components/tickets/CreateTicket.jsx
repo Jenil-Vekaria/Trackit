@@ -57,7 +57,7 @@ const CreateTicket = ({
 	const [projectAssignees, setProjectAssignees] = useState([]);
 	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
 
-	const canManageTickets = usePermissions(Permissions.canManageTicket);
+	const canManageTickets = usePermissions(Permissions.canManageTickets);
 
 	const formRef = useRef();
 	const toast = useToast();
@@ -340,7 +340,7 @@ const CreateTicket = ({
 					</Tabs>
 				</ModalBody>
 
-				<PermissionsRender permissionCheck={Permissions.canManageTicket}>
+				<PermissionsRender permissionCheck={Permissions.canManageTickets}>
 					<ModalFooter>
 						<Button
 							colorScheme="blue"

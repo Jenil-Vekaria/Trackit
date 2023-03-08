@@ -43,34 +43,21 @@ const CreateRole = ({ data, isOpen, onClose }) => {
 		{
 			name: "Manage Tickets",
 			helperText: "Allows user to create, delete, and modify tickets",
-			value: Constants.ADD_TICKET,
+			value: Constants.MANAGE_TICKET,
 		},
 		{
 			name: "Manage Projects",
-			helperText: "Allows users to create, delete, and modify projects",
-			value: Constants.ADD_PROJECT,
+			helperText:
+				"Allows users to create, delete, and modify their own projects",
+			value: Constants.MANAGE_PROJECT,
 		},
 		{
-			name: "Manage Project Members",
-			helperText: "Allows user add and remove members in a project",
-			value: Constants.ADD_MEMBER_TO_PROJECT,
-		},
-		{
-			name: "Manage Custom Fields",
-			helperText: "Allows user create and update custom fields",
-			value: Constants.MANAGE_ROLE,
-		},
-		{
-			name: "Manage Users",
-			helperText: "Allows user update other user's profile",
-			value: Constants.UPDATE_USER_PROFILE,
-		},
-		{
-			name: "Allow Comments",
-			helperText: "User can comment on any ticket",
-			value: Constants.ADD_COMMENT,
+			name: "Manage Admin Page",
+			helperText: "Allows user to access the admin page",
+			value: Constants.MANAGE_ADMIN_PAGE,
 		},
 	];
+
 	const onPermissionToggle = ({ target: { checked, value } }) => {
 		if (checked) {
 			//add permission

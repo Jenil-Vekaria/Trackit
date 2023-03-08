@@ -1,7 +1,5 @@
-import * as permissionCheck from "../util/permissionCheck.js";
 import TicketType from "../models/ticketType.model.js";
 import Ticket from "../models/ticket.model.js";
-import { canPerformAction } from "../util/utils.js";
 
 export const getTicketType = async (req, res) => {
     try {
@@ -18,11 +16,6 @@ export const addTicketType = async (req, res) => {
     const { name, iconName, colour } = req.body;
 
     try {
-        //Only admin should be able to add custom ticketType - if user can projectMemeber -> user is admin
-        if (!canPerformAction(permissionCheck.canManageProjectMember, req.user)) {
-            return res.status(403).json({ message: "Not authorized to manage ticket types" });
-        }
-
         //ensure no duplication
         const existingTicketType = await TicketType.findOne({ name });
 
@@ -42,11 +35,6 @@ export const updateTicketType = async (req, res) => {
     const { _id, name, iconName, colour } = req.body;
 
     try {
-        //Only admin should be able to add custom ticketType - if user can projectMemeber -> user is admin
-        if (!canPerformAction(permissionCheck.canManageProjectMember, req.user)) {
-            return res.status(403).json({ message: "Not authorized to manage ticket types" });
-        }
-
         const ticketType = await TicketType.findOne({ _id });
 
         if (!ticketType) {
@@ -70,11 +58,6 @@ export const deleteTicketType = async (req, res) => {
     const { name } = req.params;
 
     try {
-        //Only admin should be able to add custom ticketType - if user can projectMemeber -> user is admin
-        if (!canPerformAction(permissionCheck.canManageProjectMember, req.user)) {
-            return res.status(403).json({ message: "Not authorized to manage ticket types" });
-        }
-
         const ticketType = await TicketType.findOne({ name });
 
         if (!ticketType) {

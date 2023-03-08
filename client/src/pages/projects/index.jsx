@@ -39,7 +39,7 @@ const ViewAllProjects = () => {
 					Projects
 				</Heading>
 				<Spacer />
-				<PermissionsRender permissionCheck={Permissions.canManageProject}>
+				<PermissionsRender permissionCheck={Permissions.canManageProjects}>
 					<Link href="/projects/add" passHref>
 						<Button
 							colorScheme="blue"
