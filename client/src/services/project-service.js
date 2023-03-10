@@ -1,9 +1,9 @@
 import axios from "axios";
 import AuthService from "./auth-service";
 import { setProject, setProjects, addProject } from "../features/projectSlice";
-import { store } from "../app/store.js";
+import { store } from "../store/store.js";
 
-const API = axios.create({ baseURL: process.env.REACT_APP_API_ENDPOINT + "/project" });
+const API = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_ENDPOINT + "/project" });
 
 API.interceptors.request.use((req) => {
     const { accessToken } = AuthService.getCurrentUser();
@@ -51,6 +51,7 @@ const getProjectInfo = async (projectId) => {
         return project;
     } catch (error) {
         console.error(error);
+        throw error.response.data.message;
     }
 };
 
@@ -78,7 +79,7 @@ const getProjectStats = async (projectId) => {
         return data.stat;
     } catch (error) {
         console.error(error);
-
+        throw error.response.data.message;
     }
 };
 

@@ -22,7 +22,6 @@ import {
 	Spinner,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
-import { useNavigate, useParams } from "react-router-dom";
 import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect, useRef } from "react";
 import {
@@ -36,20 +35,15 @@ import AlertModal from "../others/AlertModal";
 import { getUsers } from "../../features/miscellaneousSlice.js";
 import Table from "../others/Table";
 import AuthService from "../../services/auth-service";
+import { useRouter } from "next/router";
+import PageNotFound from "@/pages/404";
 
-/*
-You can edit project if
-	u r project author
-
-*/
-
-const AddProject = () => {
-	const navigate = useNavigate();
+const AddEditProject = ({ projectId }) => {
+	const router = useRouter();
 	const [isProjectAuthor, setisProjectAuthor] = useState(false);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
-	const { projectID } = useParams();
-	const isNewProject = !projectID;
+	const isNewProject = !projectId;
 	const allUsers = useSelector(getUsers(true));
 	const formRef = useRef();
 	const toast = useToast();
@@ -58,6 +52,8 @@ const AddProject = () => {
 	const [projectInfo, setProjectInfo] = useState(CreateProjectData);
 	const [error, seterror] = useState("");
 	const [isLoading, setisLoading] = useState(false);
+
+	const [is404, setIs404] = useState(false);
 
 	const getSelectedAssigneesId = () => {
 		const selectedAssignees = {};
@@ -76,7 +72,8 @@ const AddProject = () => {
 	const onProjectDelete = async (onClose) => {
 		try {
 			await ProjectService.deleteProject(projectInfo._id);
-			navigate(-2);
+			router.back();
+			router.back();
 		} catch (error) {
 			seterror(error);
 		}
@@ -84,77 +81,77 @@ const AddProject = () => {
 	};
 
 	const getProjectInfo = async () => {
-		setisLoading(true);
-		const { _id, title, description, assignees, authorId } =
-			await ProjectService.getProjectInfo(projectID);
+		try {
+			const {
+				_id,
+				title,
+				description,
+				assignees,
+				authorId,
+			} = await ProjectService.getProjectInfo(projectId);
 
-		const isCurrentUserProjectAuthor =
-			AuthService.getCurrentUser()._id === authorId._id;
-		setisProjectAuthor(isCurrentUserProjectAuthor);
-		setProjectInfo({
-			_id,
-			title,
-			description,
-			assignees,
-		});
-		setAssigneesId(assignees);
-
-		setTimeout(() => {
-			setisLoading(false);
-		}, 100);
+			const isCurrentUserProjectAuthor =
+				AuthService.getCurrentUser()._id === authorId._id;
+			setisProjectAuthor(isCurrentUserProjectAuthor);
+			setProjectInfo({
+				_id,
+				title,
+				description,
+				assignees,
+			});
+			setAssigneesId(assignees);
+		} catch (error) {
+			setIs404(true);
+		}
 	};
 
 	const onHandleFormSubmit = async (values, _) => {
 		values.assignees = assigneesId;
 
 		try {
-			if (projectID) {
+			if (projectId) {
 				await ProjectService.updateProject(values);
 			} else {
 				await ProjectService.createProject(values);
 			}
 
 			toast({
-				title: `Project ${projectID ? "Updated" : "Created"}`,
+				title: `Project ${projectId ? "Updated" : "Created"}`,
 				status: "success",
 				duration: 4000,
 				isClosable: true,
 			});
 
-			navigate(-1);
+			router.back();
 		} catch (error) {
 			seterror(error);
 		}
 	};
 	useEffect(() => {
-		if (projectID) {
+		if (projectId) {
 			getProjectInfo();
 		}
 	}, []);
 
-	if (isLoading) {
-		return (
-			<Center w="100%">
-				<Spinner color="purple" size="xl" />
-			</Center>
-		);
+	if (is404) {
+		return <PageNotFound />;
 	}
 
 	return (
-		<Flex w="100%" h="100%" direction="column">
+		<Flex w="100%" h="100%" direction="column" padding={10}>
 			<Flex w="100%" h="fit-content">
-				<Heading as="h1" size="lg">
-					{projectID ? "Edit" : "Add"} Project
+				<Heading as="h1" size="lg" fontWeight={600}>
+					{projectId ? "Edit" : "Add"} Project
 				</Heading>
 				<Spacer />
 				<IconButton
 					icon={<CloseIcon />}
 					variant="ghost"
-					onClick={() => navigate(-1)}
+					onClick={() => router.back()}
 				/>
 			</Flex>
 
-			<Tabs variant="soft-rounded" colorScheme="purple" mt={10}>
+			<Tabs variant="enclosed" size="sm" colorScheme="blue" mt={10}>
 				<TabList>
 					<Tab>Project Info</Tab>
 					<Tab>Contributors</Tab>
@@ -185,12 +182,12 @@ const AddProject = () => {
 											)}
 											<Flex direction="column" gap={3}>
 												<FormControl isInvalid={errors.title && touched.title}>
-													<FormLabel fontWeight="regular">Title</FormLabel>
+													<FormLabel>Title</FormLabel>
 													<Field
 														as={Input}
 														name="title"
 														type="text"
-														border="2px"
+														borderWidth="2px"
 														disabled={!isNewProject && !isProjectAuthor}
 													/>
 													<FormErrorMessage>{errors.title}</FormErrorMessage>
@@ -199,15 +196,12 @@ const AddProject = () => {
 												<FormControl
 													isInvalid={errors.description && touched.description}
 												>
-													<FormLabel fontWeight="regular">
-														Description
-													</FormLabel>
+													<FormLabel>Description</FormLabel>
 													<Field
 														as={Textarea}
 														name="description"
 														type="text"
-														border="2px"
-														height="100%"
+														borderWidth="2px"
 														disabled={!isNewProject && !isProjectAuthor}
 													/>
 													<FormErrorMessage>
@@ -240,21 +234,21 @@ const AddProject = () => {
 			<Flex mt={3} justify="flex-end" gap={3}>
 				{isNewProject || isProjectAuthor ? (
 					<Button
-						colorScheme="purple"
+						colorScheme="blue"
 						onClick={() => {
 							formRef.current?.submitForm();
 						}}
 					>
-						{projectID ? "Save" : "Create"} Project
+						{projectId ? "Save" : "Create"}
 					</Button>
 				) : null}
 
-				{projectID && isProjectAuthor ? (
+				{projectId && isProjectAuthor ? (
 					<Button colorScheme="red" onClick={() => onOpen()}>
-						Delete Project
+						Delete
 					</Button>
 				) : (
-					<Button onClick={() => navigate(-1)}>Close</Button>
+					<Button onClick={() => router.back()}>Cancel</Button>
 				)}
 			</Flex>
 
@@ -269,4 +263,4 @@ const AddProject = () => {
 	);
 };
 
-export default AddProject;
+export default AddEditProject;

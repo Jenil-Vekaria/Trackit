@@ -23,6 +23,7 @@ import {
 	useToast,
 	Heading,
 	Text,
+	useDisclosure,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React, { useState, useEffect } from "react";
@@ -44,6 +45,7 @@ import { Permissions } from "../../util/Utils";
 import PermissionsRender from "../others/PermissionsRender";
 import CommentSection from "../comment/CommentSection";
 import ProjectService from "../../services/project-service";
+import moment from "moment/moment";
 
 const CreateTicket = ({
 	isOpen,
@@ -51,12 +53,14 @@ const CreateTicket = ({
 	ticket,
 	setviewTicket,
 	projectId,
+	projectTitle,
 }) => {
+	const alertModalDisclosure = useDisclosure();
 	const ticketTypes = useSelector(getTicketType);
-	const projectAssignees = ProjectService.getProjectAssignees(projectId);
+	const [projectAssignees, setProjectAssignees] = useState([]);
 	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
 
-	const canManageTickets = usePermissions(Permissions.canManageTicket);
+	const canManageTickets = usePermissions(Permissions.canManageTickets);
 
 	const formRef = useRef();
 	const toast = useToast();
@@ -72,6 +76,7 @@ const CreateTicket = ({
 			ticketCopy.projectId = ticket.projectId._id;
 			ticketCopy.type = ticket.type._id;
 
+			setProjectAssignees(ProjectService.getProjectAssignees(projectId));
 			setAssigneesId(ticketCopy.assignees);
 			setTicketInfo(ticketCopy);
 		}
@@ -136,10 +141,16 @@ const CreateTicket = ({
 	const onTicketDelete = async () => {
 		try {
 			await TicketService.deleteTicket(ticket._id);
+			closeModal();
 		} catch (error) {
+			closeAlert();
 			seterror(error);
 		}
-		closeModal();
+	};
+
+	const closeAlert = () => {
+		setopenDeleteAlert(false);
+		alertModalDisclosure.onClose();
 	};
 
 	const closeModal = () => {
@@ -164,13 +175,13 @@ const CreateTicket = ({
 					<Heading as="h3" size="md">
 						{ticket ? "Edit" : "Create"} Ticket
 					</Heading>
-					<Text fontSize="sm" color="purple" mt={2}>
-						{ticket?.projectId?.title} {ticket ? "|" : ""} {ticket?.title}
+					<Text fontSize="sm" as="i" fontWeight={400} mt={2}>
+						Project: {projectTitle || ""}
 					</Text>
 				</ModalHeader>
 				<ModalCloseButton onClick={closeModal} />
-				<ModalBody overflowY="auto">
-					<Tabs variant="soft-rounded" colorScheme="purple" isFitted>
+				<ModalBody overflowY="auto" mt={-3}>
+					<Tabs variant="enclosed" size="sm" colorScheme="blue">
 						<TabList>
 							<Tab>Ticket Info</Tab>
 							{ticket ? <Tab>Comments</Tab> : null}
@@ -198,38 +209,43 @@ const CreateTicket = ({
 												</Alert>
 											)}
 
-											<Flex direction="column" gap={3}>
-												<FormControl isInvalid={errors.title && touched.title}>
-													<FormLabel fontWeight="regular">Title</FormLabel>
-													<Field
-														as={Input}
-														name="title"
-														type="text"
-														disabled={!canManageTickets}
-													/>
-													<FormErrorMessage>{errors.title}</FormErrorMessage>
-												</FormControl>
+											<Flex gap={3}>
+												<Flex direction="column" flex={1} gap={3}>
+													<FormControl
+														isInvalid={errors.title && touched.title}
+													>
+														<FormLabel>Title</FormLabel>
+														<Field
+															as={Input}
+															name="title"
+															type="text"
+															disabled={!canManageTickets}
+														/>
+														<FormErrorMessage>{errors.title}</FormErrorMessage>
+													</FormControl>
 
-												<FormControl
-													isInvalid={errors.description && touched.description}
-												>
-													<FormLabel fontWeight="regular">
-														Description
-													</FormLabel>
-													<Field
-														as={Textarea}
-														name="description"
-														type="text"
-														disabled={!canManageTickets}
-													/>
-													<FormErrorMessage>
-														{errors.description}
-													</FormErrorMessage>
-												</FormControl>
+													<FormControl
+														isInvalid={
+															errors.description && touched.description
+														}
+													>
+														<FormLabel>Description</FormLabel>
+														<Field
+															as={Textarea}
+															name="description"
+															type="text"
+															height={280}
+															disabled={!canManageTickets}
+														/>
+														<FormErrorMessage>
+															{errors.description}
+														</FormErrorMessage>
+													</FormControl>
+												</Flex>
 
-												<Flex gap={4}>
+												<Flex direction="column" gap={3}>
 													<FormControl isInvalid={errors.type && touched.type}>
-														<FormLabel fontWeight="regular">Type</FormLabel>
+														<FormLabel>Type</FormLabel>
 														<Field
 															as={Select}
 															name="type"
@@ -243,11 +259,10 @@ const CreateTicket = ({
 														</Field>
 														<FormErrorMessage>{errors.type}</FormErrorMessage>
 													</FormControl>
-
 													<FormControl
 														isInvalid={errors.status && touched.status}
 													>
-														<FormLabel fontWeight="regular">Status</FormLabel>
+														<FormLabel>Status</FormLabel>
 														<Field
 															as={Select}
 															name="status"
@@ -261,53 +276,71 @@ const CreateTicket = ({
 														</Field>
 														<FormErrorMessage>{errors.status}</FormErrorMessage>
 													</FormControl>
-												</Flex>
-
-												<Flex gap={4}>
-													<FormControl
-														isInvalid={
-															errors.estimatedTime && touched.estimatedTime
-														}
-													>
-														<FormLabel fontWeight="regular">
-															Estimated time
-														</FormLabel>
-														<Field
-															as={Input}
-															name="estimatedTime"
-															type="number"
-															disabled={!canManageTickets}
-														/>
-														<FormErrorMessage>
-															{errors.estimatedTime}
-														</FormErrorMessage>
-													</FormControl>
-
-													<FormControl
-														isInvalid={
-															errors.estimatedTimeUnit &&
-															touched.estimatedTimeUnit
-														}
-													>
-														<FormLabel fontWeight="regular">
-															Estimated Time Unit
-														</FormLabel>
-														<Field
-															as={Select}
-															name="estimatedTimeUnit"
-															type="select"
-															disabled={!canManageTickets}
+													<Flex gap={4}>
+														<FormControl
+															isInvalid={
+																errors.estimatedTime && touched.estimatedTime
+															}
 														>
-															<option value="" disabled selected>
-																Select
-															</option>
-															<option value="h">Hour(s)</option>
-															<option value="d">Day(s)</option>
-														</Field>
-														<FormErrorMessage>
-															{errors.estimatedTimeUnit}
-														</FormErrorMessage>
-													</FormControl>
+															<FormLabel>Estimated time</FormLabel>
+															<Field
+																as={Input}
+																name="estimatedTime"
+																type="number"
+																disabled={!canManageTickets}
+															/>
+															<FormErrorMessage>
+																{errors.estimatedTime}
+															</FormErrorMessage>
+														</FormControl>
+
+														<FormControl
+															isInvalid={
+																errors.estimatedTimeUnit &&
+																touched.estimatedTimeUnit
+															}
+														>
+															<FormLabel>Estimated Time Unit</FormLabel>
+															<Field
+																as={Select}
+																name="estimatedTimeUnit"
+																type="select"
+																disabled={!canManageTickets}
+															>
+																<option value="" disabled selected>
+																	Select
+																</option>
+																<option value="h">Hour(s)</option>
+																<option value="d">Day(s)</option>
+															</Field>
+															<FormErrorMessage>
+																{errors.estimatedTimeUnit}
+															</FormErrorMessage>
+														</FormControl>
+													</Flex>
+
+													<Flex direction="column" mt={2}>
+														<Text
+															fontSize="sm"
+															fontWeight={500}
+															color="inputLabel"
+														>
+															{ticketInfo.createdOn
+																? "Created " +
+																  moment(ticketInfo.createdOn).fromNow()
+																: ""}
+														</Text>
+														<Text
+															fontSize="sm"
+															fontWeight={500}
+															color="inputLabel"
+														>
+															{ticketInfo.updatedOn
+																? "Updated " +
+																  moment(ticketInfo.updatedOn).fromNow()
+																: ""}
+														</Text>
+													</Flex>
 												</Flex>
 											</Flex>
 										</Form>
@@ -338,22 +371,22 @@ const CreateTicket = ({
 					</Tabs>
 				</ModalBody>
 
-				<PermissionsRender permissionCheck={Permissions.canManageTicket}>
+				<PermissionsRender permissionCheck={Permissions.canManageTickets}>
 					<ModalFooter>
 						<Button
-							colorScheme="purple"
+							colorScheme="blue"
 							type="submit"
 							mr={3}
 							onClick={() => formRef.current?.handleSubmit()}
 						>
-							{ticket ? "Save" : "Create"} Ticket
+							{ticket ? "Save" : "Create"}
 						</Button>
 						{ticket ? (
 							<Button
 								colorScheme="red"
 								onClick={() => setopenDeleteAlert(true)}
 							>
-								Delete Ticket
+								Delete
 							</Button>
 						) : (
 							<Button onClick={closeModal}>Cancel</Button>
@@ -366,7 +399,7 @@ const CreateTicket = ({
 				title={"Delete ticket"}
 				body="Are you sure you to delete this ticket?"
 				isOpen={openDeleteAlert}
-				onClose={closeModal}
+				onClose={closeAlert}
 				onCTA={onTicketDelete}
 			/>
 		</Modal>

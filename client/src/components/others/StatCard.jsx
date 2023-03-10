@@ -11,16 +11,10 @@ import {
 import React from "react";
 
 const StatCard = ({ iconBackground, iconColor, icon, name, value }) => {
+	const bg = useColorModeValue(iconBackground, iconBackground);
 	return (
-		<Card
-			direction="row"
-			align="center"
-			px={2}
-			flex="1"
-			boxShadow="xs"
-			background={useColorModeValue("whiteAlpha.900")}
-		>
-			<Center background={iconBackground} borderRadius={5} p={1}>
+		<Card direction="row" align="center" px={2} flex="1" boxShadow="xs">
+			<Center background={bg} borderRadius={5} p={1}>
 				<Icon as={icon} w={7} h={7} color={iconColor} />
 			</Center>
 			<CardBody>

@@ -7,6 +7,7 @@ import TicketService from "../services/ticket-service";
 import CreateTicket from "../components/tickets/CreateTicket";
 import { useSelector } from "react-redux";
 import { getTickets } from "../features/ticketSlice";
+import Head from "next/head";
 
 const Tickets = () => {
 	const tickets = useSelector(getTickets);
@@ -17,8 +18,6 @@ const Tickets = () => {
 
 	const getUserTickets = async () => {
 		await TicketService.getUserTickets();
-		// setmyTickets(tickets);
-		// setTimeout(() => setmyTickets(tickets), 30);
 	};
 
 	const onTicketClick = (rowProps, event) => {
@@ -36,8 +35,11 @@ const Tickets = () => {
 
 	return (
 		<Flex w="100%" direction="column" padding={10}>
+			<Head>
+				<title>Tickets</title>
+			</Head>
 			<Flex w="100%" h="fit-content">
-				<Heading as="h1" size="lg">
+				<Heading as="h1" size="lg" fontWeight={600}>
 					My Tickets
 				</Heading>
 			</Flex>

@@ -2,7 +2,7 @@ import express from "express";
 import { getUserTickets, getProjectTickets, getTicketInfo, createTicket, updateTicket, deleteTicket } from "../controllers/ticket.controller.js";
 import { checkUserPermissions, validateParamId, validateResource } from "../middleware/middleware.js";
 import { createTicketSchema } from "../schema/validation.schema.js";
-import { canManageTicket } from "../util/permissionCheck.js";
+import { Permissions } from "../util/utils.js";
 
 const router = express.Router();
 
@@ -21,11 +21,11 @@ router.post("/project/:projectId",
     createTicket);
 
 router.patch("/project/:projectId",
-    [checkUserPermissions("tickets", canManageTicket), validateParamId("projectId")],
+    [checkUserPermissions("tickets", Permissions.canManageTickets), validateParamId("projectId")],
     updateTicket);
 
 router.delete("/:ticketId",
-    [checkUserPermissions("tickets", canManageTicket), validateParamId("ticketId")],
+    [checkUserPermissions("tickets", Permissions.canManageTickets), validateParamId("ticketId")],
     deleteTicket);
 
 export default router;

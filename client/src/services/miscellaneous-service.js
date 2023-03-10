@@ -1,10 +1,10 @@
 import axios from "axios";
 import AuthService from "./auth-service";
 import { addRole, addTicketType, removeRole, removeTicketType, setRole, setRoles, setTicketType, setTicketTypes, setUser, setUsers } from "../features/miscellaneousSlice.js";
-import { store } from "../app/store.js";
+import { store } from "../store/store.js";
 import { setLogin } from "../features/authSlice";
 
-const API = axios.create({ baseURL: process.env.REACT_APP_API_ENDPOINT });
+const API = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_ENDPOINT });
 
 API.interceptors.request.use((req) => {
     const { accessToken } = AuthService.getCurrentUser();

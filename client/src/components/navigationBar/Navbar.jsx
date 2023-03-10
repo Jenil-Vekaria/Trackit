@@ -7,36 +7,35 @@ import {
 	Flex,
 	Heading,
 	IconButton,
-	Image,
+	Menu,
+	MenuButton,
+	MenuItem,
+	MenuList,
 	Popover,
 	PopoverArrow,
 	PopoverBody,
 	PopoverContent,
 	PopoverTrigger,
 	Text,
+	useColorModeValue,
 	useDisclosure,
 } from "@chakra-ui/react";
 import NavItem from "./NavItem";
-import { useLocation } from "react-router-dom";
+import { useRouter } from "next/router";
 import AuthService from "../../services/auth-service";
 import UpdateUser from "../administration/UpdateUser";
 import logo from "../../assests/Trackit_Plain.png";
 import { Permissions } from "../../util/Utils";
 import { usePermissions } from "../../hooks/usePermissions";
+import Image from "next/image";
 const Navbar = () => {
 	const [navSize, setNavSize] = useState("large");
-	const location = useLocation();
+	const router = useRouter();
 	const user = AuthService.getCurrentUser();
 	const { isOpen, onOpen, onClose } = useDisclosure();
-	const canManageOtherUsers = usePermissions(Permissions.canUpdateUserProfile);
-	const canManageCustomFields = usePermissions(Permissions.canManageRole);
+	const canManageAdminPage = usePermissions(Permissions.canManageAdminPage);
 
 	const menuItems = [
-		// {
-		// 	path: "/dashboard",
-		// 	name: "Dashboard",
-		// 	icon: FiHome,
-		// },
 		{
 			path: "/projects",
 			name: "Projects",
@@ -63,11 +62,10 @@ const Navbar = () => {
 			<Flex
 				pos="sticky"
 				h="100vh"
-				// boxShadow="lg"
 				direction="column"
 				justifyContent="space-between"
 				w={navSize === "small" ? "75px" : "250px"}
-				background="white"
+				background="secondary"
 				boxShadow="xl"
 			>
 				<Flex
@@ -76,26 +74,10 @@ const Navbar = () => {
 					alignItems={navSize === "small" ? "center" : "flex-start"}
 					as="nav"
 				>
-					<Image src={logo} />
-					<IconButton
-						background="none"
-						mt={5}
-						_hover={{
-							background: "none",
-						}}
-						icon={<FiMenu />}
-						onClick={() => {
-							if (navSize === "small") setNavSize("large");
-							else setNavSize("small");
-						}}
-					/>
+					<Image src={logo} alt="track it logo" />
 
 					{menuItems.map((item, index) => {
-						if (
-							item.name === "Administration" &&
-							!canManageOtherUsers &&
-							!canManageCustomFields
-						) {
+						if (item.name === "Administration" && !canManageAdminPage) {
 							return <></>;
 						}
 
@@ -107,8 +89,8 @@ const Navbar = () => {
 								name={item.name}
 								path={item.path}
 								active={
-									location.pathname.includes(item.path) ||
-									(item.path === "/dashboard" && location.pathname === "/")
+									router.pathname.includes(item.path) ||
+									(item.path === "/projects" && router.pathname === "/")
 								}
 							/>
 						);
@@ -121,44 +103,23 @@ const Navbar = () => {
 						display={navSize === "small" ? "none" : "flex"}
 					/>
 
-					<Popover placement="right-end">
-						<PopoverTrigger>
+					<Menu matchWidth={true}>
+						<MenuButton>
 							<Flex mt={4} align="center" cursor="pointer">
-								<Avatar
-									size="sm"
-									name={user.firstName + " " + user.lastName}
-									alignItems={navSize === "small" ? "center" : "flex-start"}
-								/>
-								<Flex
-									direction="column"
-									ml={4}
-									display={navSize === "small" ? "none" : "flex"}
-								>
+								<Avatar size="sm" name={user.firstName + " " + user.lastName} />
+								<Flex direction="column" ml={4} align="left">
 									<Heading as="h3" size="xs">
 										{user.firstName} {user.lastName}
 									</Heading>
 									<Text fontSize="sm">{user.roleId.name || "No Data"}</Text>
 								</Flex>
 							</Flex>
-						</PopoverTrigger>
-
-						<PopoverContent w="fit-content">
-							<PopoverBody>
-								<PopoverArrow />
-								<Button variant="link" p={1} onClick={onProfileClick}>
-									Profile
-								</Button>
-								<Divider />
-								<Button
-									variant="link"
-									p={1}
-									onClick={() => AuthService.logout()}
-								>
-									Logout
-								</Button>
-							</PopoverBody>
-						</PopoverContent>
-					</Popover>
+						</MenuButton>
+						<MenuList>
+							<MenuItem onClick={onProfileClick}>Profile</MenuItem>
+							<MenuItem onClick={() => AuthService.logout()}>Logout</MenuItem>
+						</MenuList>
+					</Menu>
 				</Flex>
 			</Flex>
 

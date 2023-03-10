@@ -13,9 +13,8 @@ import {
 	BsQuestionLg,
 	BsPersonCheckFill,
 } from "react-icons/bs";
-import { useParams } from "react-router-dom";
-import StatCard from "../components/others/StatCard";
-import ProjectService from "../services/project-service";
+import StatCard from "../others/StatCard";
+import ProjectService from "../../services/project-service";
 import {
 	Chart as ChartJS,
 	ArcElement,
@@ -24,25 +23,23 @@ import {
 	Colors,
 } from "chart.js";
 import { Pie } from "react-chartjs-2";
-import MiscellaneousService from "../services/miscellaneous-service";
-import { hexToRgb } from "../util/Utils";
+import MiscellaneousService from "../../services/miscellaneous-service";
+import { hexToRgb } from "../../util/Utils";
 
 ChartJS.register(ArcElement, Tooltip, Legend, Colors);
 
-const Dashboard = () => {
-	const { projectID } = useParams();
-
+const Dashboard = ({ projectId }) => {
 	const [projectStats, setProjectStats] = useState([]);
 	const [ticketTypeChartData, setTicketTypeChartData] = useState(null);
 	const [ticketStatusChartData, setTicketStatusChartData] = useState(null);
 	const [isLoading, setisLoading] = useState(true);
-	const iconColor = useColorModeValue("white");
+	const iconColor = useColorModeValue("white", "white");
 
-	const iconBackground = [
-		useColorModeValue("purple.300"),
-		useColorModeValue("green.300"),
-		useColorModeValue("red.300"),
-		useColorModeValue("blue.300"),
+	const iconBackgroundColor = [
+		"purple.300",
+		"green.300",
+		"red.300",
+		"blue.300",
 	];
 
 	const createStatInfo = (stat) => {
@@ -50,28 +47,28 @@ const Dashboard = () => {
 			{
 				name: "Total Tickets",
 				icon: BsFillFileTextFill,
-				iconBackground: iconBackground[0],
+				iconBackground: iconBackgroundColor[0],
 				iconColor,
 				value: stat.ticketCount,
 			},
 			{
 				name: "My Tickets",
 				icon: BsPersonFill,
-				iconBackground: iconBackground[1],
+				iconBackground: iconBackgroundColor[1],
 				iconColor,
 				value: stat.myTicketCount,
 			},
 			{
 				name: "Unassigned Tickets",
 				icon: BsQuestionLg,
-				iconBackground: iconBackground[2],
+				iconBackground: iconBackgroundColor[2],
 				iconColor,
 				value: stat.unassignedTicketCount,
 			},
 			{
 				name: "Assigned Tickets",
 				icon: BsPersonCheckFill,
-				iconBackground: iconBackground[3],
+				iconBackground: iconBackgroundColor[3],
 				iconColor,
 				value: stat.assignedTicketCount,
 			},
@@ -152,30 +149,37 @@ const Dashboard = () => {
 	};
 
 	const getProjectStats = async () => {
-		const stat = await ProjectService.getProjectStats(projectID);
-		setProjectStats(createStatInfo(stat));
-		setTicketTypeChartData(createTicketTypeChartData(stat));
-		setTicketStatusChartData(createTicketStatusChartData(stat));
+		try {
+			const stat = await ProjectService.getProjectStats(projectId);
+			setProjectStats(createStatInfo(stat));
+			setTicketTypeChartData(createTicketTypeChartData(stat));
+			setTicketStatusChartData(createTicketStatusChartData(stat));
 
-		setTimeout(() => setisLoading(false), 100);
+			setTimeout(() => setisLoading(false), 100);
+		} catch (error) {
+			// router.replace("/projects");
+		}
 	};
 
 	useEffect(() => {
-		getProjectStats();
-	}, [projectID]);
+		if (projectId) {
+			getProjectStats();
+			console.log(projectStats);
+		}
+	}, []);
 
 	return (
 		<Flex w="100%" direction="column">
 			<Flex w="100%" grow="2" justifyContent="space-evenly" gap={3}>
-				{projectStats.map((stat) => (
-					<StatCard {...stat} />
+				{projectStats.map((stat, index) => (
+					<StatCard {...stat} key={index} />
 				))}
 			</Flex>
 			<br />
 
 			{isLoading ? (
 				<Center w="100%">
-					<Spinner color="purple" size="xl" />
+					<Spinner color="blue" size="xl" />
 				</Center>
 			) : (
 				<Flex h="100%" justifyContent="space-evenly">

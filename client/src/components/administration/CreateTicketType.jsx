@@ -98,7 +98,7 @@ const CreateTicketType = ({
 	};
 
 	return (
-		<Modal isOpen={isOpen} onClose={closeCreateTicketTypeModal} size="lg">
+		<Modal isOpen={isOpen} onClose={closeCreateTicketTypeModal} size="md">
 			<ModalOverlay />
 			<ModalContent>
 				<ModalHeader>{data ? "Update" : "Create"} Ticket Type</ModalHeader>
@@ -141,17 +141,13 @@ const CreateTicketType = ({
 									)}
 									<Flex gap={3}>
 										<FormControl isInvalid={errors.name && touched.name}>
-											<FormLabel fontWeight="regular">
-												Ticket Type Name
-											</FormLabel>
+											<FormLabel>Ticket Type Name</FormLabel>
 											<Field as={Input} name="name" type="text" required />
 											<FormErrorMessage>{errors.name}</FormErrorMessage>
 										</FormControl>
 
 										<FormControl isInvalid={errors.colour && touched.colour}>
-											<FormLabel fontWeight="regular">
-												Colour (select icon colour)
-											</FormLabel>
+											<FormLabel>Colour (select icon colour)</FormLabel>
 											<Field
 												as={Input}
 												name="colour"
@@ -164,7 +160,9 @@ const CreateTicketType = ({
 									</Flex>
 
 									<FormControl isInvalid={errors.iconName && touched.iconName}>
-										<FormLabel fontWeight="regular">Select an Icon</FormLabel>
+										<FormLabel fontWeight="bold" font color="inputLabel">
+											Select an Icon
+										</FormLabel>
 										<FormErrorMessage>{errors.iconName}</FormErrorMessage>
 
 										<Table
@@ -184,11 +182,11 @@ const CreateTicketType = ({
 
 				<ModalFooter>
 					<Button
-						colorScheme="purple"
+						colorScheme="blue"
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>
-						Save
+						Create
 					</Button>
 					{data && canDeleteTicketType ? (
 						<Button colorScheme="red" onClick={alertDialgoDisclosure.onOpen}>

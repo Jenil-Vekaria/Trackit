@@ -42,7 +42,6 @@ const UpdateUser = ({
 		if (viewUser) {
 			const userInfoCopy = { ...viewUser };
 			userInfoCopy.roleId = viewUser.roleId?._id;
-			console.log(userInfoCopy);
 
 			setUserInfo(userInfoCopy);
 		}
@@ -105,7 +104,7 @@ const UpdateUser = ({
 									<FormControl
 										isInvalid={errors.firstName && touched.firstName}
 									>
-										<FormLabel fontWeight="regular">First Name</FormLabel>
+										<FormLabel>First Name</FormLabel>
 										<Field
 											as={Input}
 											name="firstName"
@@ -116,7 +115,7 @@ const UpdateUser = ({
 									</FormControl>
 
 									<FormControl isInvalid={errors.lastName && touched.lastName}>
-										<FormLabel fontWeight="regular">Last Name</FormLabel>
+										<FormLabel>Last Name</FormLabel>
 										<Field
 											as={Input}
 											name="lastName"
@@ -128,7 +127,7 @@ const UpdateUser = ({
 								</Flex>
 
 								<FormControl mt={4} isInvalid={errors.email && touched.email}>
-									<FormLabel fontWeight="regular">Email</FormLabel>
+									<FormLabel>Email</FormLabel>
 									<Field
 										as={Input}
 										name="email"
@@ -139,7 +138,7 @@ const UpdateUser = ({
 								</FormControl>
 
 								<FormControl mt={4} isInvalid={errors.roleId && touched.roleId}>
-									<FormLabel fontWeight="regular">Role</FormLabel>
+									<FormLabel>Role</FormLabel>
 									<Field
 										as={Select}
 										name="roleId"
@@ -160,7 +159,7 @@ const UpdateUser = ({
 											mt={4}
 											isInvalid={errors.password && touched.password}
 										>
-											<FormLabel fontWeight="regular">Password</FormLabel>
+											<FormLabel>Password</FormLabel>
 											<Field
 												as={Input}
 												type={showPassword ? "text" : "password"}
@@ -176,10 +175,8 @@ const UpdateUser = ({
 												errors.confirmPassword && touched.confirmPassword
 											}
 										>
-											<FormLabel fontWeight="regular">
-												Confirm Password
-											</FormLabel>
-											<InputGroup size="md">
+											<FormLabel>Confirm Password</FormLabel>
+											<InputGroup>
 												<Field
 													as={Input}
 													type={showPassword ? "text" : "password"}
@@ -205,11 +202,11 @@ const UpdateUser = ({
 
 				<ModalFooter>
 					<Button
-						colorScheme="purple"
+						colorScheme="blue"
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>
-						Save User
+						Save
 					</Button>
 					{isUpdateMyProfile ? (
 						<Button
@@ -224,7 +221,7 @@ const UpdateUser = ({
 						</Button>
 					) : (
 						<Tooltip label="Not Implemeted">
-							<Button colorScheme="red">Delete User</Button>
+							<Button colorScheme="red">Delete</Button>
 						</Tooltip>
 					)}
 				</ModalFooter>

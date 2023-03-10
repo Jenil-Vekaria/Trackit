@@ -3,8 +3,7 @@ import app from './app.js';
 import { PORT, MONGO_DB_CONNECTION, CURRENT_ENVIRONMENT } from "./config/config.js";
 
 //Connect to DB
-await mongoose.connect(MONGO_DB_CONNECTION,
-    { useNewUrlParser: true, useUnifiedTopology: true },
+mongoose.connect(MONGO_DB_CONNECTION,
     (error) => {
         if (error) {
             console.error(error);

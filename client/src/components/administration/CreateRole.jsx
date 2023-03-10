@@ -43,34 +43,21 @@ const CreateRole = ({ data, isOpen, onClose }) => {
 		{
 			name: "Manage Tickets",
 			helperText: "Allows user to create, delete, and modify tickets",
-			value: Constants.ADD_TICKET,
+			value: Constants.MANAGE_TICKET,
 		},
 		{
 			name: "Manage Projects",
-			helperText: "Allows users to create, delete, and modify projects",
-			value: Constants.ADD_PROJECT,
+			helperText:
+				"Allows users to create, delete, and modify their own projects",
+			value: Constants.MANAGE_PROJECT,
 		},
 		{
-			name: "Manage Project Members",
-			helperText: "Allows user add and remove members in a project",
-			value: Constants.ADD_MEMBER_TO_PROJECT,
-		},
-		{
-			name: "Manage Custom Fields",
-			helperText: "Allows user create and update custom fields",
-			value: Constants.MANAGE_ROLE,
-		},
-		{
-			name: "Manage Users",
-			helperText: "Allows user update other user's profile",
-			value: Constants.UPDATE_USER_PROFILE,
-		},
-		{
-			name: "Allow Comments",
-			helperText: "User can comment on any ticket",
-			value: Constants.ADD_COMMENT,
+			name: "Manage Admin Page",
+			helperText: "Allows user to access the admin page",
+			value: Constants.MANAGE_ADMIN_PAGE,
 		},
 	];
+
 	const onPermissionToggle = ({ target: { checked, value } }) => {
 		if (checked) {
 			//add permission
@@ -140,18 +127,19 @@ const CreateRole = ({ data, isOpen, onClose }) => {
 											{error}
 										</Alert>
 									)}
-									<FormControl isInvalid={errors.name && touched.name}>
-										<FormLabel fontWeight="regular">Role Name</FormLabel>
+									<FormControl isInvalid={errors.name && touched.name} pb={2}>
+										<FormLabel>Role Name</FormLabel>
 										<Field as={Input} name="name" type="text" required />
 										<FormErrorMessage>{errors.name}</FormErrorMessage>
 									</FormControl>
+
 									{displayPermissions.map((permission, index) => (
 										<FormControl key={index}>
 											<Box display="flex" width="100%">
-												<FormLabel>{permission.name}</FormLabel>
+												<FormLabel fontSize="sm">{permission.name}</FormLabel>
 												<Spacer />
 												<Switch
-													colorScheme="purple"
+													colorScheme="blue"
 													size="lg"
 													value={permission.value}
 													onChange={onPermissionToggle}
@@ -160,7 +148,7 @@ const CreateRole = ({ data, isOpen, onClose }) => {
 													)}
 												/>
 											</Box>
-											<FormHelperText fontSize="sm" as="i">
+											<FormHelperText fontSize="xs" as="i">
 												{permission.helperText}
 											</FormHelperText>
 										</FormControl>
@@ -173,15 +161,15 @@ const CreateRole = ({ data, isOpen, onClose }) => {
 
 				<ModalFooter>
 					<Button
-						colorScheme="purple"
+						colorScheme="blue"
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>
-						Save Role
+						Create
 					</Button>
 					{data ? (
 						<Button colorScheme="red" onClick={alertDialogDisclosure.onOpen}>
-							Delete Role
+							Delete
 						</Button>
 					) : (
 						<Button
