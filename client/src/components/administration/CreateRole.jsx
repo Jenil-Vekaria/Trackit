@@ -127,15 +127,16 @@ const CreateRole = ({ data, isOpen, onClose }) => {
 											{error}
 										</Alert>
 									)}
-									<FormControl isInvalid={errors.name && touched.name}>
-										<FormLabel fontWeight="regular">Role Name</FormLabel>
+									<FormControl isInvalid={errors.name && touched.name} pb={2}>
+										<FormLabel>Role Name</FormLabel>
 										<Field as={Input} name="name" type="text" required />
 										<FormErrorMessage>{errors.name}</FormErrorMessage>
 									</FormControl>
+
 									{displayPermissions.map((permission, index) => (
 										<FormControl key={index}>
 											<Box display="flex" width="100%">
-												<FormLabel>{permission.name}</FormLabel>
+												<FormLabel fontSize="sm">{permission.name}</FormLabel>
 												<Spacer />
 												<Switch
 													colorScheme="blue"
@@ -147,7 +148,7 @@ const CreateRole = ({ data, isOpen, onClose }) => {
 													)}
 												/>
 											</Box>
-											<FormHelperText fontSize="sm" as="i">
+											<FormHelperText fontSize="xs" as="i">
 												{permission.helperText}
 											</FormHelperText>
 										</FormControl>
@@ -164,7 +165,7 @@ const CreateRole = ({ data, isOpen, onClose }) => {
 						mr={3}
 						onClick={() => formRef.current?.handleSubmit()}
 					>
-						Save
+						Create
 					</Button>
 					{data ? (
 						<Button colorScheme="red" onClick={alertDialogDisclosure.onOpen}>

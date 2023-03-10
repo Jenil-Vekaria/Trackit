@@ -57,23 +57,16 @@ export const Login = () => {
 						)}
 
 						<FormControl isInvalid={errors.email && touched.email}>
-							<FormLabel fontWeight="regular">Email</FormLabel>
+							<FormLabel>Email</FormLabel>
 							<Field as={Input} name="email" type="email" />
 							<FormErrorMessage>{errors.email}</FormErrorMessage>
 						</FormControl>
 
 						<FormControl mt={4} isInvalid={errors.password && touched.password}>
-							<FormLabel fontWeight="regular">Password</FormLabel>
+							<FormLabel>Password</FormLabel>
 							<Field as={Input} name="password" type="password" />
 							<FormErrorMessage>{errors.password}</FormErrorMessage>
 						</FormControl>
-
-						<Flex direction="row" justifyContent="space-between" mt={4}>
-							<Checkbox>Remember me</Checkbox>
-							<Button variant="link" fontWeight="semibold" colorScheme="blue">
-								Forgot Password?
-							</Button>
-						</Flex>
 
 						<Button colorScheme="blue" w="full" mt={10} type="submit">
 							Login

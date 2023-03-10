@@ -45,6 +45,7 @@ import { Permissions } from "../../util/Utils";
 import PermissionsRender from "../others/PermissionsRender";
 import CommentSection from "../comment/CommentSection";
 import ProjectService from "../../services/project-service";
+import moment from "moment/moment";
 
 const CreateTicket = ({
 	isOpen,
@@ -179,7 +180,7 @@ const CreateTicket = ({
 					</Text>
 				</ModalHeader>
 				<ModalCloseButton onClick={closeModal} />
-				<ModalBody overflowY="auto">
+				<ModalBody overflowY="auto" mt={-3}>
 					<Tabs variant="enclosed" size="sm" colorScheme="blue">
 						<TabList>
 							<Tab>Ticket Info</Tab>
@@ -208,38 +209,43 @@ const CreateTicket = ({
 												</Alert>
 											)}
 
-											<Flex direction="column" gap={3}>
-												<FormControl isInvalid={errors.title && touched.title}>
-													<FormLabel fontWeight="regular">Title</FormLabel>
-													<Field
-														as={Input}
-														name="title"
-														type="text"
-														disabled={!canManageTickets}
-													/>
-													<FormErrorMessage>{errors.title}</FormErrorMessage>
-												</FormControl>
+											<Flex gap={3}>
+												<Flex direction="column" flex={1} gap={3}>
+													<FormControl
+														isInvalid={errors.title && touched.title}
+													>
+														<FormLabel>Title</FormLabel>
+														<Field
+															as={Input}
+															name="title"
+															type="text"
+															disabled={!canManageTickets}
+														/>
+														<FormErrorMessage>{errors.title}</FormErrorMessage>
+													</FormControl>
 
-												<FormControl
-													isInvalid={errors.description && touched.description}
-												>
-													<FormLabel fontWeight="regular">
-														Description
-													</FormLabel>
-													<Field
-														as={Textarea}
-														name="description"
-														type="text"
-														disabled={!canManageTickets}
-													/>
-													<FormErrorMessage>
-														{errors.description}
-													</FormErrorMessage>
-												</FormControl>
+													<FormControl
+														isInvalid={
+															errors.description && touched.description
+														}
+													>
+														<FormLabel>Description</FormLabel>
+														<Field
+															as={Textarea}
+															name="description"
+															type="text"
+															height={280}
+															disabled={!canManageTickets}
+														/>
+														<FormErrorMessage>
+															{errors.description}
+														</FormErrorMessage>
+													</FormControl>
+												</Flex>
 
-												<Flex gap={4}>
+												<Flex direction="column" gap={3}>
 													<FormControl isInvalid={errors.type && touched.type}>
-														<FormLabel fontWeight="regular">Type</FormLabel>
+														<FormLabel>Type</FormLabel>
 														<Field
 															as={Select}
 															name="type"
@@ -253,11 +259,10 @@ const CreateTicket = ({
 														</Field>
 														<FormErrorMessage>{errors.type}</FormErrorMessage>
 													</FormControl>
-
 													<FormControl
 														isInvalid={errors.status && touched.status}
 													>
-														<FormLabel fontWeight="regular">Status</FormLabel>
+														<FormLabel>Status</FormLabel>
 														<Field
 															as={Select}
 															name="status"
@@ -271,53 +276,71 @@ const CreateTicket = ({
 														</Field>
 														<FormErrorMessage>{errors.status}</FormErrorMessage>
 													</FormControl>
-												</Flex>
-
-												<Flex gap={4}>
-													<FormControl
-														isInvalid={
-															errors.estimatedTime && touched.estimatedTime
-														}
-													>
-														<FormLabel fontWeight="regular">
-															Estimated time
-														</FormLabel>
-														<Field
-															as={Input}
-															name="estimatedTime"
-															type="number"
-															disabled={!canManageTickets}
-														/>
-														<FormErrorMessage>
-															{errors.estimatedTime}
-														</FormErrorMessage>
-													</FormControl>
-
-													<FormControl
-														isInvalid={
-															errors.estimatedTimeUnit &&
-															touched.estimatedTimeUnit
-														}
-													>
-														<FormLabel fontWeight="regular">
-															Estimated Time Unit
-														</FormLabel>
-														<Field
-															as={Select}
-															name="estimatedTimeUnit"
-															type="select"
-															disabled={!canManageTickets}
+													<Flex gap={4}>
+														<FormControl
+															isInvalid={
+																errors.estimatedTime && touched.estimatedTime
+															}
 														>
-															<option value="" disabled selected>
-																Select
-															</option>
-															<option value="h">Hour(s)</option>
-															<option value="d">Day(s)</option>
-														</Field>
-														<FormErrorMessage>
-															{errors.estimatedTimeUnit}
-														</FormErrorMessage>
-													</FormControl>
+															<FormLabel>Estimated time</FormLabel>
+															<Field
+																as={Input}
+																name="estimatedTime"
+																type="number"
+																disabled={!canManageTickets}
+															/>
+															<FormErrorMessage>
+																{errors.estimatedTime}
+															</FormErrorMessage>
+														</FormControl>
+
+														<FormControl
+															isInvalid={
+																errors.estimatedTimeUnit &&
+																touched.estimatedTimeUnit
+															}
+														>
+															<FormLabel>Estimated Time Unit</FormLabel>
+															<Field
+																as={Select}
+																name="estimatedTimeUnit"
+																type="select"
+																disabled={!canManageTickets}
+															>
+																<option value="" disabled selected>
+																	Select
+																</option>
+																<option value="h">Hour(s)</option>
+																<option value="d">Day(s)</option>
+															</Field>
+															<FormErrorMessage>
+																{errors.estimatedTimeUnit}
+															</FormErrorMessage>
+														</FormControl>
+													</Flex>
+
+													<Flex direction="column" mt={2}>
+														<Text
+															fontSize="sm"
+															fontWeight={500}
+															color="inputLabel"
+														>
+															{ticketInfo.createdOn
+																? "Created " +
+																  moment(ticketInfo.createdOn).fromNow()
+																: ""}
+														</Text>
+														<Text
+															fontSize="sm"
+															fontWeight={500}
+															color="inputLabel"
+														>
+															{ticketInfo.updatedOn
+																? "Updated " +
+																  moment(ticketInfo.updatedOn).fromNow()
+																: ""}
+														</Text>
+													</Flex>
 												</Flex>
 											</Flex>
 										</Form>
