@@ -182,7 +182,7 @@ const AddEditProject = ({ projectId }) => {
 											)}
 											<Flex direction="column" gap={3}>
 												<FormControl isInvalid={errors.title && touched.title}>
-													<FormLabel fontWeight="regular">Title</FormLabel>
+													<FormLabel>Title</FormLabel>
 													<Field
 														as={Input}
 														name="title"
@@ -196,15 +196,12 @@ const AddEditProject = ({ projectId }) => {
 												<FormControl
 													isInvalid={errors.description && touched.description}
 												>
-													<FormLabel fontWeight="regular">
-														Description
-													</FormLabel>
+													<FormLabel>Description</FormLabel>
 													<Field
 														as={Textarea}
 														name="description"
 														type="text"
 														borderWidth="2px"
-														height="100%"
 														disabled={!isNewProject && !isProjectAuthor}
 													/>
 													<FormErrorMessage>
@@ -251,7 +248,7 @@ const AddEditProject = ({ projectId }) => {
 						Delete
 					</Button>
 				) : (
-					<Button onClick={() => router.back()}>Close</Button>
+					<Button onClick={() => router.back()}>Cancel</Button>
 				)}
 			</Flex>
 

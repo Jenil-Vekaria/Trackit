@@ -127,7 +127,7 @@ export const updateTicket = async (req, res) => {
         }
 
 
-        await Ticket.findOneAndUpdate({ _id: req.body._id }, req.body);
+        await Ticket.findOneAndUpdate({ _id: req.body._id }, { ...req.body, updatedOn: Date.now() });
 
         const updatedTicket = await Ticket.findById(req.body._id)
             .populate({ path: "projectId", select: { title: 1 } })
