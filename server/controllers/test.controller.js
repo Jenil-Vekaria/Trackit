@@ -30,14 +30,14 @@ const populate = async () => {
         });
 
     } catch (error) {
-        console.log(error);
+        throw error;
     }
 };
 export const seedDatabase = async (_, res) => {
     try {
         if (mongoose.connection?.readyState === 1) {
             console.log('❌ Clearing database...');
-            mongoose.connection.dropDatabase();
+            // mongoose.connection.dropDatabase();
         }
 
         console.log('🌱 Seeding database...');
@@ -49,6 +49,6 @@ export const seedDatabase = async (_, res) => {
             res.redirect("/");
         }, 10000);
     } catch (error) {
-
+        console.log(error);
     }
 };
