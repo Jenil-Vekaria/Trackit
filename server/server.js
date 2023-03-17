@@ -13,7 +13,6 @@ try {
         console.info(`✅ Connected to MongoDB: http://localhost:${PORT}`);
         console.info(`🔗 Connection URL: ${MONGO_DB_CONNECTION}`);
         console.log("==========================================");
-
     });
 } catch (error) {
     console.error(error);

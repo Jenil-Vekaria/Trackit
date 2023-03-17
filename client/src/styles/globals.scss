@@ -14,4 +14,29 @@ $INOVUA_DATAGRID_CELL_BORDER_COLOR: #28374e !default;
     border: $INOVUA_DATAGRID_HEADER_BG;
 }
 
+
+
+
+.ql-toolbar.ql-snow, .ql-container.ql-snow  {
+    border: 1px solid #3d4551;
+}
+
+.ql-toolbar.ql-snow{
+    border-radius: 0.375rem  0.375rem 0 0;
+}
+
+.ql-container.ql-snow {
+    border-radius: 0 0 0.375rem  0.375rem;
+}
+
+.ql-snow.ql-toolbar button svg,
+.ql-snow .ql-toolbar button svg,
+.ql-picker-label {
+    filter: brightness(100) saturate(20)
+}
+
+.ql-container{
+    min-height: 230px;
+    font-size: 1rem;
+}
 @import '@inovua/reactdatagrid-community/style/theme/default-dark/index.scss';

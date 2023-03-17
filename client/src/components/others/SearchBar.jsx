@@ -2,12 +2,7 @@ import { Input, Flex, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { SearchIcon } from "@chakra-ui/icons";
 import React from "react";
 
-const SearchBar = ({
-	children,
-	placeholder,
-	variant,
-	handleSearchInputChange,
-}) => {
+const SearchBar = ({ placeholder, variant, handleSearchInputChange }) => {
 	return (
 		<Flex
 			direction="column"
@@ -27,8 +22,6 @@ const SearchBar = ({
 					onChange={handleSearchInputChange}
 				/>
 			</InputGroup>
-
-			{children}
 		</Flex>
 	);
 };

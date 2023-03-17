@@ -41,7 +41,6 @@ export const ManageUserSchema = Yup.object().shape({
 
 export const CreateProjectSchema = Yup.object().shape({
     title: Yup.string().required("Required"),
-    description: Yup.string(),
 });
 
 export const CreateProjectData = {
@@ -52,7 +51,6 @@ export const CreateProjectData = {
 
 export const CreateTicketSchema = Yup.object().shape({
     title: Yup.string().required("Required"),
-    description: Yup.string().required("Required"),
     status: Yup.string().required("Required"),
     type: Yup.string().required("Required"),
     estimatedTime: Yup.number().required("Required"),

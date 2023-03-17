@@ -4,6 +4,7 @@ import { setProject, setProjects, addProject } from "../features/projectSlice";
 import { store } from "../store/store.js";
 
 const API = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_ENDPOINT + "/project" });
+const ALL_USERS_API = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_ENDPOINT + "/user/all" });
 
 API.interceptors.request.use((req) => {
     const { accessToken } = AuthService.getCurrentUser();

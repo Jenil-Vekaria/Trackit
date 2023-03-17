@@ -46,6 +46,8 @@ import PermissionsRender from "../others/PermissionsRender";
 import CommentSection from "../comment/CommentSection";
 import ProjectService from "../../services/project-service";
 import moment from "moment/moment";
+import ReactQuill from "react-quill";
+import RichTextEditor from "../editor/RichTextEditor";
 
 const CreateTicket = ({
 	isOpen,
@@ -55,13 +57,14 @@ const CreateTicket = ({
 	projectId,
 	projectTitle,
 }) => {
-	const alertModalDisclosure = useDisclosure();
 	const ticketTypes = useSelector(getTicketType);
 	const [projectAssignees, setProjectAssignees] = useState([]);
 	const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
+	const [ticketDescription, setTicketDescription] = useState("");
 
 	const canManageTickets = usePermissions(Permissions.canManageTickets);
 
+	const alertModalDisclosure = useDisclosure();
 	const formRef = useRef();
 	const toast = useToast();
 	const [error, seterror] = useState("");
@@ -69,6 +72,9 @@ const CreateTicket = ({
 	const [openDeleteAlert, setopenDeleteAlert] = useState(false);
 
 	useEffect(() => {
+		setTicketDescription("");
+		setProjectAssignees(ProjectService.getProjectAssignees(projectId));
+
 		if (ticket) {
 			const ticketCopy = { ...ticket };
 
@@ -76,7 +82,7 @@ const CreateTicket = ({
 			ticketCopy.projectId = ticket.projectId._id;
 			ticketCopy.type = ticket.type._id;
 
-			setProjectAssignees(ProjectService.getProjectAssignees(projectId));
+			setTicketDescription(ticketCopy.description);
 			setAssigneesId(ticketCopy.assignees);
 			setTicketInfo(ticketCopy);
 		}
@@ -117,6 +123,7 @@ const CreateTicket = ({
 	const onHandleFormSubmit = async (values) => {
 		const ticketFormData = { ...values };
 		ticketFormData.assignees = assigneesId;
+		ticketFormData.description = ticketDescription;
 
 		try {
 			if (!ticket) {
@@ -224,22 +231,13 @@ const CreateTicket = ({
 														<FormErrorMessage>{errors.title}</FormErrorMessage>
 													</FormControl>
 
-													<FormControl
-														isInvalid={
-															errors.description && touched.description
-														}
-													>
+													<FormControl>
 														<FormLabel>Description</FormLabel>
-														<Field
-															as={Textarea}
-															name="description"
-															type="text"
-															height={280}
-															disabled={!canManageTickets}
+														<RichTextEditor
+															content={ticketDescription}
+															setContent={setTicketDescription}
+															readOnly={!canManageTickets}
 														/>
-														<FormErrorMessage>
-															{errors.description}
-														</FormErrorMessage>
 													</FormControl>
 												</Flex>
 

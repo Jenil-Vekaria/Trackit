@@ -66,6 +66,7 @@ export const theme = extendTheme({
                     dialog: {
                         maxWidth: "70%",
                         maxHeight: "85%",
+                        minHeight: "85%",
                         backgroundColor: "#182130",
                     },
                     body: {
