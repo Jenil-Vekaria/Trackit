@@ -19,18 +19,9 @@ export const PROJECTS_COLUMNS = [
         name: "title",
         searchInField: ["title"],
         header: "TITLE",
-        flex: 3,
+        flex: 1,
         render: ({ value }) => {
             return <span style={styles}>{value}</span>;
-        }
-    },
-    {
-        name: "description",
-        searchInField: ["description"],
-        header: "DESCRIPTION",
-        flex: 3,
-        render: ({ value }) => {
-            return value || "--No Description--";
         }
     },
     {

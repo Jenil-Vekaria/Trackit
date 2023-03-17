@@ -3,8 +3,9 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { store, persistor } from "../store/store.js";
 import { PersistGate } from "redux-persist/integration/react";
 import Layout from "@/components/layout.jsx";
-import "../styles/globals.scss";
 import { theme } from "@/styles/theme.js";
+import "react-quill/dist/quill.snow.css";
+import "../styles/globals.scss";
 
 const App = ({ Component, pageProps }) => {
 	return (

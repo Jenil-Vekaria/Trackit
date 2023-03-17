@@ -37,6 +37,7 @@ import Table from "../others/Table";
 import AuthService from "../../services/auth-service";
 import { useRouter } from "next/router";
 import PageNotFound from "@/pages/404";
+import RichTextEditor from "../editor/RichTextEditor";
 
 const AddEditProject = ({ projectId }) => {
 	const router = useRouter();
@@ -50,8 +51,8 @@ const AddEditProject = ({ projectId }) => {
 
 	const [assigneesId, setAssigneesId] = useState([]);
 	const [projectInfo, setProjectInfo] = useState(CreateProjectData);
+	const [projectDescription, setProjectDescription] = useState("");
 	const [error, seterror] = useState("");
-	const [isLoading, setisLoading] = useState(false);
 
 	const [is404, setIs404] = useState(false);
 
@@ -82,13 +83,8 @@ const AddEditProject = ({ projectId }) => {
 
 	const getProjectInfo = async () => {
 		try {
-			const {
-				_id,
-				title,
-				description,
-				assignees,
-				authorId,
-			} = await ProjectService.getProjectInfo(projectId);
+			const { _id, title, description, assignees, authorId } =
+				await ProjectService.getProjectInfo(projectId);
 
 			const isCurrentUserProjectAuthor =
 				AuthService.getCurrentUser()._id === authorId._id;
@@ -100,6 +96,7 @@ const AddEditProject = ({ projectId }) => {
 				assignees,
 			});
 			setAssigneesId(assignees);
+			setProjectDescription(description);
 		} catch (error) {
 			setIs404(true);
 		}
@@ -107,7 +104,7 @@ const AddEditProject = ({ projectId }) => {
 
 	const onHandleFormSubmit = async (values, _) => {
 		values.assignees = assigneesId;
-
+		values.description = projectDescription;
 		try {
 			if (projectId) {
 				await ProjectService.updateProject(values);
@@ -193,20 +190,13 @@ const AddEditProject = ({ projectId }) => {
 													<FormErrorMessage>{errors.title}</FormErrorMessage>
 												</FormControl>
 
-												<FormControl
-													isInvalid={errors.description && touched.description}
-												>
+												<FormControl>
 													<FormLabel>Description</FormLabel>
-													<Field
-														as={Textarea}
-														name="description"
-														type="text"
-														borderWidth="2px"
-														disabled={!isNewProject && !isProjectAuthor}
+													<RichTextEditor
+														content={projectDescription}
+														setContent={setProjectDescription}
+														readOnly={!isNewProject && !isProjectAuthor}
 													/>
-													<FormErrorMessage>
-														{errors.description}
-													</FormErrorMessage>
 												</FormControl>
 											</Flex>
 										</Box>
