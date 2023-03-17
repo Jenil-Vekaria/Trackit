@@ -18,10 +18,9 @@ const SearchBar = ({
 			mb={5}
 		>
 			<InputGroup mr={5}>
-				<InputLeftElement
-					pointerEvents="none"
-					children={<SearchIcon color="gray.500" />}
-				/>
+				<InputLeftElement pointerEvents="none">
+					<SearchIcon color="gray.500" />
+				</InputLeftElement>
 				<Input
 					variant={variant || "filled"}
 					placeholder={placeholder}

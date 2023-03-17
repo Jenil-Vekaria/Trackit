@@ -12,23 +12,10 @@ export const Auth = () => {
 	return (
 		<>
 			<VStack mt={10}>
-				<Image width={300} src={logo} />
+				<Image width={300} src={logo} alt="logo" />
 				<Heading as="h3" size="lg" fontWeight="semibold">
 					Log in to your account
 				</Heading>
-				<HStack spacing={1}>
-					<Text color="gray">
-						{isLogin ? "Don't have an account?" : "Already have an account?"}
-					</Text>
-					<Button
-						variant="link"
-						colorScheme="blue"
-						onClick={() => setisLogin((prevValue) => !prevValue)}
-					>
-						{isLogin ? "Sign up" : "Login"}
-					</Button>
-				</HStack>
-
 				{isLogin ? <Login /> : <SignUp />}
 			</VStack>
 		</>

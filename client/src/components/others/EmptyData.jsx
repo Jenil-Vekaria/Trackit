@@ -5,7 +5,7 @@ import empty from "../../assests/empty.svg";
 const EmptyData = () => {
 	return (
 		<Center width="100%" height="100%" flexDir="column">
-			<Image src={empty} boxSize="150px" />
+			<Image src={empty} boxSize="150px" alt="Empty Data" />
 			<Text fontSize="2xl" as="samp">
 				No Data
 			</Text>
