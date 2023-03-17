@@ -13,7 +13,7 @@ export const PASSWORD_SALT = process.env.PASSWORD_SALT;
 export const JWT_TOKEN_EXPIRATION = process.env.JWT_TOKEN_EXPIRATION;
 
 
-export const PORT = process.env.PORT || 5000;
+export const PORT = process.env.PORT || 4000;
 export const isProduction = process.env.NODE_ENV === Environment.PRODUCTION || false;
 export const isDevelopment = process.env.NODE_ENV === Environment.DEVELOPMENT || true;
 export const isTest = process.env.NODE_ENV === Environment.TEST || false;
