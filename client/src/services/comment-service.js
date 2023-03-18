@@ -25,7 +25,6 @@ const getTicketComments = async (ticketId) => {
         });
 
     } catch (error) {
-        console.log(error);
         throw error.response.data.message;
     }
 };
@@ -34,7 +33,6 @@ const createTicketComment = async (ticketId, ticketData) => {
     try {
         await API.post(`/${ticketId}`, ticketData);
     } catch (error) {
-        console.log(error);
         throw error.response.data.message;
     }
 };
@@ -43,7 +41,6 @@ const updateTicketComment = async (commentId, ticketData) => {
     try {
         await API.patch(`/${commentId}`, ticketData);
     } catch (error) {
-        console.log(error);
         throw error.response.data.message;
     }
 };
@@ -52,7 +49,6 @@ const deleteTicketComment = async (commentId) => {
     try {
         await API.delete(`/${commentId}`);
     } catch (error) {
-        console.log(error);
         throw error.response.data.message;
     }
 };

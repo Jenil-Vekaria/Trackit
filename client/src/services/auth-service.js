@@ -34,7 +34,6 @@ const login = (user) => {
     return axios.post(API_URL + "/login", user)
         .then((response) => {
             if (response.data.accessToken) {
-                console.log("LOGIN ", response.data);
                 store.dispatch(setLogin(response.data));
             }
 

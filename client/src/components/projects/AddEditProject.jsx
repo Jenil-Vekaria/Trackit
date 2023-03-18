@@ -62,7 +62,6 @@ const AddEditProject = ({ projectId }) => {
 			selectedAssignees[assignee] = true;
 		});
 
-		console.log("SELECTED ASSIGNEES", selectedAssignees);
 		return selectedAssignees;
 	};
 

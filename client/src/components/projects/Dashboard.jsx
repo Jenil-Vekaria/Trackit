@@ -162,7 +162,6 @@ const Dashboard = ({ projectId }) => {
 	useEffect(() => {
 		if (projectId) {
 			getProjectStats();
-			console.log(projectStats);
 		}
 	}, []);
 
