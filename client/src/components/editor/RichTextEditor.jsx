@@ -1,4 +1,8 @@
-import ReactQuill from "react-quill";
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(() => import("react-quill"), {
+	ssr: false,
+});
 
 const RichTextEditor = ({ content, setContent, readOnly = false }) => {
 	const modules = {

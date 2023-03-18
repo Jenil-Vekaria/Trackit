@@ -125,6 +125,7 @@ const ViewProject = ({ projectId }) => {
 				</TabPanels>
 			</Tabs>
 			<br />
+
 			<CreateTicket
 				isOpen={isOpen}
 				onClose={onClose}

@@ -46,7 +46,6 @@ import PermissionsRender from "../others/PermissionsRender";
 import CommentSection from "../comment/CommentSection";
 import ProjectService from "../../services/project-service";
 import moment from "moment/moment";
-import ReactQuill from "react-quill";
 import RichTextEditor from "../editor/RichTextEditor";
 
 const CreateTicket = ({

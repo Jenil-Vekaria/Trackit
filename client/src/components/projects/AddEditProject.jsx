@@ -13,13 +13,10 @@ import {
 	Flex,
 	Heading,
 	Spacer,
-	Textarea,
 	Button,
 	Input,
 	useToast,
 	useDisclosure,
-	Center,
-	Spinner,
 } from "@chakra-ui/react";
 import { CloseIcon } from "@chakra-ui/icons";
 import { Field, Form, Formik } from "formik";
@@ -38,6 +35,7 @@ import AuthService from "../../services/auth-service";
 import { useRouter } from "next/router";
 import PageNotFound from "@/pages/404";
 import RichTextEditor from "../editor/RichTextEditor";
+import Loading from "../others/Loading";
 
 const AddEditProject = ({ projectId }) => {
 	const router = useRouter();
@@ -53,16 +51,18 @@ const AddEditProject = ({ projectId }) => {
 	const [projectInfo, setProjectInfo] = useState(CreateProjectData);
 	const [projectDescription, setProjectDescription] = useState("");
 	const [error, seterror] = useState("");
+	const [isLoading, setisLoading] = useState(false);
 
 	const [is404, setIs404] = useState(false);
 
 	const getSelectedAssigneesId = () => {
 		const selectedAssignees = {};
 
-		projectInfo.assignees.forEach((assignee) => {
+		assigneesId.forEach((assignee) => {
 			selectedAssignees[assignee] = true;
 		});
 
+		console.log("SELECTED ASSIGNEES", selectedAssignees);
 		return selectedAssignees;
 	};
 
@@ -83,6 +83,7 @@ const AddEditProject = ({ projectId }) => {
 
 	const getProjectInfo = async () => {
 		try {
+			setisLoading(true);
 			const { _id, title, description, assignees, authorId } =
 				await ProjectService.getProjectInfo(projectId);
 
@@ -97,6 +98,7 @@ const AddEditProject = ({ projectId }) => {
 			});
 			setAssigneesId(assignees);
 			setProjectDescription(description);
+			setisLoading(false);
 		} catch (error) {
 			setIs404(true);
 		}
@@ -132,6 +134,10 @@ const AddEditProject = ({ projectId }) => {
 
 	if (is404) {
 		return <PageNotFound />;
+	}
+
+	if (isLoading) {
+		return <Loading />;
 	}
 
 	return (

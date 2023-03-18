@@ -91,7 +91,7 @@ const getProjectAssignees = (projectId) => {
     const state = store.getState();
     const [project] = state.project.data.filter(project => project._id === projectId);
 
-    const projectAssignees = state.miscellaneous.users.filter(user => project.assignees.includes(user._id));
+    const projectAssignees = state.miscellaneous.users.filter(user => project?.assignees.includes(user._id));
 
     return projectAssignees;
 };

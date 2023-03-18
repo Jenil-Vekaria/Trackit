@@ -132,7 +132,7 @@ export const updateProject = async (req, res) => {
 
         //! Prevent self-remove from project
         if (!assignees.includes(userId)) {
-            assignees.push(userId);
+            assignees.push(userId.toString());
         }
 
         //Get all the removed assginee
@@ -142,7 +142,7 @@ export const updateProject = async (req, res) => {
         const updateTicketAssigneesPromise = removedAssignees.map(assigneeId => {
             const updateTicketPromise = new Promise(async (resolve, reject) => {
                 try {
-                    await Ticket.updateMany({ assignees: assigneeId }, { $pull: { assignees: mongoose.Types.ObjectId(assigneeId) } });
+                    await Ticket.updateMany({ assignees: assigneeId, projectId }, { $pull: { assignees: new mongoose.Types.ObjectId(assigneeId) } });
                     resolve();
                 } catch (error) {
                     reject(error);
@@ -229,13 +229,13 @@ export const getProjectStat = async (req, res) => {
         const unassignedTicketCount = await Ticket.find({ projectId, assignees: [] }).count();
         const assignedTicketCount = ticketCount - unassignedTicketCount;
         const ticketStatusCount = await Ticket.aggregate([
-            { $match: { projectId: mongoose.Types.ObjectId(projectId) } },
+            { $match: { projectId: new mongoose.Types.ObjectId(projectId) } },
             {
                 $group: { _id: "$status", value: { $sum: 1 } }
             }
         ]);
         const ticketTypeCount = await Ticket.aggregate([
-            { $match: { projectId: mongoose.Types.ObjectId(projectId) } },
+            { $match: { projectId: new mongoose.Types.ObjectId(projectId) } },
             {
                 $group: {
                     _id: "$type",
