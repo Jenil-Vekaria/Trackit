@@ -58,7 +58,7 @@ export const Auth = () => {
 									</Thead>
 									<Tbody>
 										{DEMO_LOGIN_INFO.map((loginInfo, index) => (
-											<Tr key={key}>
+											<Tr key={index}>
 												<Td>{loginInfo.email}</Td>
 												<Td>{loginInfo.password}</Td>
 												<Td>{loginInfo.role}</Td>
