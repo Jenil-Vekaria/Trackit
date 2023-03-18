@@ -13,4 +13,22 @@ export const MANAGE_ADMIN_PAGE = "PERMISSION_MANAGE_ADMIN_PAGE";
 
 export const DEFINED_ROLES = ["Admin", "Project Manager", "Developer", "Submitter"];
 
-export const BS_ICONS = Object.keys(BsIcons).map(icon => { return { name: icon, icon: <Icon key={icon} as={BsIcons[icon]} w={6} h={6} /> }; }); 
+export const BS_ICONS = Object.keys(BsIcons).map(icon => { return { name: icon, icon: <Icon key={icon} as={BsIcons[icon]} w={6} h={6} /> }; });
+
+export const DEMO_LOGIN_INFO = [
+    {
+        email: "james.smith@bugtracker.com",
+        password: "password",
+        role: "Admin"
+    },
+    {
+        email: "michael.smith@bugtracker.com",
+        password: "password",
+        role: "Developer"
+    },
+    {
+        email: "robert.smith@bugtracker.com",
+        password: "password",
+        role: "Submitter"
+    }
+];
