@@ -156,10 +156,7 @@ const Dashboard = ({ projectId }) => {
 			setTicketStatusChartData(createTicketStatusChartData(stat));
 
 			setTimeout(() => setisLoading(false), 100);
-		} catch (error) {
-			console.log(error);
-			// router.replace("/projects");
-		}
+		} catch (error) {}
 	};
 
 	useEffect(() => {

@@ -22,7 +22,7 @@ import Table from "@/components/others/Table";
 import PermissionsRender from "@/components/others/PermissionsRender";
 import TicketService from "@/services/ticket-service";
 import Link from "next/link";
-import Dashboard from "@/components/projects/dashboard";
+import Dashboard from "@/components/projects/Dashboard";
 import Head from "next/head";
 import { getTickets } from "@/features/ticketSlice";
 import { Permissions } from "@/util/Utils";
