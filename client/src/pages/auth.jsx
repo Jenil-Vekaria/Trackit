@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
 	Button,
 	Heading,
@@ -14,31 +13,37 @@ import {
 	Table,
 	Thead,
 	Tbody,
-	Tfoot,
 	Tr,
 	Th,
 	Td,
-	TableCaption,
 	TableContainer,
+	Icon,
+	Link,
 } from "@chakra-ui/react";
 import { Login } from "../components/authentication/Login";
-import { SignUp } from "../components/authentication/SignUp";
 import Image from "next/image";
 import logo from "../assests/Trackit_Plain.png";
 import { DEMO_LOGIN_INFO } from "@/util/Constants";
+import { AiFillGithub } from "react-icons/ai";
 
 export const Auth = () => {
-	const [isLogin, setisLogin] = useState(true);
 	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	return (
 		<>
-			<VStack mt={10}>
+			<VStack p={5}>
+				<Link
+					href="https://github.com/Jenil-Vekaria/Trackit"
+					isExternal
+					alignSelf="flex-end"
+				>
+					<Icon as={AiFillGithub} w={8} h={8} />
+				</Link>
 				<Image width={300} src={logo} alt="logo" />
 				<Heading as="h3" size="lg" fontWeight="semibold">
 					Log in to your account
 				</Heading>
-				{isLogin ? <Login /> : <SignUp />}
+				<Login />
 				<br />
 				<Button onClick={onOpen}>Demo Login Info</Button>
 				<Modal isOpen={isOpen} onClose={onClose}>
