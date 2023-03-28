@@ -50,7 +50,7 @@ export const deleteComment = async (req, res) => {
     const { commentId } = req.params;
 
     try {
-        await Comment.findOneAndDelete({ _id: commentId });
+        await Comment.deleteOne({ _id: commentId });
 
         return res.sendStatus(200);
 

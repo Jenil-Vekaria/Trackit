@@ -147,13 +147,11 @@ export const deleteTicket = async (req, res) => {
     const { ticketId } = req.params;
 
     try {
-        const ticket = await Ticket.findOne({ _id: ticketId });
+        const result = await Ticket.deleteOne({ _id: ticketId });
 
-        if (!ticket) {
+        if (result.deletedCount === 0) {
             return res.status(403).json({ message: "Ticket does not exist" });
         }
-
-        await ticket.delete();
 
         return res.sendStatus(200);
     } catch (error) {

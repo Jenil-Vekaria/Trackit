@@ -70,7 +70,7 @@ export const deleteTicketType = async (req, res) => {
             return res.status(405).json({ message: `Forbidden: ${totalTicketsWithThisTicketType} ticket(s) is associated with ticket type "${name}"` });
         }
 
-        await ticketType.delete();
+        await TicketType.deleteOne({ name });
 
         return res.sendStatus(200);
     } catch (error) {

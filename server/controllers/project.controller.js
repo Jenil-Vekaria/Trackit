@@ -1,7 +1,6 @@
 import Project from "../models/project.model.js";
 import User from "../models/user.model.js";
 import Ticket from "../models/ticket.model.js";
-import { canPerformAction } from "../util/utils.js";
 import mongoose from "mongoose";
 
 /**
@@ -181,10 +180,6 @@ export const deleteProject = async (req, res) => {
         //Get user permssion
         const userId = req.user._id;
 
-        if (!canPerformAction(permissionCheck.canManageProject, req.user)) {
-            return res.status(403).json({ message: "Not authorized to delete projects" });
-        }
-
         //Authorize - ensure signed in user is the project author
         const project = await Project.findOne({ _id: projectId, authorId: userId });
 
@@ -196,7 +191,7 @@ export const deleteProject = async (req, res) => {
         await Project.deleteOne({ _id: projectId });
 
         //Delete all tickets
-        await Ticket.remove({ projectId });
+        await Ticket.deleteMany({ projectId });
 
         return res.sendStatus(200);
     } catch (error) {

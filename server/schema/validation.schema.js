@@ -34,7 +34,6 @@ export const createProjectSchema = yup.object().shape({
 
 export const createTicketSchema = yup.object().shape({
     title: yup.string().required("Ticket title required"),
-    description: yup.string().required("Ticket description required"),
     status: yup.string().required("Ticket status required"),
     type: yup.string().required("Ticket type required"),
     estimatedTime: yup.number().required("Ticket estimated time required"),
