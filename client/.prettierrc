@@ -1,0 +1,15 @@
+{
+  "importOrder": [
+    "^next/(.*)$",
+    "<THIRD_PARTY_MODULES>",
+    "^@/components/(.*)$",
+    "^@/services/(.*)$",
+    "^@/features/(.*)$",
+    "^@/hooks/(.*)$",
+    "^@/util/(.*)$",
+    "^@/assets/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": false,
+  "importOrderSortSpecifiers": true
+}

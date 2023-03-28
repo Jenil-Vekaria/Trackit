@@ -1,7 +1,7 @@
 import ViewAllProjects from "./projects";
 
 const Root = () => {
-	return <ViewAllProjects />;
+  return <ViewAllProjects />;
 };
 
 export default Root;
