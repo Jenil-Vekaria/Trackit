@@ -4,7 +4,7 @@ export const getComments = async (req, res) => {
     const { ticketId } = req.params;
 
     try {
-        const comments = await Comment.find({ ticketId }, { _id: 1, text: 1, userId: 1, updatedOn: 1, createdOn: 1 });
+        const comments = await Comment.find({ ticketId }, { _id: 1, text: 1, userId: 1, updatedOn: 1, createdOn: 1 }).sort({ createdOn: "desc" });
 
         return res.json({ comments });
 

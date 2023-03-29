@@ -1,5 +1,6 @@
 import {
   Alert,
+  Center,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -7,6 +8,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Text,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
@@ -56,14 +58,20 @@ const CommentSection = ({ ticketId }) => {
         overflowY="auto"
         mb={4}
       >
-        {comments.map((comment) => (
-          <Comment
-            key={comment._id}
-            getTicketComments={getTicketComments}
-            seterror={seterror}
-            {...comment}
-          />
-        ))}
+        {comments.length ? (
+          comments.map((comment) => (
+            <Comment
+              key={comment._id}
+              getTicketComments={getTicketComments}
+              seterror={seterror}
+              {...comment}
+            />
+          ))
+        ) : (
+          <Center fontSize="sm" height="100%" color="inputLabel">
+            No Comments
+          </Center>
+        )}
       </Flex>
       {error && (
         <Alert status="error" variant="left-accent" mb={2} fontSize="sm">
@@ -82,9 +90,10 @@ const CommentSection = ({ ticketId }) => {
                 <InputGroup>
                   <Field
                     as={Input}
-                    placeholder="Comment"
+                    placeholder="Write a comment"
                     name="text"
                     type="text"
+                    autoComplete="off"
                   />
                   <InputRightElement width="fit-content">
                     <IconButton
