@@ -151,7 +151,7 @@ const CreateTicket = ({
             {!isNewTicket ? "Edit" : "Create"} Ticket
           </Heading>
           <Text fontSize="sm" as="i" fontWeight={400} mt={2}>
-            Project: {projectTitle || ""}
+            Project: {ticket?.projectId.title || ""}
           </Text>
         </ModalHeader>
 

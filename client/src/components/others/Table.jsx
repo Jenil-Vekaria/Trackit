@@ -6,7 +6,7 @@ import { getFieldValue } from "@/util/GetObjectProperty";
 import SearchBar from "./SearchBar";
 
 const Table = ({
-  tableData,
+  tableData = [],
   columns,
   searchPlaceholder,
   onRowClick,
