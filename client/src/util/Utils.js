@@ -10,6 +10,22 @@ export const Permissions = {
     canManageAdminPage
 };
 
+export const createTicketTypeSelectOptions = (ticketTypes) => {
+    return ticketTypes.map((ticketType) => (
+        <option key={ticketType._id} value={ticketType._id}>
+            {ticketType.name}
+        </option>
+    ));
+};
+
+export const createTicketStatusSelectOptions = () => {
+    return Constants.TICKET_STATUS.map((status, index) => (
+        <option key={index} value={status}>
+            {status}
+        </option>
+    ));
+};
+
 export const hexToRgb = (hex, opacity) => {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
 
