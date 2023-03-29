@@ -17,7 +17,7 @@ const SearchBar = ({ placeholder, variant, handleSearchInputChange }) => {
           <SearchIcon color="gray.500" />
         </InputLeftElement>
         <Input
-          variant={variant || "filled"}
+          variant="filled"
           placeholder={placeholder}
           onChange={handleSearchInputChange}
         />
@@ -26,4 +26,4 @@ const SearchBar = ({ placeholder, variant, handleSearchInputChange }) => {
   );
 };
 
-export default SearchBar;
+export default React.memo(SearchBar);

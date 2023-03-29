@@ -1,6 +1,7 @@
 import ReactDataGrid from "@inovua/reactdatagrid-community";
 import "@inovua/reactdatagrid-community/style/base.scss";
 import { useEffect, useState } from "react";
+import React from "react";
 import { getFieldValue } from "@/util/GetObjectProperty";
 import SearchBar from "./SearchBar";
 
@@ -8,7 +9,6 @@ const Table = ({
   tableData,
   columns,
   searchPlaceholder,
-  searchbarVariant,
   onRowClick,
   defaultSortInfo,
   hasCheckboxColumn = false,
@@ -76,15 +76,9 @@ const Table = ({
     <>
       <SearchBar
         placeholder={searchPlaceholder}
-        variant={searchbarVariant}
         handleSearchInputChange={handleSearchInputChange}
       />
 
-      {/* {isLoading ? (
-				<Center w="100%">
-					<Spinner color="blue" size="xl" />
-				</Center>
-			) : ( */}
       <ReactDataGrid
         idProperty="_id"
         style={gridStyle}
@@ -102,9 +96,7 @@ const Table = ({
         loading={isLoading}
         rowHeight={rowHeight}
         showCellBorders="horizontal"
-        showZebraRows={false}
       />
-      {/* )} */}
     </>
   );
 };
