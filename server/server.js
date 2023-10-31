@@ -10,8 +10,8 @@ try {
         console.log("\n");
         console.log("==========================================");
         console.info(`🚀 Running Environment: ${CURRENT_ENVIRONMENT}`);
-        console.info(`✅ Connected to MongoDB: http://localhost:${PORT}`);
-        console.info(`🔗 Connection URL: ${MONGO_DB_CONNECTION}`);
+        console.info(`✅ Server Running On: http://localhost:${PORT}`);
+        console.info(`🔗 MongoDB Connection URL: ${MONGO_DB_CONNECTION}`);
         console.log("==========================================");
     });
 } catch (error) {

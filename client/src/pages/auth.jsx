@@ -1,6 +1,7 @@
 import Image from "next/image";
 import {
   Button,
+  HStack,
   Heading,
   Icon,
   Link,
@@ -15,12 +16,14 @@ import {
   TableContainer,
   Tbody,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import { AiFillGithub } from "react-icons/ai";
 import { Login } from "@/components/authentication/Login";
 import { DEMO_LOGIN_INFO } from "@/util/Constants";
@@ -28,6 +31,7 @@ import logo from "@/assets/Trackit_Plain.png";
 
 export const Auth = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isLogin, setisLogin] = useState(true);
 
   return (
     <>
@@ -41,9 +45,22 @@ export const Auth = () => {
         </Link>
         <Image width={300} src={logo} alt="logo" />
         <Heading as="h3" size="lg" fontWeight="semibold">
-          Log in to your account
+          {isLogin ? "Log in to your account" : "Create an account"}
         </Heading>
-        <Login />
+        <HStack spacing={1}>
+          <Text color="gray">
+            {isLogin ? "Don't have an account?" : "Already have an account?"}
+          </Text>
+          <Button
+            variant="link"
+            colorScheme="blue"
+            onClick={() => setisLogin((prevValue) => !prevValue)}
+          >
+            {isLogin ? "Sign up" : "Login"}
+          </Button>
+        </HStack>
+
+        {isLogin ? <Login /> : <SignUp />}
         <br />
         <Button onClick={onOpen}>Demo Login Info</Button>
         <Modal isOpen={isOpen} onClose={onClose}>

@@ -46,9 +46,9 @@ export const seedDatabase = async (_, res) => {
 
         setTimeout(() => {
             console.log('✅ Seeding successful');
-            res.redirect("/");
+            return res.json({ message: "✅ Seeding successful" });
         }, 10000);
     } catch (error) {
-        console.log(error);
+        return console.log(error);
     }
 };
