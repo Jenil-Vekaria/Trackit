@@ -26,6 +26,7 @@ import {
 import { useState } from "react";
 import { AiFillGithub } from "react-icons/ai";
 import { Login } from "@/components/authentication/Login";
+import { SignUp } from "@/components/authentication/SignUp";
 import { DEMO_LOGIN_INFO } from "@/util/Constants";
 import logo from "@/assets/Trackit_Plain.png";
 
