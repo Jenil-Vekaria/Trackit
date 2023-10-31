@@ -42,6 +42,8 @@
 
 Start developing locally.
 
+**Please pull the project from the "dev" branch, and follow the README to setup locally**
+
 ### Step 1: Download Node.js and MongoDB
 
 Download: [MongoDB](https://www.mongodb.com/try/download/community)
