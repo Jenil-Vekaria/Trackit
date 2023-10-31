@@ -77,13 +77,14 @@ To run the server, you will need the `.env` variables
 
 ### Step 4: Seed database
 
-Make the following POST request to seed the database (Only can run this in `development` or `testing` environment)
+Make the following POST request to seed the database
+**Caution**: Seeding clears exisiting DB, so only execute this request once in `production`
 
 ```sh
-http://localhost:5000/test/populate
+http://localhost:5000/seed
 ```
 
-##### Login Info
+##### Login Infos
 
 | Email                        | Password | Role      | Permissions                        |
 | ---------------------------- | -------- | --------- | ---------------------------------- |
