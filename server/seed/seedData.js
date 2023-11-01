@@ -1,4 +1,4 @@
-import * as Permissions from "./constants.js";
+import * as Permissions from "../util/constants.js";
 
 export const DBUsers = [
     {

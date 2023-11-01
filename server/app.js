@@ -7,7 +7,6 @@ import ticketTypeRoutes from './routes/ticketType.route.js';
 import userRoutes from "./routes/user.route.js";
 import ticketRoutes from "./routes/ticket.route.js";
 import commentRoutes from "./routes/comment.route.js";
-import seedRoutes from "./routes/seed.route.js";
 import { handleError, routeNotFound, authMiddleware } from './middleware/middleware.js';
 
 const app = express();
@@ -26,10 +25,6 @@ app.use('/project', authMiddleware, projectRoutes);
 app.use('/comment', authMiddleware, commentRoutes);
 app.use('/ticket', authMiddleware, ticketRoutes);
 app.use('/ticketType', authMiddleware, ticketTypeRoutes);
-
-//IN PRODUCTION - EXECUTE THIS ROUTE ONCE ONLY! THIS WILL CLEAR DB AND POPULATE WITH BASE DATA
-app.use("/seed", seedRoutes);
-
 
 app.use(handleError);
 app.use(routeNotFound);
