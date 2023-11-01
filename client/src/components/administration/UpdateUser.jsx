@@ -165,7 +165,6 @@ const UpdateUser = ({
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter password"
                         name="password"
-                        disabled
                       />
                       <FormErrorMessage>{errors.password}</FormErrorMessage>
                     </FormControl>
@@ -183,14 +182,9 @@ const UpdateUser = ({
                           type={showPassword ? "text" : "password"}
                           placeholder="Enter password"
                           name="confirmPassword"
-                          disabled
                         />
                         <InputRightElement width="4.5rem">
-                          <Button
-                            size="sm"
-                            onClick={setShowPassword.toggle}
-                            isDisabled
-                          >
+                          <Button size="sm" onClick={setShowPassword.toggle}>
                             {showPassword ? "Hide" : "Show"}
                           </Button>
                         </InputRightElement>
@@ -210,7 +204,6 @@ const UpdateUser = ({
           <Button
             colorScheme="blue"
             mr={3}
-            isDisabled
             onClick={() => formRef.current?.handleSubmit()}
           >
             Save
