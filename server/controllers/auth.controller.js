@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import Role from '../models/role.model.js';
 import { validationResult } from "express-validator";
-
+import * as Permissions from "../util/constants.js";
 /*
     404 - Not found
     400 - Bad Request
@@ -69,10 +69,16 @@ export const signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, +process.env.PASSWORD_SALT);
 
         //Create user role object
-        const developerRoleObject = await Role.findOne({ name: "Developer" });
+        let developerRoleObject = await Role.findOne({ name: "Developer" });
 
         if (!developerRoleObject) {
-            return res.status(404).json({ message: "No developer role found" });
+            developerRoleObject = await Role.create({
+                name: "Developer",
+                permissions: [
+                    Permissions.MANAGE_TICKET,
+                    Permissions.MANAGE_PROJECT,
+                ]
+            });
         }
 
         //Create user in database

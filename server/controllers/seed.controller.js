@@ -37,7 +37,7 @@ export const seedDatabase = async (_, res) => {
     try {
         if (mongoose.connection?.readyState === 1) {
             console.log('❌ Clearing database...');
-            // mongoose.connection.dropDatabase();
+            mongoose.connection.dropDatabase();
         }
 
         console.log('🌱 Seeding database...');
