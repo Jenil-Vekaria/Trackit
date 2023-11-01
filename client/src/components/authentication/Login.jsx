@@ -16,15 +16,18 @@ import { LoginData, LoginSchema } from "@/util/ValidationSchemas";
 
 export const Login = () => {
   const [error, seterror] = useState("");
+  const [isLogging, setisLogging] = useState(false);
   const router = useRouter();
 
   const onHandleFormSubmit = async (values) => {
     seterror("");
+    setisLogging(true);
 
     try {
       await AuthService.login(values);
       await MiscellaneousService.fetchInitialData();
 
+      setisLogging(false);
       router.reload();
     } catch (error) {
       seterror(error.response.data.message);
@@ -66,7 +69,14 @@ export const Login = () => {
               <FormErrorMessage>{errors.password}</FormErrorMessage>
             </FormControl>
 
-            <Button colorScheme="blue" w="full" mt={10} type="submit">
+            <Button
+              colorScheme="blue"
+              w="full"
+              mt={10}
+              type="submit"
+              isLoading={isLogging}
+              loadingText="Logging In"
+            >
               Login
             </Button>
           </Form>

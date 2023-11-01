@@ -45,23 +45,10 @@ export const Auth = () => {
           <Icon as={AiFillGithub} w={8} h={8} />
         </Link>
         <Image width={300} src={logo} alt="logo" />
-        <Heading as="h3" size="lg" fontWeight="semibold">
-          {isLogin ? "Log in to your account" : "Create an account"}
+        <Heading as="h3" size="md" pb="5" fontWeight="semibold">
+          Sign in to your account
         </Heading>
-        <HStack spacing={1}>
-          <Text color="gray">
-            {isLogin ? "Don't have an account?" : "Already have an account?"}
-          </Text>
-          <Button
-            variant="link"
-            colorScheme="blue"
-            onClick={() => setisLogin((prevValue) => !prevValue)}
-          >
-            {isLogin ? "Sign up" : "Login"}
-          </Button>
-        </HStack>
-
-        {isLogin ? <Login /> : <SignUp />}
+        <Login />
         <br />
         <Button onClick={onOpen}>Demo Login Info</Button>
         <Modal isOpen={isOpen} onClose={onClose}>
