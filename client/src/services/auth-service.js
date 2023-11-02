@@ -5,7 +5,7 @@ import { store, persistor } from "../store/store.js";
 
 const API_URL = process.env.NEXT_PUBLIC_API_ENDPOINT + "/auth";
 
-const signup = (user) => {
+const signup = async (user) => {
     /*
         @param - user
         firstName
@@ -14,31 +14,27 @@ const signup = (user) => {
         password
         confirmPassword
     */
-    return axios.post(API_URL + "/signup", user)
-        .then((response) => {
-            if (response.data.accessToken) {
-                store.dispatch(setLogin(response.data));
-            }
-
-            return response.data;
-        });
+    try {
+        await axios.post(API_URL + "/signup", user);
+    } catch (error) {
+        throw error.response.data.message;
+    }
 };
 
-const login = (user) => {
+const login = async (user) => {
     /*
         @param - user
         email
         password
     */
-
-    return axios.post(API_URL + "/login", user)
-        .then((response) => {
-            if (response.data.accessToken) {
-                store.dispatch(setLogin(response.data));
-            }
-
-            return response.data;
-        });
+    try {
+        const { data } = await axios.post(API_URL + "/login", user);
+        if (data.accessToken) {
+            store.dispatch(setLogin(data));
+        }
+    } catch (error) {
+        throw error.response.data.message;
+    }
 };
 
 const logout = () => {

@@ -7,7 +7,7 @@ export const getAllUsers = async (req, res) => {
             .populate({ path: "roleId" });
         return res.json({ users });
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
 
@@ -37,6 +37,6 @@ export const updateUser = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };

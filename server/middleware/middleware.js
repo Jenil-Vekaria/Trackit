@@ -17,7 +17,7 @@ export const authMiddleware = async (req, res, next) => {
                     return next();
                 }
             }).catch((error) => {
-                return res.status(403).json({ error: "User not found" });
+                return res.status(403).json({ message: "User not found" });
             });
 
         });
@@ -32,13 +32,13 @@ export const handleError = async (error, req, res, next) => {
     const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
     res.status(statusCode);
     res.json({
-        error: error.message
+        message: error.message
     });
 };
 
 
 export const routeNotFound = async (req, res) => {
-    res.status(404).json({ error: "Route not found" });
+    res.status(404).json({ message: "Route not found" });
 };
 
 
@@ -49,7 +49,7 @@ export const validateResource = (resourceSchema) => {
                 next();
             })
             .catch((err) => {
-                res.status(400).json({ error: err.errors[0] });
+                res.status(400).json({ message: err.errors[0] });
             });
     };
 };

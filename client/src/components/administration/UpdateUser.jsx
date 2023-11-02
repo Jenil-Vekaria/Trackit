@@ -22,9 +22,14 @@ import {
 import { Field, Form, Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import AuthService from "@/services/auth-service";
 import MiscellaneousService from "@/services/miscellaneous-service";
 import { getRoles } from "@/features/miscellaneousSlice";
-import { ManageUserSchema, SignupSchema } from "@/util/ValidationSchemas";
+import {
+  ManageUserSchema,
+  SignUpData,
+  SignupSchema,
+} from "@/util/ValidationSchemas";
 
 const UpdateUser = ({
   isOpen,
@@ -35,24 +40,46 @@ const UpdateUser = ({
   const roles = useSelector(getRoles);
   const formRef = useRef(null);
   const [error, setError] = useState(null);
-  const [userInfo, setUserInfo] = useState({});
+  const [userInfo, setUserInfo] = useState(SignUpData);
   const [showPassword, setShowPassword] = useBoolean();
+  const isUpdatingUserProfile = !isUpdateMyProfile && viewUser;
+
+  const modalTitle = isUpdateMyProfile
+    ? "My Profile"
+    : viewUser
+    ? "Update User"
+    : "Create User";
 
   useEffect(() => {
+    setError(error);
     if (viewUser) {
       const userInfoCopy = { ...viewUser };
       userInfoCopy.roleId = viewUser.roleId?._id;
 
       setUserInfo(userInfoCopy);
+    } else {
+      setUserInfo(SignUpData);
     }
   }, [viewUser]);
 
   const onUpdateUser = async (values, action) => {
     try {
-      await MiscellaneousService.updateUserProfile(values);
+      // If user data is passed into this component -> we are updating exisiting profile
+      if (viewUser) {
+        await MiscellaneousService.updateUserProfile(values);
+      }
+      // Else -> creating new user
+      else {
+        const newUser = { ...values };
+        await AuthService.signup(newUser);
+        action.resetForm();
+      }
+
+      await MiscellaneousService.getUsers();
+
       closeModal();
     } catch (error) {
-      setError(error.response.data.message);
+      setError(error);
     }
   };
 
@@ -76,13 +103,13 @@ const UpdateUser = ({
     >
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Update User</ModalHeader>
+        <ModalHeader>{modalTitle}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Formik
             initialValues={userInfo}
             validationSchema={
-              isUpdateMyProfile ? SignupSchema : ManageUserSchema
+              isUpdatingUserProfile ? ManageUserSchema : SignupSchema
             }
             onSubmit={onUpdateUser}
             innerRef={formRef}
@@ -105,55 +132,39 @@ const UpdateUser = ({
                     isInvalid={errors.firstName && touched.firstName}
                   >
                     <FormLabel>First Name</FormLabel>
-                    <Field
-                      as={Input}
-                      name="firstName"
-                      type="text"
-                      disabled={!isUpdateMyProfile}
-                    />
+                    <Field as={Input} name="firstName" type="text" />
                     <FormErrorMessage>{errors.firstName}</FormErrorMessage>
                   </FormControl>
 
                   <FormControl isInvalid={errors.lastName && touched.lastName}>
                     <FormLabel>Last Name</FormLabel>
-                    <Field
-                      as={Input}
-                      name="lastName"
-                      type="text"
-                      disabled={!isUpdateMyProfile}
-                    />
+                    <Field as={Input} name="lastName" type="text" />
                     <FormErrorMessage>{errors.lastName}</FormErrorMessage>
                   </FormControl>
                 </Flex>
 
                 <FormControl mt={4} isInvalid={errors.email && touched.email}>
                   <FormLabel>Email</FormLabel>
-                  <Field
-                    as={Input}
-                    name="email"
-                    type="email"
-                    disabled={!isUpdateMyProfile}
-                  />
+                  <Field as={Input} name="email" type="email" />
                   <FormErrorMessage>{errors.email}</FormErrorMessage>
                 </FormControl>
-
-                <FormControl mt={4} isInvalid={errors.roleId && touched.roleId}>
-                  <FormLabel>Role</FormLabel>
-                  <Field
-                    as={Select}
-                    name="roleId"
-                    type="select"
-                    disabled={isUpdateMyProfile}
+                {!isUpdateMyProfile ? (
+                  <FormControl
+                    mt={4}
+                    isInvalid={errors.roleId && touched.roleId}
                   >
-                    <option value="" disabled selected>
-                      Select
-                    </option>
-                    {createRoleTypeOption()}
-                  </Field>
-                  <FormErrorMessage>{errors.roleId}</FormErrorMessage>
-                </FormControl>
+                    <FormLabel>Role</FormLabel>
+                    <Field as={Select} name="roleId" type="select">
+                      <option value="" disabled selected>
+                        Select
+                      </option>
+                      {createRoleTypeOption()}
+                    </Field>
+                    <FormErrorMessage>{errors.roleId}</FormErrorMessage>
+                  </FormControl>
+                ) : null}
 
-                {isUpdateMyProfile ? (
+                {!isUpdatingUserProfile ? (
                   <>
                     <FormControl
                       mt={4}
@@ -206,24 +217,14 @@ const UpdateUser = ({
             mr={3}
             onClick={() => formRef.current?.handleSubmit()}
           >
-            Save
+            {!viewUser ? "Create" : "Save"}
           </Button>
-          {isUpdateMyProfile ? (
-            <Button
-              colorScheme="gray"
-              onClick={() => {
-                setShowPassword.off();
-                setError("");
-                closeModal();
-              }}
-            >
-              Cancel
-            </Button>
-          ) : (
+
+          {viewUser ? (
             <Tooltip label="Not Implemeted">
               <Button colorScheme="red">Delete</Button>
             </Tooltip>
-          )}
+          ) : null}
         </ModalFooter>
       </ModalContent>
     </Modal>
