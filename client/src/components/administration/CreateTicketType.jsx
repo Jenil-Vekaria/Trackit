@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Alert,
   Button,
@@ -19,16 +20,13 @@ import {
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
-import * as BsIcon from "react-icons/bs";
 import MiscellaneousService from "@/services/miscellaneous-service";
-import { BS_ICONS } from "@/util/Constants";
-import { ICONS_COLUMNS } from "@/util/TableDataDisplay";
 import {
   CreateTicketTypeData,
   CreateTicketTypeSchema,
 } from "@/util/ValidationSchemas";
 import AlertModal from "../others/AlertModal";
-import Table from "../others/Table";
+import SearchBar from "../others/SearchBar";
 
 const CreateTicketType = ({
   data,
@@ -39,34 +37,46 @@ const CreateTicketType = ({
   const alertDialgoDisclosure = useDisclosure();
   const [ticketType, setTicketType] = useState(CreateTicketTypeData);
   const [iconColour, setIconColour] = useState("#000000");
-  const [iconName, setIconName] = useState("");
+  const [selectedIcon, setSelectedIcon] = useState(null);
   const [error, setError] = useState("");
   const formRef = useRef(null);
+  let bsIcons = null;
+
+  const getIcon = async (iconName) => {
+    try {
+      bsIcons = await import("react-icons/bs");
+      if (bsIcons[iconName]) {
+        setSelectedIcon(() => bsIcons[iconName]);
+        setTicketType((prevData) => ({ ...prevData, iconName }));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     if (data) {
       setIconColour(data.colour);
-      setIconName(data.iconName);
       setTicketType(data);
+      getIcon(data.iconName);
     }
   }, [data]);
+
+  useEffect(() => {}, []);
+
+  const onIconSearch = ({ target: { value } }) => {
+    const trimmedValue = value.trim();
+    getIcon(trimmedValue);
+  };
 
   const onColourChange = ({ target: { value } }) => {
     setIconColour(value);
   };
 
-  const onIconClick = (rowProps, action) => {
-    setIconName(rowProps.data.name);
-    setTicketType({
-      ...formRef.current?.values,
-      iconName: rowProps.data.name,
-    });
-  };
-
   const closeCreateTicketTypeModal = () => {
     setError("");
     setIconColour("#000000");
-    setIconName("");
+    setSelectedIcon(null);
     setTicketType(CreateTicketTypeData);
     onClose();
   };
@@ -107,9 +117,9 @@ const CreateTicketType = ({
           <Flex direction="column" gap={3}>
             <Flex gap={2}>
               <Text as="b">Preview:</Text>
-              {iconName ? (
+              {selectedIcon ? (
                 <Icon
-                  as={BsIcon[iconName]}
+                  as={selectedIcon}
                   bg={iconColour}
                   color="gray.50"
                   w={6}
@@ -162,16 +172,19 @@ const CreateTicketType = ({
                   <FormControl isInvalid={errors.iconName && touched.iconName}>
                     <FormLabel fontWeight="bold" font color="inputLabel">
                       Select an Icon
+                      <Link
+                        href="https://react-icons.github.io/react-icons/icons?name=bs"
+                        passHref
+                        target="_blank"
+                      >
+                        (Click Here)
+                      </Link>
                     </FormLabel>
                     <FormErrorMessage>{errors.iconName}</FormErrorMessage>
-
-                    <Table
-                      tableData={BS_ICONS}
-                      columns={ICONS_COLUMNS}
-                      searchPlaceholder="Search for icon"
-                      searchbarVariant="outline"
-                      onRowClick={onIconClick}
-                      height={210}
+                    <SearchBar
+                      handleSearchInputChange={onIconSearch}
+                      placeholder="Search for icon"
+                      variant="outline"
                     />
                   </FormControl>
                 </>
