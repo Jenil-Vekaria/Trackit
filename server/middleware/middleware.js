@@ -23,6 +23,7 @@ export const authMiddleware = async (req, res, next) => {
         });
     }
     else {
+        console.log("authMiddleware issue");
         return res.sendStatus(403);
     }
 };

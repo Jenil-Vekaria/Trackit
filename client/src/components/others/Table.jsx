@@ -18,10 +18,11 @@ const Table = ({
   height = 400,
   rowHeight = 45,
   disableCheckBox = false,
+  isLoading = false,
 }) => {
   const [dataSource, setDataSource] = useState([]);
   const [dataFields, setDataFields] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
   const gridStyle = { minHeight: height };
 
   const getDataSourceFields = () => {
@@ -55,21 +56,23 @@ const Table = ({
 
   useEffect(() => {
     /*
-			I want the table loading sign when rendering new data but don't want to show it when some specific data (row) is updated
-			All the table data is in dataSource:
-				if data exist in the dataSource (updating specific row), update dataSource
-				if data does not exist in dataSource (new data), show loading sign
-		*/
-    if (dataSource.length > 0) {
+  		I want the table loading sign when rendering new data but don't want to show it when some specific data (row) is updated
+  		All the table data is in dataSource:
+  			if data exist in the dataSource (updating specific row), update dataSource
+  			if data does not exist in dataSource (new data), show loading sign
+  	*/
+    if (tableData) {
       setDataSource(tableData);
-    } else {
-      setIsLoading(true);
-
-      setTimeout(() => {
-        setDataSource(tableData);
-        setIsLoading(false);
-      }, 500);
     }
+    // if (dataSource.length > 0) {
+    //   setDataSource(tableData);
+    // } else {
+    //   setIsLoading(true);
+
+    //   setTimeout(() => {
+    //     setDataSource(tableData);
+    //     setIsLoading(false);
+    //   }, 500);
   }, [tableData]);
 
   return (

@@ -1,13 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
-import { getProjectInfo } from "@/features/projectSlice";
-import { getTickets } from "@/features/ticketSlice";
 import PageNotFound from "@/pages/404";
-import TicketService from "@/services/ticket-service";
-import { TICKETS_COLUMNS, TICKETS_DEFAULT_SORT } from "@/util/TableDataDisplay";
-import { Permissions } from "@/util/Utils";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   Button,
@@ -22,37 +16,37 @@ import {
   Tabs,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
-
 import PermissionsRender from "@/components/others/PermissionsRender";
 import Table from "@/components/others/Table";
 import Dashboard from "@/components/projects/Dashboard";
 import CreateTicket from "@/components/tickets/CreateTicket";
+import TicketService from "@/services/ticket-service";
+import { getProjectInfo } from "@/features/projectSlice";
+import useFetch from "@/hooks/useFetch";
+import { TICKETS_COLUMNS, TICKETS_DEFAULT_SORT } from "@/util/TableDataDisplay";
+import { Permissions } from "@/util/Utils";
 
 const ViewProject = ({ projectId }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const router = useRouter();
 
-  const tickets = useSelector(getTickets);
+  const { data, loading, error, refetch } = useFetch(
+    TicketService.getProjectTickets(projectId)
+  );
   const projectInfo = useSelector(getProjectInfo(projectId));
+  const [viewTicket, setViewTicket] = useState(null);
 
-  const [projectTickets, setprojectTickets] = useState([]);
-  const [viewTicket, setviewTicket] = useState(null);
-
-  const [is404, setIs404] = useState(false);
-
-  const getProjectTickets = async () => {
-    try {
-      await TicketService.getProjectTickets(projectId);
-    } catch (error) {
-      setIs404(true);
-    }
+  const onModalClose = () => {
+    setViewTicket(null);
+    onClose();
+    refetch();
   };
 
   const onTicketClick = (rowProps, _) => {
-    setviewTicket(rowProps.data);
+    setViewTicket(rowProps.data);
     onOpen();
   };
 
@@ -60,17 +54,7 @@ const ViewProject = ({ projectId }) => {
     router.replace("/projects");
   };
 
-  useEffect(() => {
-    if (projectId) {
-      getProjectTickets();
-    }
-  }, []);
-
-  useEffect(() => {
-    setprojectTickets(tickets);
-  }, [tickets]);
-
-  if (is404) {
+  if (error) {
     return <PageNotFound />;
   }
 
@@ -113,12 +97,13 @@ const ViewProject = ({ projectId }) => {
         <TabPanels h="100%">
           <TabPanel h="100%">
             <Table
-              tableData={projectTickets}
+              tableData={data}
               columns={TICKETS_COLUMNS}
               searchPlaceholder="Search for tickets"
               onRowClick={onTicketClick}
               defaultSortInfo={TICKETS_DEFAULT_SORT}
               height="92%"
+              isLoading={loading}
             />
           </TabPanel>
           <TabPanel>
@@ -130,11 +115,9 @@ const ViewProject = ({ projectId }) => {
 
       <CreateTicket
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={onModalClose}
         ticket={viewTicket}
-        setviewTicket={setviewTicket}
         projectId={projectId}
-        projectTitle={projectInfo?.title}
       />
     </Flex>
   );

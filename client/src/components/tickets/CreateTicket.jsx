@@ -19,9 +19,10 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
-import ProjectService from "@/services/project-service";
 import TicketService from "@/services/ticket-service";
+import useFetch, { apiRequest } from "@/hooks/useFetch";
 import { usePermissions } from "@/hooks/usePermissions";
+import usePost from "@/hooks/usePost";
 import { USERS_COLUMNS } from "@/util/TableDataDisplay";
 import { Permissions } from "@/util/Utils";
 import { CreateTicketData } from "@/util/ValidationSchemas";
@@ -31,14 +32,7 @@ import Table from "../others/Table";
 import CommentSection from "./CommentSection";
 import TicketInfo from "./TicketInfo";
 
-const CreateTicket = ({
-  isOpen,
-  onClose,
-  ticket,
-  setviewTicket,
-  projectId,
-  projectTitle,
-}) => {
+const CreateTicket = ({ isOpen, onClose, ticket, projectId }) => {
   const isNewTicket = ticket ? false : true;
 
   const [projectAssignees, setProjectAssignees] = useState([]);
@@ -50,14 +44,14 @@ const CreateTicket = ({
   const [error, setError] = useState("");
 
   const canManageTickets = usePermissions(Permissions.canManageTickets);
+  const createTicket = usePost(TicketService.createTicket(projectId));
+  const updateTicket = usePost(TicketService.updateTicket(projectId));
 
   const alertModalDisclosure = useDisclosure();
   const formRef = useRef();
   const toast = useToast();
 
   useEffect(() => {
-    setProjectAssignees(ProjectService.getProjectAssignees(projectId));
-
     if (ticket) {
       const ticketCopy = { ...ticket };
 
@@ -65,9 +59,10 @@ const CreateTicket = ({
       ticketCopy.projectId = projectId;
       ticketCopy.type = ticket.type._id;
 
+      setTicketInfo(ticketCopy);
       setTicketDescription(ticketCopy.description);
       setTicketAssignees(ticketCopy.assignees);
-      setTicketInfo(ticketCopy);
+      setProjectAssignees(ticket.assignees);
     }
   }, [ticket]);
 
@@ -88,34 +83,25 @@ const CreateTicket = ({
     return selectedAssignees;
   };
 
-  const onHandleFormSubmit = async (values) => {
+  const onHandleFormSubmit = (values) => {
     const ticketFormData = { ...values };
     ticketFormData.assignees = ticketAssignees;
     ticketFormData.description = ticketDescription;
 
-    try {
-      if (isNewTicket) {
-        await TicketService.createTicket(ticketFormData, projectId);
-      } else {
-        await TicketService.updateTicket(ticketFormData, projectId);
-      }
-
-      toast({
-        title: `Ticket ${ticket ? "updated" : "created"}`,
-        status: "success",
-        duration: 500,
-        isClosable: true,
-      });
-
-      closeTicketModal();
-    } catch (error) {
-      setError(error);
+    if (isNewTicket) {
+      createTicket.post(ticketFormData);
+      setError(createTicket.error);
+    } else {
+      updateTicket.post(ticketFormData);
+      setError(updateTicket.error);
     }
+
+    closeTicketModal();
   };
 
   const resetFields = () => {
-    setviewTicket(null);
     setTicketAssignees([]);
+    setProjectAssignees([]);
     setTicketInfo(CreateTicketData);
     setError("");
     setTicketDescription("");

@@ -14,72 +14,38 @@ API.interceptors.request.use((req) => {
     return req;
 });
 
-const getUserTickets = async () => {
+const getUserTickets = () => {
     const { _id } = AuthService.getCurrentUser();
-
-    try {
-        store.dispatch(clearTickets());
-        const { data: { tickets } } = await API.get(`/user/${_id}`);
-        store.dispatch(setTickets(tickets));
-
-        return tickets;
-    } catch (error) {
-        console.error(error);
-    }
+    return `/ticket/user/${_id}`;
 };
 
-const getProjectTickets = async (projectId) => {
-    try {
-        store.dispatch(clearTickets());
-        const { data: { tickets } } = await API.get(`/project/${projectId}`);
-        store.dispatch(setTickets(tickets));
-
-        return tickets;
-    } catch (error) {
-        console.error(error);
-        throw error.response.data.message;
-    }
+const getProjectTickets = (projectId) => {
+    return `/ticket/project/${projectId}`;
 };
 
 const getTicketInfo = async (ticketId) => {
-    try {
-        const { data } = await API.get(`/${ticketId}`);
-
-        return data.ticket;
-    } catch (error) {
-        console.error(error);
-    }
+    return `/ticket/${ticketId}`;
 };
 
-const createTicket = async (data, projectId) => {
-    try {
-        const { data: { ticket } } = await API.post(`/project/${projectId}`, data);
-
-        store.dispatch(addTicket(ticket));
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const createTicket = (projectId) => {
+    return {
+        type: "post",
+        url: `/ticket/project/${projectId}`
+    };
 };
 
-const updateTicket = async (data, projectId) => {
-    try {
-        const { data: { ticket } } = await API.patch(`/project/${projectId}`, data);
-        store.dispatch(setTicket(ticket));
-
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const updateTicket = (projectId) => {
+    return {
+        type: "patch",
+        url: `/ticket/project/${projectId}`
+    };
 };
 
 const deleteTicket = async (ticketId) => {
-    try {
-        await API.delete(`/${ticketId}`);
-
-        store.dispatch(removeTicket({ ticketId }));
-    } catch (error) {
-        console.error(error);
-        throw error.response.data.message;
-    }
+    return {
+        type: "delete",
+        url: `/${ticketId}`
+    };
 };
 
 

@@ -144,16 +144,16 @@ export const USERS_COLUMNS = [
         searchInField: ["firstName", "lastName"],
         header: "NAME",
         flex: 1,
-        render: ({ value }) => {
-            return MiscellaneousService.getUserFullName(value);
+        render: ({ data }) => {
+            return data.firstName + " " + data.lastName;
         }
     },
     {
         name: "roleId",
         header: "ROLE",
         flex: 1,
-        render: ({ value }) => {
-            return value.name;
+        render: ({ data }) => {
+            return data.roleId.name;
         }
     }
 ];
