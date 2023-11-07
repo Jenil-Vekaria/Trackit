@@ -17,32 +17,30 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import PermissionsRender from "@/components/others/PermissionsRender";
 import Table from "@/components/others/Table";
 import Dashboard from "@/components/projects/Dashboard";
-import CreateTicket from "@/components/tickets/CreateTicket";
+import ProjectService from "@/services/project-service";
 import TicketService from "@/services/ticket-service";
-import { getProjectInfo } from "@/features/projectSlice";
-import useFetch from "@/hooks/useFetch";
+import useApi from "@/hooks/useApi";
 import { TICKETS_COLUMNS, TICKETS_DEFAULT_SORT } from "@/util/TableDataDisplay";
-import { Permissions } from "@/util/Utils";
+import { Permissions, apifetch } from "@/util/Utils";
+import Loading from "../others/Loading";
+import CreateTicket from "../tickets/CreateTicket";
 
 const ViewProject = ({ projectId }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const router = useRouter();
 
-  const { data, loading, error, refetch } = useFetch(
-    TicketService.getProjectTickets(projectId)
-  );
-  const projectInfo = useSelector(getProjectInfo(projectId));
+  const projectTicketsSWR = useApi(TicketService.getProjectTickets, projectId);
+  const projectInfoSWR = useApi(ProjectService.getProjectInfo, projectId);
+
   const [viewTicket, setViewTicket] = useState(null);
 
   const onModalClose = () => {
     setViewTicket(null);
     onClose();
-    refetch();
   };
 
   const onTicketClick = (rowProps, _) => {
@@ -54,14 +52,18 @@ const ViewProject = ({ projectId }) => {
     router.replace("/projects");
   };
 
-  if (error) {
+  if (projectInfoSWR.error?.response.status) {
     return <PageNotFound />;
+  }
+
+  if (projectInfoSWR.isLoading || projectTicketsSWR.isLoading) {
+    return <Loading />;
   }
 
   return (
     <Flex w="100%" direction="column" px={8} py={6}>
       <Head>
-        <title>{projectInfo?.title || "Projects"}</title>
+        <title>{projectInfoSWR.data?.title || "Projects"}</title>
       </Head>
       <Flex w="100%" h="fit-content">
         <Heading as="h1" size="md" fontWeight={600}>
@@ -72,7 +74,7 @@ const ViewProject = ({ projectId }) => {
             colorScheme="black"
             onClick={navigateBack}
           />
-          {projectInfo?.title}
+          {projectInfoSWR.data?.title}
         </Heading>
 
         <Spacer />
@@ -97,13 +99,12 @@ const ViewProject = ({ projectId }) => {
         <TabPanels h="100%">
           <TabPanel h="100%">
             <Table
-              tableData={data}
+              tableData={projectTicketsSWR.data}
               columns={TICKETS_COLUMNS}
-              searchPlaceholder="Search for tickets"
+              searchPlaceholder="Search tickets by type, title, status ..."
               onRowClick={onTicketClick}
               defaultSortInfo={TICKETS_DEFAULT_SORT}
               height="92%"
-              isLoading={loading}
             />
           </TabPanel>
           <TabPanel>
@@ -113,12 +114,15 @@ const ViewProject = ({ projectId }) => {
       </Tabs>
       <br />
 
-      <CreateTicket
-        isOpen={isOpen}
-        onClose={onModalClose}
-        ticket={viewTicket}
-        projectId={projectId}
-      />
+      {projectInfoSWR.data ? (
+        <CreateTicket
+          isOpen={isOpen}
+          onClose={onModalClose}
+          ticket={viewTicket}
+          projectInfo={projectInfoSWR.data}
+          mutateServer={projectTicketsSWR.mutateServer}
+        />
+      ) : null}
     </Flex>
   );
 };

@@ -48,7 +48,7 @@ export const addProject = async (req, res) => {
 
         await Promise.all(updateAssigneeProjectList);
 
-        return res.json({ newProject });
+        return res.json(newProject);
 
     } catch (error) {
         return res.status(500).json({ message: error.message });
@@ -68,7 +68,7 @@ export const getUserProjects = async (req, res) => {
             .populate({ path: "authorId", select: ["firstName", "lastName"] });
         // .populate({ path: "assignees", select: ["firstName", "lastName, roleId"], populate: { path: "roleId", select: ["name"] } });
 
-        return res.status(200).json({ projects });
+        return res.json(projects);
 
     } catch (error) {
         console.log(error);
@@ -85,19 +85,15 @@ export const getProjectInfo = async (req, res) => {
         const userId = req.user._id;
 
         // Ensure the user belongs to the project
-        const project = await Project.findById(projectId)
-            .populate({ path: "authorId", select: ["firstName", "lastName"] });
-        // .populate({ path: "assignees", select: ["firstName", "lastName, roleId"], populate: { path: "roleId", select: ["name"] } });;
+        const project = await Project.find({ _id: projectId, assignees: userId })
+            .populate({ path: "authorId", select: { firstName: 1, lastName: 1 } })
+            .populate({ path: "assignees", select: { firstName: 1, lastName: 1 }, populate: { path: "roleId", select: { _id: 0, name: 1 } } });
 
-        if (!project.assignees.includes(userId)) {
-            return res.status(403).json({ message: "Not authorized to view project" });
+        if (project.length == 0) {
+            return res.status(404).json({ message: "Project not found" });
         }
 
-        if (!project) {
-            return res.status(403).json({ message: "Project not found" });
-        }
-
-        return res.status(200).json({ project });
+        return res.json(project[0]);
 
     } catch (error) {
         console.log(error);
@@ -239,15 +235,13 @@ export const getProjectStat = async (req, res) => {
             }
         ]);
 
-        return res.send({
-            stat: {
-                ticketCount,
-                myTicketCount,
-                assignedTicketCount,
-                unassignedTicketCount,
-                ticketStatusCount,
-                ticketTypeCount
-            }
+        return res.json({
+            ticketCount,
+            myTicketCount,
+            assignedTicketCount,
+            unassignedTicketCount,
+            ticketStatusCount,
+            ticketTypeCount
         });
     } catch (error) {
         return res.status(500).json({ message: error.message });

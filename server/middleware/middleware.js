@@ -39,7 +39,8 @@ export const handleError = async (error, req, res, next) => {
 
 
 export const routeNotFound = async (req, res) => {
-    res.status(404).json({ message: "Route not found" });
+    console.log("Route not found");
+    res.status(404).json({ message: "Something went wrong" });
 };
 
 
@@ -58,7 +59,7 @@ export const validateResource = (resourceSchema) => {
 export const validateParamId = (paramId) => {
     return (req, res, next) => {
         if (!mongoose.Types.ObjectId.isValid(req.params[paramId])) {
-            return res.status(403).json({ message: `Invalid ${paramId}` });
+            return res.status(404).json({ message: `Invalid ${paramId}` });
         }
 
         next();

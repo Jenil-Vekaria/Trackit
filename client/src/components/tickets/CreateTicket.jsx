@@ -15,15 +15,12 @@ import {
   Tabs,
   Text,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import TicketService from "@/services/ticket-service";
-import useFetch, { apiRequest } from "@/hooks/useFetch";
 import { usePermissions } from "@/hooks/usePermissions";
-import usePost from "@/hooks/usePost";
-import { USERS_COLUMNS } from "@/util/TableDataDisplay";
+import { PROJECT_ASSIGNEES_COLUMNS } from "@/util/TableDataDisplay";
 import { Permissions } from "@/util/Utils";
 import { CreateTicketData } from "@/util/ValidationSchemas";
 import AlertModal from "../others/AlertModal";
@@ -32,7 +29,13 @@ import Table from "../others/Table";
 import CommentSection from "./CommentSection";
 import TicketInfo from "./TicketInfo";
 
-const CreateTicket = ({ isOpen, onClose, ticket, projectId }) => {
+const CreateTicket = ({
+  isOpen,
+  onClose,
+  ticket,
+  mutateServer,
+  projectInfo,
+}) => {
   const isNewTicket = ticket ? false : true;
 
   const [projectAssignees, setProjectAssignees] = useState([]);
@@ -40,34 +43,31 @@ const CreateTicket = ({ isOpen, onClose, ticket, projectId }) => {
   const [ticketAssignees, setTicketAssignees] = useState([]);
   const [ticketDescription, setTicketDescription] = useState("");
   const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
-
   const [error, setError] = useState("");
 
   const canManageTickets = usePermissions(Permissions.canManageTickets);
-  const createTicket = usePost(TicketService.createTicket(projectId));
-  const updateTicket = usePost(TicketService.updateTicket(projectId));
 
   const alertModalDisclosure = useDisclosure();
   const formRef = useRef();
-  const toast = useToast();
 
   useEffect(() => {
+    resetFields();
+    setProjectAssignees(projectInfo.assignees);
+
     if (ticket) {
       const ticketCopy = { ...ticket };
 
       ticketCopy.assignees = ticket.assignees.map((assignee) => assignee._id);
-      ticketCopy.projectId = projectId;
+      ticketCopy.projectId = projectInfo._id;
       ticketCopy.type = ticket.type._id;
 
       setTicketInfo(ticketCopy);
       setTicketDescription(ticketCopy.description);
       setTicketAssignees(ticketCopy.assignees);
-      setProjectAssignees(ticket.assignees);
     }
   }, [ticket]);
 
   const onTicketAssigneeClick = ({ selected }) => {
-    //"selected" is an object with key-value pair (eg. {<assigneeId>: true})
     setTicketAssignees(Object.keys(selected));
   };
 
@@ -83,17 +83,30 @@ const CreateTicket = ({ isOpen, onClose, ticket, projectId }) => {
     return selectedAssignees;
   };
 
-  const onHandleFormSubmit = (values) => {
-    const ticketFormData = { ...values };
-    ticketFormData.assignees = ticketAssignees;
-    ticketFormData.description = ticketDescription;
+  const onHandleFormSubmit = async (values) => {
+    try {
+      const ticketFormData = { ...values };
+      ticketFormData.assignees = ticketAssignees;
+      ticketFormData.description = ticketDescription;
 
-    if (isNewTicket) {
-      createTicket.post(ticketFormData);
-      setError(createTicket.error);
-    } else {
-      updateTicket.post(ticketFormData);
-      setError(updateTicket.error);
+      let apiRequestInfo = {};
+
+      if (isNewTicket) {
+        apiRequestInfo = TicketService.createTicket(
+          projectInfo._id,
+          ticketFormData
+        );
+      } else {
+        apiRequestInfo = TicketService.updateTicket(
+          projectInfo._id,
+          ticketFormData
+        );
+      }
+
+      await mutateServer(apiRequestInfo);
+    } catch (error) {
+      setError(error);
+      return;
     }
 
     closeTicketModal();
@@ -111,7 +124,10 @@ const CreateTicket = ({ isOpen, onClose, ticket, projectId }) => {
     alertModalDisclosure.onClose();
 
     try {
-      await TicketService.deleteTicket(ticket._id);
+      const apiRequestInfo = TicketService.deleteTicket(ticket._id);
+
+      await mutateServer(apiRequestInfo);
+
       closeTicketModal();
     } catch (error) {
       setError(error);
@@ -172,7 +188,7 @@ const CreateTicket = ({ isOpen, onClose, ticket, projectId }) => {
               <TabPanel>
                 <Table
                   tableData={projectAssignees}
-                  columns={USERS_COLUMNS}
+                  columns={PROJECT_ASSIGNEES_COLUMNS}
                   searchPlaceholder={"Search for users"}
                   height={300}
                   hasCheckboxColumn={true}

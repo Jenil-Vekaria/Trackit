@@ -15,54 +15,41 @@ API.interceptors.request.use((req) => {
     return req;
 });
 
-const getMyProjects = async () => {
-    try {
-        const response = await API.get("/");
-        store.dispatch(setProjects(response.data.projects));
-    } catch (error) {
-        console.error(error);
-    }
+const getMyProjects = () => {
+    return {
+        url: `/project`,
+        method: "get"
+    };
 };
 
-const createProject = async (data) => {
-    try {
-        const response = await API.post("/", data);
-        store.dispatch(addProject(response.data.newProject));
-    } catch (error) {
-        console.error(error);
-        throw error.response.data.message;
-    }
+const createProject = (data) => {
+    return {
+        url: "/project",
+        data,
+        method: "post"
+    };
 };
 
-const updateProject = async (data) => {
-    try {
-        const response = await API.patch(`/${data._id}`, data);
-        store.dispatch(setProject(response.data.project));
-        return response.data.project;
-    } catch (error) {
-        console.error(error);
-        throw error.response.data.message;
-    }
+const updateProject = (data) => {
+    return {
+        url: `/project/${data._id}`,
+        data,
+        method: "patch"
+    };
 };
 
-const getProjectInfo = async (projectId) => {
-    try {
-        const { data: { project } } = await API.get(`/${projectId}`);
-
-        return project;
-    } catch (error) {
-        console.error(error);
-        throw error.response.data.message;
-    }
+const getProjectInfo = (projectId) => {
+    return {
+        mthod: "get",
+        url: `/project/${projectId}`
+    };
 };
 
-const deleteProject = async (projectId) => {
-    try {
-        await API.delete(`/${projectId}`);
-    } catch (error) {
-        console.error(error);
-        throw error.response.data.message;
-    }
+const deleteProject = (projectId) => {
+    return {
+        method: "delete",
+        url: `/project/${projectId}`
+    };
 };
 
 const getProjectTitle = (projectId) => {
@@ -73,15 +60,11 @@ const getProjectTitle = (projectId) => {
     return project[0]?.title || "";
 };
 
-const getProjectStats = async (projectId) => {
-    try {
-        const { data } = await API.get(`/stat/${projectId}`);
-
-        return data.stat;
-    } catch (error) {
-        console.error(error);
-        throw error.response.data.message;
-    }
+const getProjectStats = (projectId) => {
+    return {
+        method: "get",
+        url: `/project/stat/${projectId}`
+    };
 };
 
 const getProjectAssignees = (projectId) => {

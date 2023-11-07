@@ -20,31 +20,36 @@ const getUserTickets = () => {
 };
 
 const getProjectTickets = (projectId) => {
-    return `/ticket/project/${projectId}`;
+    return {
+        mthod: "get",
+        url: `/ticket/project/${projectId}`
+    };
 };
 
 const getTicketInfo = async (ticketId) => {
     return `/ticket/${ticketId}`;
 };
 
-const createTicket = (projectId) => {
+const createTicket = (projectId, data) => {
     return {
-        type: "post",
-        url: `/ticket/project/${projectId}`
+        method: "post",
+        url: `/ticket/project/${projectId}`,
+        data
     };
 };
 
-const updateTicket = (projectId) => {
+const updateTicket = (projectId, data) => {
     return {
-        type: "patch",
-        url: `/ticket/project/${projectId}`
+        method: "patch",
+        url: `/ticket/project/${projectId}`,
+        data
     };
 };
 
-const deleteTicket = async (ticketId) => {
+const deleteTicket = (ticketId) => {
     return {
-        type: "delete",
-        url: `/${ticketId}`
+        method: "delete",
+        url: `/ticket/${ticketId}`
     };
 };
 

@@ -122,8 +122,8 @@ export const TICKETS_COLUMNS = [
         name: "createdBy",
         header: "CREATED BY",
         flex: 1,
-        render: ({ value }) => {
-            return MiscellaneousService.getUserFullName(value);
+        render: ({ data }) => {
+            return data.createdBy.firstName + " " + data.createdBy.lastName;
         },
 
     },
@@ -150,6 +150,27 @@ export const USERS_COLUMNS = [
     },
     {
         name: "roleId",
+        header: "ROLE",
+        flex: 1,
+        render: ({ data }) => {
+            return data.roleId.name;
+        }
+    }
+];
+
+export const PROJECT_ASSIGNEES_COLUMNS = [
+    {
+        name: "_id",
+        searchInField: ["firstName", "lastName"],
+        header: "NAME",
+        flex: 1,
+        render: ({ data }) => {
+            return data.firstName + " " + data.lastName;
+
+        }
+    },
+    {
+        name: "assignees",
         header: "ROLE",
         flex: 1,
         render: ({ data }) => {

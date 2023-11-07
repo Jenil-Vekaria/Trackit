@@ -1,31 +1,18 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
-import { Button, Flex, Heading, Spacer, useDisclosure } from "@chakra-ui/react";
-import { useEffect } from "react";
-import { useSelector } from "react-redux";
-
+import { Button, Flex, Heading, Spacer } from "@chakra-ui/react";
 import PermissionsRender from "@/components/others/PermissionsRender";
 import Table from "@/components/others/Table";
-
-import { getProjects } from "../../features/projectSlice";
-import ProjectService from "../../services/project-service";
+import ProjectService from "@/services/project-service";
+import useApi from "@/hooks/useApi";
 import { PROJECTS_COLUMNS } from "../../util/TableDataDisplay";
 import { Permissions } from "../../util/Utils";
 
 const ViewAllProjects = () => {
-  const projects = useSelector(getProjects);
-  const disclosure = useDisclosure();
   const router = useRouter();
 
-  const getMyProjects = async () => {
-    await ProjectService.getMyProjects();
-  };
-
-  useEffect(() => {
-    getMyProjects();
-  }, []);
+  const projectsSWR = useApi(ProjectService.getMyProjects);
 
   const handleRowClick = (rowData) => {
     const projectId = rowData.data._id;
@@ -44,12 +31,7 @@ const ViewAllProjects = () => {
         <Spacer />
         <PermissionsRender permissionCheck={Permissions.canManageProjects}>
           <Link href="/projects/add" passHref>
-            <Button
-              colorScheme="blue"
-              variant="solid"
-              fontWeight={500}
-              onClick={disclosure.onOpen}
-            >
+            <Button colorScheme="blue" variant="solid" fontWeight={500}>
               Add Project
             </Button>
           </Link>
@@ -59,10 +41,11 @@ const ViewAllProjects = () => {
       <br />
 
       <Table
-        tableData={projects}
+        tableData={projectsSWR.data}
         columns={PROJECTS_COLUMNS}
         searchPlaceholder="Search for projects"
         onRowClick={handleRowClick}
+        isLoading={projectsSWR.isLoading}
       />
     </Flex>
   );

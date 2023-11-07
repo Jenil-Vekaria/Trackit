@@ -11,6 +11,7 @@ export const getUserTickets = async (req, res) => {
         const tickets = await Ticket.find({ assignees: userId })
             .populate({ path: "projectId", select: { title: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
+            .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         return res.json(tickets);
@@ -43,6 +44,7 @@ export const getProjectTickets = async (req, res) => {
                     populate: { path: "roleId", select: { _id: 0, name: 1 } }
                 }
             })
+            .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 }, populate: { path: "roleId", select: { _id: 0, name: 1 } } });
         console.log("Getting project tickets");
@@ -62,6 +64,7 @@ export const getTicketInfo = async (req, res) => {
         const ticket = await Ticket.findOne({ _id: ticketId })
             .populate({ path: "projectId", select: { title: 1, assignees: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
+            .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         // Ensure the user belongs to the project
@@ -109,6 +112,7 @@ export const createTicket = async (req, res) => {
         const ticket = await Ticket.findById(newTicket._id)
             .populate({ path: "projectId", select: { title: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
+            .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         return res.json(ticket);
@@ -139,6 +143,7 @@ export const updateTicket = async (req, res) => {
         const updatedTicket = await Ticket.findById(req.body._id)
             .populate({ path: "projectId", select: { title: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
+            .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         return res.json(updatedTicket);

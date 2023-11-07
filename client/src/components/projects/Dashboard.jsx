@@ -23,6 +23,7 @@ import {
 } from "react-icons/bs";
 import MiscellaneousService from "@/services/miscellaneous-service";
 import ProjectService from "@/services/project-service";
+import useApi from "@/hooks/useApi";
 import { hexToRgb } from "@/util/Utils";
 import StatCard from "../others/StatCard";
 
@@ -32,8 +33,8 @@ const Dashboard = ({ projectId }) => {
   const [projectStats, setProjectStats] = useState([]);
   const [ticketTypeChartData, setTicketTypeChartData] = useState(null);
   const [ticketStatusChartData, setTicketStatusChartData] = useState(null);
-  const [isLoading, setisLoading] = useState(true);
   const iconColor = useColorModeValue("white", "white");
+  const projectStatsSWR = useApi(ProjectService.getProjectStats, projectId);
 
   const iconBackgroundColor = [
     "purple.300",
@@ -148,23 +149,23 @@ const Dashboard = ({ projectId }) => {
     return data;
   };
 
-  const getProjectStats = async () => {
-    try {
-      const stat = await ProjectService.getProjectStats(projectId);
-      setProjectStats(createStatInfo(stat));
-      setTicketTypeChartData(createTicketTypeChartData(stat));
-      setTicketStatusChartData(createTicketStatusChartData(stat));
-
-      setTimeout(() => setisLoading(false), 100);
-    } catch (error) {}
-  };
-
   useEffect(() => {
-    if (projectId) {
-      getProjectStats();
+    if (projectStatsSWR.data) {
+      setProjectStats(createStatInfo(projectStatsSWR.data));
+      setTicketTypeChartData(createTicketTypeChartData(projectStatsSWR.data));
+      setTicketStatusChartData(
+        createTicketStatusChartData(projectStatsSWR.data)
+      );
     }
-  }, []);
+  }, [projectStatsSWR.data]);
 
+  if (projectStatsSWR.isLoading) {
+    return (
+      <Center w="100%">
+        <Spinner color="blue" size="xl" />
+      </Center>
+    );
+  }
   return (
     <Flex w="100%" direction="column">
       <Flex w="100%" grow="2" justifyContent="space-evenly" gap={3}>
@@ -174,37 +175,31 @@ const Dashboard = ({ projectId }) => {
       </Flex>
       <br />
 
-      {isLoading ? (
-        <Center w="100%">
-          <Spinner color="blue" size="xl" />
-        </Center>
-      ) : (
-        <Flex h="100%" justifyContent="space-evenly">
-          {ticketTypeChartData ? (
-            <Box w={400} h={400} align="center">
-              <Heading as="h5" size="md">
-                Ticket Type
-              </Heading>
-              <Pie
-                data={ticketTypeChartData}
-                options={{ plugins: { colors: { enabled: true } } }}
-              />
-            </Box>
-          ) : null}
+      <Flex h="100%" justifyContent="space-evenly">
+        {ticketTypeChartData ? (
+          <Box w={400} h={400} align="center">
+            <Heading as="h5" size="md">
+              Ticket Type
+            </Heading>
+            <Pie
+              data={ticketTypeChartData}
+              options={{ plugins: { colors: { enabled: true } } }}
+            />
+          </Box>
+        ) : null}
 
-          {ticketStatusChartData ? (
-            <Box w={400} h={400} align="center">
-              <Heading as="h5" size="md">
-                Ticket Status
-              </Heading>
-              <Pie
-                data={ticketStatusChartData}
-                options={{ plugins: { colors: { enabled: true } } }}
-              />
-            </Box>
-          ) : null}
-        </Flex>
-      )}
+        {ticketStatusChartData ? (
+          <Box w={400} h={400} align="center">
+            <Heading as="h5" size="md">
+              Ticket Status
+            </Heading>
+            <Pie
+              data={ticketStatusChartData}
+              options={{ plugins: { colors: { enabled: true } } }}
+            />
+          </Box>
+        ) : null}
+      </Flex>
     </Flex>
   );
 };
