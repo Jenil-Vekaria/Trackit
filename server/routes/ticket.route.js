@@ -21,7 +21,7 @@ router.post("/project/:projectId",
     createTicket);
 
 router.patch("/project/:projectId",
-    [checkUserPermissions("tickets", Permissions.canManageTickets), validateParamId("projectId")],
+    [checkUserPermissions("tickets", Permissions.canManageTickets), validateResource(createTicketSchema), validateParamId("projectId")],
     updateTicket);
 
 router.delete("/:ticketId",

@@ -30,9 +30,9 @@ const createProject = (data) => {
     };
 };
 
-const updateProject = (data) => {
+const updateProject = (data, projectId) => {
     return {
-        url: `/project/${data._id}`,
+        url: `/project/${projectId}`,
         data,
         method: "patch"
     };
@@ -52,31 +52,11 @@ const deleteProject = (projectId) => {
     };
 };
 
-const getProjectTitle = (projectId) => {
-    const state = store.getState();
-    const myProjects = state.project.data;
-    const project = myProjects.filter(project => project._id === projectId);
-
-    return project[0]?.title || "";
-};
-
 const getProjectStats = (projectId) => {
     return {
         method: "get",
         url: `/project/stat/${projectId}`
     };
-};
-
-const getProjectAssignees = (projectId) => {
-    if (!projectId)
-        return;
-
-    const state = store.getState();
-    const [project] = state.project.data.filter(project => project._id === projectId);
-
-    const projectAssignees = state.miscellaneous.users.filter(user => project?.assignees.includes(user._id));
-
-    return projectAssignees;
 };
 
 const ProjectService = {
@@ -85,9 +65,7 @@ const ProjectService = {
     getProjectInfo,
     updateProject,
     deleteProject,
-    getProjectTitle,
-    getProjectStats,
-    getProjectAssignees
+    getProjectStats
 };
 
 export default ProjectService;

@@ -17,7 +17,8 @@ export const getUserTickets = async (req, res) => {
         return res.json(tickets);
 
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 
 };
@@ -50,7 +51,8 @@ export const getProjectTickets = async (req, res) => {
         console.log("Getting project tickets");
         return res.json(tickets);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -81,7 +83,8 @@ export const getTicketInfo = async (req, res) => {
         return res.json(ticket);
 
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -118,7 +121,7 @@ export const createTicket = async (req, res) => {
         return res.json(ticket);
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -151,7 +154,7 @@ export const updateTicket = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -167,6 +170,7 @@ export const deleteTicket = async (req, res) => {
 
         return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };

@@ -1,5 +1,4 @@
 import ReactDataGrid from "@inovua/reactdatagrid-community";
-import "@inovua/reactdatagrid-community/style/base.scss";
 import { useEffect, useState } from "react";
 import React from "react";
 import { getFieldValue } from "@/util/GetObjectProperty";
@@ -13,7 +12,7 @@ const Table = ({
   defaultSortInfo,
   hasCheckboxColumn = false,
   sortable = true,
-  selectedRow,
+  selectedRowIds,
   onSelectionChange,
   height = 400,
   rowHeight = 45,
@@ -21,8 +20,8 @@ const Table = ({
   isLoading = false,
 }) => {
   const [dataSource, setDataSource] = useState([]);
+  const [selectedRow, setSelectedRow] = useState({});
   const [dataFields, setDataFields] = useState([]);
-  // const [isLoading, setIsLoading] = useState(false);
   const gridStyle = { minHeight: height };
 
   const getDataSourceFields = () => {
@@ -55,25 +54,20 @@ const Table = ({
   }, []);
 
   useEffect(() => {
-    /*
-  		I want the table loading sign when rendering new data but don't want to show it when some specific data (row) is updated
-  		All the table data is in dataSource:
-  			if data exist in the dataSource (updating specific row), update dataSource
-  			if data does not exist in dataSource (new data), show loading sign
-  	*/
     if (tableData) {
       setDataSource(tableData);
     }
-    // if (dataSource.length > 0) {
-    //   setDataSource(tableData);
-    // } else {
-    //   setIsLoading(true);
-
-    //   setTimeout(() => {
-    //     setDataSource(tableData);
-    //     setIsLoading(false);
-    //   }, 500);
   }, [tableData]);
+
+  useEffect(() => {
+    if (selectedRowIds) {
+      const selectedRowData = {};
+
+      selectedRowIds.forEach((id) => (selectedRowData[id] = true));
+
+      setSelectedRow(selectedRowData);
+    }
+  }, [selectedRowIds]);
 
   return (
     <>
@@ -93,7 +87,7 @@ const Table = ({
         onRowClick={onRowClick}
         checkboxColumn={!disableCheckBox && hasCheckboxColumn}
         checkboxOnlyRowSelect={hasCheckboxColumn}
-        defaultSelected={selectedRow}
+        selected={selectedRow}
         onSelectionChange={onSelectionChange}
         showColumnMenuTool={false}
         loading={isLoading}

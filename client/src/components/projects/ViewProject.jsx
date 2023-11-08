@@ -27,9 +27,11 @@ import { TICKETS_COLUMNS, TICKETS_DEFAULT_SORT } from "@/util/TableDataDisplay";
 import { Permissions, apifetch } from "@/util/Utils";
 import Loading from "../others/Loading";
 import CreateTicket from "../tickets/CreateTicket";
+import AddProject from "./AddProject";
 
 const ViewProject = ({ projectId }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const projectInfoDiscloure = useDisclosure();
 
   const router = useRouter();
 
@@ -85,9 +87,12 @@ const ViewProject = ({ projectId }) => {
           </Button>
         </PermissionsRender>
 
-        <Link href={`/projects/${projectId}/edit`} passHref>
-          <Button colorScheme="teal">Project Info</Button>
-        </Link>
+        <Button
+          colorScheme="teal"
+          onClick={() => projectInfoDiscloure.onOpen()}
+        >
+          Project Info
+        </Button>
       </Flex>
 
       <Tabs variant="enclosed" size="sm" colorScheme="blue" mt={2} h="100%">
@@ -123,6 +128,13 @@ const ViewProject = ({ projectId }) => {
           mutateServer={projectTicketsSWR.mutateServer}
         />
       ) : null}
+
+      <AddProject
+        isOpen={projectInfoDiscloure.isOpen}
+        onClose={projectInfoDiscloure.onClose}
+        projectInfo={projectInfoSWR.data}
+        mutateServer={projectInfoSWR.mutateServer}
+      />
     </Flex>
   );
 };

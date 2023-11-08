@@ -4,10 +4,11 @@ import bcrypt from 'bcrypt';
 export const getAllUsers = async (req, res) => {
     try {
         const users = await User.find({}, { _id: 1, firstName: 1, lastName: 1, email: 1, roleId: 1 })
-            .populate({ path: "roleId" });
-        return res.json({ users });
+            .populate({ path: "roleId", select: { name: 1 } });
+        return res.json(users);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -37,6 +38,6 @@ export const updateUser = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };

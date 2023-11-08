@@ -25,12 +25,15 @@ export const addProject = async (req, res) => {
             return res.status(400).json({ message: "Project already exist with that title" });
         }
 
-        if (!assignees.includes(userId)) {
+        if (!assignees.includes(userId.toString())) {
             assignees.push(userId);
         }
 
         //Create project
-        const newProject = await Project.create({ title, description, authorId: userId, assignees });
+        let newProject = await Project.create({ title, description, authorId: userId, assignees });
+        newProject = await newProject.populate([
+            { path: "authorId", select: ["firstName", "lastName"] }
+        ]);
 
         //Add the new project id to User object's project list
         const updateAssigneeProjectList = [];
@@ -51,7 +54,8 @@ export const addProject = async (req, res) => {
         return res.json(newProject);
 
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     };
 };
 
@@ -72,7 +76,7 @@ export const getUserProjects = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -97,7 +101,7 @@ export const getProjectInfo = async (req, res) => {
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -119,7 +123,7 @@ export const updateProject = async (req, res) => {
         const userId = req.user._id;
 
         //Authorize - ensure signed in user is the project author
-        const project = await Project.findOne({ _id: projectId, authorId: userId });
+        let project = await Project.findOne({ _id: projectId, authorId: userId });
 
         if (!project) {
             return res.status(403).json({ message: "Not authorized to modify projects" });
@@ -149,17 +153,24 @@ export const updateProject = async (req, res) => {
 
         await Promise.all(updateTicketAssigneesPromise);
 
+        const assigneesSet = new Set(assignees);
+
         project.title = title;
         project.description = description;
-        project.assignees = assignees;
+        project.assignees = Array.from(assigneesSet);
         project.updatedOn = Date.now();
 
-        const updatedProject = await project.save({ new: true });
+        let updatedProject = await project.save({ new: true });
 
-        return res.json({ project: updatedProject });
+        updatedProject = await updatedProject.populate([
+            { path: "authorId", select: { firstName: 1, lastName: 1 } },
+            { path: "assignees", select: { firstName: 1, lastName: 1 }, populate: { path: "roleId", select: { _id: 0, name: 1 } } }
+        ]);
+
+        return res.json(updatedProject);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
-
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -191,7 +202,8 @@ export const deleteProject = async (req, res) => {
 
         return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -244,6 +256,7 @@ export const getProjectStat = async (req, res) => {
             ticketTypeCount
         });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };

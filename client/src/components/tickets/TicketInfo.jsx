@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertIcon,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -41,14 +42,8 @@ const TicketInfo = ({
       innerRef={formRef}
       enableReinitialize
     >
-      {({ errors, touched }) => (
+      {({ errors, touched, handleChange }) => (
         <Form>
-          {error && (
-            <Alert status="error" variant="left-accent" mb={2} fontSize="sm">
-              {error}
-            </Alert>
-          )}
-
           <Flex gap={3}>
             <Flex direction="column" flex={1} gap={3}>
               <FormControl isInvalid={errors.title && touched.title}>
@@ -57,6 +52,7 @@ const TicketInfo = ({
                   as={Input}
                   name="title"
                   type="text"
+                  onChange={handleChange}
                   disabled={!canManageTickets}
                 />
                 <FormErrorMessage>{errors.title}</FormErrorMessage>
@@ -67,7 +63,7 @@ const TicketInfo = ({
                 <RichTextEditor
                   content={ticketDescription}
                   setContent={setTicketDescription}
-                  readOnly={!canManageTickets}
+                  disabled={!canManageTickets}
                 />
               </FormControl>
             </Flex>
@@ -79,6 +75,7 @@ const TicketInfo = ({
                   as={Select}
                   name="type"
                   type="select"
+                  onChange={handleChange}
                   disabled={!canManageTickets}
                 >
                   <option value="" disabled selected>
@@ -94,6 +91,7 @@ const TicketInfo = ({
                   as={Select}
                   name="status"
                   type="select"
+                  onChange={handleChange}
                   disabled={!canManageTickets}
                 >
                   <option value="" disabled selected>
@@ -112,6 +110,7 @@ const TicketInfo = ({
                     as={Input}
                     name="estimatedTime"
                     type="number"
+                    onChange={handleChange}
                     disabled={!canManageTickets}
                   />
                   <FormErrorMessage>{errors.estimatedTime}</FormErrorMessage>
@@ -127,6 +126,7 @@ const TicketInfo = ({
                     as={Select}
                     name="estimatedTimeUnit"
                     type="select"
+                    onChange={handleChange}
                     disabled={!canManageTickets}
                   >
                     <option value="" disabled selected>

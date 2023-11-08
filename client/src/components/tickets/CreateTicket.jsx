@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Button,
   Heading,
   Modal,
@@ -39,8 +41,7 @@ const CreateTicket = ({
   const isNewTicket = ticket ? false : true;
 
   const [projectAssignees, setProjectAssignees] = useState([]);
-
-  const [ticketAssignees, setTicketAssignees] = useState([]);
+  const [selectedAssigneeIds, setSelectedAssigneeIds] = useState([]);
   const [ticketDescription, setTicketDescription] = useState("");
   const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
   const [error, setError] = useState("");
@@ -51,10 +52,9 @@ const CreateTicket = ({
   const formRef = useRef();
 
   useEffect(() => {
-    resetFields();
     setProjectAssignees(projectInfo.assignees);
 
-    if (ticket) {
+    if (isOpen && ticket) {
       const ticketCopy = { ...ticket };
 
       ticketCopy.assignees = ticket.assignees.map((assignee) => assignee._id);
@@ -62,62 +62,15 @@ const CreateTicket = ({
       ticketCopy.type = ticket.type._id;
 
       setTicketInfo(ticketCopy);
-      setTicketDescription(ticketCopy.description);
-      setTicketAssignees(ticketCopy.assignees);
+      setSelectedAssigneeIds(ticketCopy.assignees);
+      setTicketDescription(ticket.description);
     }
-  }, [ticket]);
+  }, [isOpen]);
+
+  console.log();
 
   const onTicketAssigneeClick = ({ selected }) => {
-    setTicketAssignees(Object.keys(selected));
-  };
-
-  const getSelectedTicketAssignees = () => {
-    const selectedAssignees = {};
-
-    if (!isNewTicket) {
-      ticket.assignees.forEach((assignee) => {
-        selectedAssignees[assignee._id] = true;
-      });
-    }
-
-    return selectedAssignees;
-  };
-
-  const onHandleFormSubmit = async (values) => {
-    try {
-      const ticketFormData = { ...values };
-      ticketFormData.assignees = ticketAssignees;
-      ticketFormData.description = ticketDescription;
-
-      let apiRequestInfo = {};
-
-      if (isNewTicket) {
-        apiRequestInfo = TicketService.createTicket(
-          projectInfo._id,
-          ticketFormData
-        );
-      } else {
-        apiRequestInfo = TicketService.updateTicket(
-          projectInfo._id,
-          ticketFormData
-        );
-      }
-
-      await mutateServer(apiRequestInfo);
-    } catch (error) {
-      setError(error);
-      return;
-    }
-
-    closeTicketModal();
-  };
-
-  const resetFields = () => {
-    setTicketAssignees([]);
-    setProjectAssignees([]);
-    setTicketInfo(CreateTicketData);
-    setError("");
-    setTicketDescription("");
+    setSelectedAssigneeIds(Object.keys(selected));
   };
 
   const onTicketDelete = async () => {
@@ -135,8 +88,40 @@ const CreateTicket = ({
   };
 
   const closeTicketModal = () => {
-    resetFields();
+    setProjectAssignees([]);
+    setSelectedAssigneeIds([]);
+    setTicketDescription("");
+    setTicketInfo(CreateTicketData);
+    setError("");
     onClose();
+  };
+
+  const onHandleFormSubmit = async (data) => {
+    try {
+      const ticketData = { ...data };
+      ticketData.assignees = selectedAssigneeIds;
+      ticketData.description = ticketDescription;
+
+      let apiRequestInfo = {};
+
+      if (isNewTicket) {
+        apiRequestInfo = TicketService.createTicket(
+          projectInfo._id,
+          ticketData
+        );
+      } else {
+        ticketData.id = ticket._id;
+        apiRequestInfo = TicketService.updateTicket(
+          projectInfo._id,
+          ticketData
+        );
+      }
+
+      await mutateServer(apiRequestInfo);
+      closeTicketModal();
+    } catch (error) {
+      setError(error);
+    }
   };
 
   return (
@@ -153,7 +138,7 @@ const CreateTicket = ({
             {!isNewTicket ? "Edit" : "Create"} Ticket
           </Heading>
           <Text fontSize="sm" as="i" fontWeight={400} mt={2}>
-            Project: {ticket?.projectId.title || ""}
+            Project: {projectInfo?.title || ticket?.projectId.title}
           </Text>
         </ModalHeader>
 
@@ -166,6 +151,13 @@ const CreateTicket = ({
               {!isNewTicket && <Tab>Comments</Tab>}
               <Tab>Assignees</Tab>
             </TabList>
+
+            {error && (
+              <Alert status="error" variant="left-accent" mb={2} fontSize="sm">
+                <AlertIcon />
+                {error}
+              </Alert>
+            )}
 
             <TabPanels>
               <TabPanel>
@@ -193,7 +185,7 @@ const CreateTicket = ({
                   height={300}
                   hasCheckboxColumn={true}
                   sortable={false}
-                  selectedRow={getSelectedTicketAssignees()}
+                  selectedRowIds={selectedAssigneeIds}
                   onSelectionChange={onTicketAssigneeClick}
                   disableCheckBox={!canManageTickets}
                 />

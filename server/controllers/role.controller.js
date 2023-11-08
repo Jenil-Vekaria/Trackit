@@ -7,7 +7,8 @@ export const getRoles = async (req, res) => {
 
         return res.json({ roles });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -25,7 +26,8 @@ export const addRole = async (req, res) => {
 
         return res.json({ role });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -43,7 +45,8 @@ export const deleteRole = async (req, res) => {
 
         return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -58,7 +61,8 @@ export const updateRole = async (req, res) => {
 
     } catch (error) {
         console.error(error.message);
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 
 };

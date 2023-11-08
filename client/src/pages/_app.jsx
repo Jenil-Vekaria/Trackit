@@ -1,6 +1,7 @@
 import { theme } from "@/styles/theme.js";
 import { ChakraProvider } from "@chakra-ui/provider";
 import "@inovua/reactdatagrid-community/index.css";
+import "@inovua/reactdatagrid-community/style/base.scss";
 import "react-quill/dist/quill.snow.css";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";

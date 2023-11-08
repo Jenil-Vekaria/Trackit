@@ -8,7 +8,8 @@ export const getTicketType = async (req, res) => {
 
         return res.json({ ticketType });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -27,7 +28,8 @@ export const addTicketType = async (req, res) => {
 
         return res.status(200).json({ ticketType });
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -50,7 +52,8 @@ export const updateTicketType = async (req, res) => {
         return res.json({ ticketType: updatedTicketType });
 
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -74,6 +77,7 @@ export const deleteTicketType = async (req, res) => {
 
         return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };

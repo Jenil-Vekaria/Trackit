@@ -27,14 +27,14 @@ export const createTicketTypeSchema = yup.object().shape({
 });
 
 export const createProjectSchema = yup.object().shape({
-    title: yup.string().required("Project title required"),
+    title: yup.string().trim().required("Project title required"),
     description: yup.string(),
     assignees: yup.array().required("Assignees required"),
 });
 
 export const createTicketSchema = yup.object().shape({
-    title: yup.string().required("Ticket title required"),
-    status: yup.string().required("Ticket status required"),
+    title: yup.string().trim().required("Ticket title required"),
+    status: yup.string().trim().required("Ticket status required"),
     type: yup.string().required("Ticket type required"),
     estimatedTime: yup.number().required("Ticket estimated time required"),
     estimatedTimeUnit: yup.string().required("Ticket estimated time unit required")

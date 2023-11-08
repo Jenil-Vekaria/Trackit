@@ -69,13 +69,11 @@ const deleteTicketType = async (ticketName) => {
     }
 };
 
-const getUsers = async () => {
-    try {
-        const { data } = await API.get("/user/all");
-        store.dispatch(setUsers(data.users));
-    } catch (error) {
-        console.error(error);
-    }
+const getUsers = () => {
+    return {
+        method: "get",
+        url: "/user/all"
+    };
 };
 
 const getRoles = async () => {

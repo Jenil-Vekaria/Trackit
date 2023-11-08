@@ -33,7 +33,7 @@ const useApi = (getApiRequestInfo, ...args) => {
         try {
             await swr.mutate(getMutation(mutationApiRequestInfo, swr.data), getMutationOptions(mutationApiRequestInfo, swr.data));
         } catch (error) {
-            console.log("ERROR: ", error);
+            console.log(error);
             throw error.response.data.message;
         }
     };
@@ -41,16 +41,17 @@ const useApi = (getApiRequestInfo, ...args) => {
     const getMutationOptions = (mutationApiRequestInfo, oldData) => {
         let optimisticData;
         const mutateData = mutationApiRequestInfo.data;
+        const isArray = Array.isArray(oldData);
 
         switch (mutationApiRequestInfo.method) {
             case "post":
-                optimisticData = [mutateData, ...oldData];
+                optimisticData = isArray ? [mutateData, ...oldData] : mutateData;
             case "patch":
-                optimisticData = oldData.map(data => data._id === mutateData._id ? mutateData : data);
+                optimisticData = isArray ? oldData.map(data => data._id === mutateData._id ? mutateData : data) : mutateData;
             case "delete":
                 const splitUrl = mutationApiRequestInfo.url.split("/");
                 const id = splitUrl.pop();
-                optimisticData = oldData.filter(data => data._id !== id);
+                optimisticData = isArray ? oldData.filter(data => data._id !== id) : mutateData;
             default:
                 optimisticData = oldData;
         }
@@ -65,17 +66,17 @@ const useApi = (getApiRequestInfo, ...args) => {
 
     const getMutation = async (mutationApiRequestInfo, oldData) => {
         const responseData = await api(mutationApiRequestInfo);
-
+        const isArray = Array.isArray(oldData);
 
         switch (mutationApiRequestInfo.method) {
             case "post":
-                return [responseData, ...oldData];
+                return isArray ? [responseData, ...oldData] : responseData;
             case "patch":
-                return oldData.map(data => data._id === responseData._id ? responseData : data);
+                return isArray ? oldData.map(data => data._id === responseData._id ? responseData : data) : responseData;
             case "delete":
                 const splitUrl = mutationApiRequestInfo.url.split("/");
                 const id = splitUrl.pop();
-                return oldData.filter(data => data._id !== id);
+                return isArray ? oldData.filter(data => data._id !== id) : oldData;
             default:
                 return oldData;
         }
