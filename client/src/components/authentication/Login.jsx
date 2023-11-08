@@ -11,6 +11,7 @@ import {
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import AuthService from "@/services/auth-service";
+import MiscellaneousService from "@/services/miscellaneous-service";
 import { LoginData, LoginSchema } from "@/util/ValidationSchemas";
 
 export const Login = () => {
@@ -24,6 +25,7 @@ export const Login = () => {
 
     try {
       await AuthService.login(values);
+      await MiscellaneousService.fetchInitialData();
       router.reload();
       setisLogging(false);
     } catch (error) {

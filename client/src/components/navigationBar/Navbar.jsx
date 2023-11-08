@@ -71,7 +71,7 @@ const Navbar = () => {
 
           {menuItems.map((item, index) => {
             if (item.name === "Administration" && !canManageAdminPage) {
-              return <></>;
+              return <React.Fragment key={index}></React.Fragment>;
             }
 
             return (
