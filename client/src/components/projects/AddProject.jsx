@@ -24,7 +24,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import AuthService from "@/services/auth-service";
 import MiscellaneousService from "@/services/miscellaneous-service";
 import ProjectService from "@/services/project-service";
@@ -54,7 +54,7 @@ const AddProject = ({ isOpen, onClose, projectInfo, mutateServer }) => {
   const [projectInfoData, setProjectInfoData] = useState(CreateProjectData);
   const [isProjectAuthor, setIsProjectAuthor] = useState(isNewProject);
 
-  const allUsersSWR = useApi(MiscellaneousService.getUsers);
+  const allUsersSWR = useApi(MiscellaneousService.getUsers(), isOpen);
 
   useEffect(() => {
     if (isOpen && projectInfo) {

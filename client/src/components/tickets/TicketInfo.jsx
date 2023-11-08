@@ -27,7 +27,6 @@ const TicketInfo = ({
   ticketInfo,
   onHandleFormSubmit,
   formRef,
-  error,
   ticketDescription,
   setTicketDescription,
 }) => {
@@ -78,7 +77,7 @@ const TicketInfo = ({
                   onChange={handleChange}
                   disabled={!canManageTickets}
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select
                   </option>
                   {createTicketTypeSelectOptions(ticketTypes)}
@@ -94,7 +93,7 @@ const TicketInfo = ({
                   onChange={handleChange}
                   disabled={!canManageTickets}
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select
                   </option>
                   {createTicketStatusSelectOptions()}
@@ -129,7 +128,7 @@ const TicketInfo = ({
                     onChange={handleChange}
                     disabled={!canManageTickets}
                   >
-                    <option value="" disabled selected>
+                    <option value="" disabled>
                       Select
                     </option>
                     <option value="h">Hour(s)</option>

@@ -34,7 +34,7 @@ const Dashboard = ({ projectId }) => {
   const [ticketTypeChartData, setTicketTypeChartData] = useState(null);
   const [ticketStatusChartData, setTicketStatusChartData] = useState(null);
   const iconColor = useColorModeValue("white", "white");
-  const projectStatsSWR = useApi(ProjectService.getProjectStats, projectId);
+  const projectStatsSWR = useApi(ProjectService.getProjectStats(projectId));
 
   const iconBackgroundColor = [
     "purple.300",

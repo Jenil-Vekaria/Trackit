@@ -13,7 +13,7 @@ import { Permissions } from "../../util/Utils";
 const ViewAllProjects = () => {
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const projectsSWR = useApi(ProjectService.getMyProjects);
+  const projectsSWR = useApi(ProjectService.getMyProjects());
 
   const handleRowClick = (rowData) => {
     const projectId = rowData.data._id;

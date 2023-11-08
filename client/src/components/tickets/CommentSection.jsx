@@ -25,7 +25,7 @@ import Comment from "./Comment";
 
 const CommentSection = ({ ticketId }) => {
   const [error, setError] = useState("");
-  const commentsSWR = useApi(CommentService.getTicketComments, ticketId);
+  const commentsSWR = useApi(CommentService.getTicketComments(ticketId));
 
   const onComment = async (values, { resetForm }) => {
     try {

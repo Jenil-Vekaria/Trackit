@@ -1,31 +1,35 @@
 import Head from "next/head";
 import { Flex, Heading, useDisclosure } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import useFetch from "@/hooks/useFetch";
+import React, { useState } from "react";
+import Loading from "@/components/others/Loading";
+import useApi from "@/hooks/useApi";
 import Table from "../components/others/Table";
 import CreateTicket from "../components/tickets/CreateTicket";
-import { getTickets } from "../features/ticketSlice";
 import TicketService from "../services/ticket-service";
-import { TICKETS_COLUMNS } from "../util/TableDataDisplay";
+import {
+  MY_TICKETS_COLUMNS,
+  TICKETS_DEFAULT_SORT,
+} from "../util/TableDataDisplay";
 
 const Tickets = () => {
-  const { data, loading, refetch } = useFetch(TicketService.getUserTickets());
+  const myTicketsSWR = useApi(TicketService.getUserTickets());
 
   const [viewTicket, setViewTicket] = useState(null);
-  const [viewTicketProjectId, setViewTicketProjectId] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const onTicketClick = (rowProps, _) => {
     setViewTicket(rowProps.data);
-    setViewTicketProjectId(rowProps.data.projectId._id);
     onOpen();
   };
 
   const onModalClose = () => {
+    setViewTicket(null);
     onClose();
-    refetch();
   };
+
+  if (myTicketsSWR.isLoading) {
+    return <Loading />;
+  }
 
   return (
     <Flex w="100%" direction="column" padding={10}>
@@ -41,20 +45,20 @@ const Tickets = () => {
       <br />
 
       <Table
-        tableData={data}
-        columns={TICKETS_COLUMNS}
-        searchPlaceholder="Search for tickets"
+        tableData={myTicketsSWR.data}
+        columns={MY_TICKETS_COLUMNS}
+        defaultSortInfo={TICKETS_DEFAULT_SORT}
+        searchPlaceholder="Search tickets by type, title, project, status ..."
         height={450}
         onRowClick={onTicketClick}
-        isLoading={loading}
+        isLoading={myTicketsSWR.isLoading}
       />
 
       <CreateTicket
         isOpen={isOpen}
         onClose={onModalClose}
         ticket={viewTicket}
-        setviewTicket={setViewTicket}
-        projectId={viewTicketProjectId}
+        mutateServer={myTicketsSWR.mutateServer}
       />
     </Flex>
   );

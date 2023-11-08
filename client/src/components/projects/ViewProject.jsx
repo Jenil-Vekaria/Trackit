@@ -35,8 +35,8 @@ const ViewProject = ({ projectId }) => {
 
   const router = useRouter();
 
-  const projectTicketsSWR = useApi(TicketService.getProjectTickets, projectId);
-  const projectInfoSWR = useApi(ProjectService.getProjectInfo, projectId);
+  const projectTicketsSWR = useApi(TicketService.getProjectTickets(projectId));
+  const projectInfoSWR = useApi(ProjectService.getProjectInfo(projectId));
 
   const [viewTicket, setViewTicket] = useState(null);
 

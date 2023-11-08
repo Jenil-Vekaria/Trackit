@@ -21,7 +21,7 @@ const getUserTickets = () => {
 
 const getProjectTickets = (projectId) => {
     return {
-        mthod: "get",
+        method: "get",
         url: `/ticket/project/${projectId}`
     };
 };

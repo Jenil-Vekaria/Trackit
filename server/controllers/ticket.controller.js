@@ -37,18 +37,11 @@ export const getProjectTickets = async (req, res) => {
         }
 
         const tickets = await Ticket.find({ projectId })
-            .populate({
-                path: "projectId",
-                select: { title: 1, assignees: 1 },
-                populate: {
-                    path: "assignees", select: { _id: 1 },
-                    populate: { path: "roleId", select: { _id: 0, name: 1 } }
-                }
-            })
+            .populate({ path: "projectId", select: { title: 1 } })
             .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 }, populate: { path: "roleId", select: { _id: 0, name: 1 } } });
-        console.log("Getting project tickets");
+
         return res.json(tickets);
     } catch (error) {
         console.log(error);
@@ -64,7 +57,7 @@ export const getTicketInfo = async (req, res) => {
 
         // Ensure the ticket exist
         const ticket = await Ticket.findOne({ _id: ticketId })
-            .populate({ path: "projectId", select: { title: 1, assignees: 1 } })
+            .populate({ path: "projectId", select: { title: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
             .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });

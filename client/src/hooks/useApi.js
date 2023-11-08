@@ -13,12 +13,12 @@ API.interceptors.request.use((req) => {
     return req;
 });
 
-const useApi = (getApiRequestInfo, ...args) => {
-    const apiRequestInfo = getApiRequestInfo(...args);
+
+const useApi = (apiRequestInfo, shouldFetch = true) => {
 
     const key = apiRequestInfo.method + "-" + apiRequestInfo.url; //getApiRequestInfo is a function and name will be used as unique key
 
-    const swr = useSWR(key, () => api(apiRequestInfo), {
+    const swr = useSWR(shouldFetch ? key : null, () => api(apiRequestInfo), {
         shouldRetryOnError: false,
         revalidateOnFocus: false,
         revalidateOnReconnect: false

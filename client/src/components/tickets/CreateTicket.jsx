@@ -20,7 +20,9 @@ import {
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
+import ProjectService from "@/services/project-service";
 import TicketService from "@/services/ticket-service";
+import useApi from "@/hooks/useApi";
 import { usePermissions } from "@/hooks/usePermissions";
 import { PROJECT_ASSIGNEES_COLUMNS } from "@/util/TableDataDisplay";
 import { Permissions } from "@/util/Utils";
@@ -40,11 +42,16 @@ const CreateTicket = ({
 }) => {
   const isNewTicket = ticket ? false : true;
 
-  const [projectAssignees, setProjectAssignees] = useState([]);
   const [selectedAssigneeIds, setSelectedAssigneeIds] = useState([]);
   const [ticketDescription, setTicketDescription] = useState("");
   const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
   const [error, setError] = useState("");
+  const [project, setProject] = useState(projectInfo);
+
+  const projectSWR = useApi(
+    ProjectService.getProjectInfo(ticket?.projectId._id),
+    !projectInfo && ticket
+  );
 
   const canManageTickets = usePermissions(Permissions.canManageTickets);
 
@@ -52,22 +59,25 @@ const CreateTicket = ({
   const formRef = useRef();
 
   useEffect(() => {
-    setProjectAssignees(projectInfo.assignees);
+    if (projectSWR.data) {
+      setProject(projectSWR.data);
+    }
+  }, [projectSWR]);
 
+  useEffect(() => {
     if (isOpen && ticket) {
       const ticketCopy = { ...ticket };
 
-      ticketCopy.assignees = ticket.assignees.map((assignee) => assignee._id);
-      ticketCopy.projectId = projectInfo._id;
+      ticketCopy._id = ticket._id;
+      ticketCopy.projectId = ticket.projectId._id;
       ticketCopy.type = ticket.type._id;
+      ticketCopy.assignees = ticket.assignees.map((assignee) => assignee._id);
 
       setTicketInfo(ticketCopy);
       setSelectedAssigneeIds(ticketCopy.assignees);
       setTicketDescription(ticket.description);
     }
   }, [isOpen]);
-
-  console.log();
 
   const onTicketAssigneeClick = ({ selected }) => {
     setSelectedAssigneeIds(Object.keys(selected));
@@ -88,7 +98,6 @@ const CreateTicket = ({
   };
 
   const closeTicketModal = () => {
-    setProjectAssignees([]);
     setSelectedAssigneeIds([]);
     setTicketDescription("");
     setTicketInfo(CreateTicketData);
@@ -105,16 +114,9 @@ const CreateTicket = ({
       let apiRequestInfo = {};
 
       if (isNewTicket) {
-        apiRequestInfo = TicketService.createTicket(
-          projectInfo._id,
-          ticketData
-        );
+        apiRequestInfo = TicketService.createTicket(project._id, ticketData);
       } else {
-        ticketData.id = ticket._id;
-        apiRequestInfo = TicketService.updateTicket(
-          projectInfo._id,
-          ticketData
-        );
+        apiRequestInfo = TicketService.updateTicket(project._id, ticketData);
       }
 
       await mutateServer(apiRequestInfo);
@@ -138,7 +140,7 @@ const CreateTicket = ({
             {!isNewTicket ? "Edit" : "Create"} Ticket
           </Heading>
           <Text fontSize="sm" as="i" fontWeight={400} mt={2}>
-            Project: {projectInfo?.title || ticket?.projectId.title}
+            Project: {project?.title}
           </Text>
         </ModalHeader>
 
@@ -179,7 +181,7 @@ const CreateTicket = ({
 
               <TabPanel>
                 <Table
-                  tableData={projectAssignees}
+                  tableData={project?.assignees}
                   columns={PROJECT_ASSIGNEES_COLUMNS}
                   searchPlaceholder={"Search for users"}
                   height={300}

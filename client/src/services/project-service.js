@@ -40,7 +40,7 @@ const updateProject = (data, projectId) => {
 
 const getProjectInfo = (projectId) => {
     return {
-        mthod: "get",
+        method: "get",
         url: `/project/${projectId}`
     };
 };

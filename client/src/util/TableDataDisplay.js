@@ -138,6 +138,90 @@ export const TICKETS_COLUMNS = [
     }
 ];
 
+export const MY_TICKETS_COLUMNS = [
+    {
+        name: "type",
+        searchInField: ["type.name"],
+        header: "TYPE",
+        width: 55,
+        headerEllipsis: false,
+        render: ({ value }) => {
+            const { iconName, colour, name } = value;
+            return (
+                <Tooltip label={name}>
+                    <span>
+                        <Icon as={BsIcon[iconName]} bg={colour} color="gray.50" w={6} h={6} p={1} borderRadius={5} />
+                    </span>
+                </Tooltip>
+            );
+        },
+    },
+    {
+        name: "projectId",
+        searchInField: ["projectId.title"],
+        header: "PROJECT",
+        flex: 1,
+        render: ({ data }) => {
+            return <span style={styles}>{data.projectId.title}</span>;
+        },
+    },
+    {
+        name: "title",
+        searchInField: ["title"],
+        header: "TITLE",
+        flex: 3,
+        render: ({ value }) => {
+            return <span style={styles}>{value}</span>;
+        },
+    },
+    {
+        name: "status",
+        searchInField: ["status"],
+        header: "STATUS",
+        flex: 1,
+        render: ({ value }) => {
+            switch (value) {
+                case "Open":
+                    return <Badge colorScheme='orange'>{value}</Badge>;
+                case "In-Progress":
+                    return <Badge colorScheme='blue'>{value}</Badge>;
+                case "Done":
+                    return <Badge colorScheme='green'>{value}</Badge>;
+                case "Archived":
+                    return <Badge colorScheme='facebook'>{value}</Badge>;
+                default:
+                    return <Badge colorScheme='green'>{value}</Badge>;
+            }
+        },
+    },
+    {
+        name: "assignees",
+        header: "ASSIGNEES",
+        flex: 1,
+        render: ({ value }) => {
+            return (
+                <AvatarGroup size="sm" max={5}>
+                    {
+                        value.map(assignee => (
+                            <TooltipAvatar key={assignee._id} name={assignee.firstName + " " + assignee.lastName} />
+                        ))
+                    }
+                </AvatarGroup>
+            );
+        },
+
+    },
+    {
+        name: "createdBy",
+        header: "CREATED BY",
+        flex: 1,
+        render: ({ data }) => {
+            return data.createdBy.firstName + " " + data.createdBy.lastName;
+        },
+
+    }
+];
+
 export const USERS_COLUMNS = [
     {
         name: "_id",
