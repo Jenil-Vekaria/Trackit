@@ -21,7 +21,6 @@ import {
   BsPersonFill,
   BsQuestionLg,
 } from "react-icons/bs";
-import MiscellaneousService from "@/services/miscellaneous-service";
 import ProjectService from "@/services/project-service";
 import useApi from "@/hooks/useApi";
 import { hexToRgb } from "@/util/Utils";
