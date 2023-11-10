@@ -102,7 +102,7 @@ npm run dev
 Run server application
 
 ```sh
-nodemon server.js
+npm run start
 ```
 
 **Setup Issue?**
