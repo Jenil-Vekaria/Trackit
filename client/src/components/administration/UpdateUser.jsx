@@ -21,9 +21,8 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 import MiscellaneousService from "@/services/miscellaneous-service";
-import { getRoles } from "@/features/miscellaneousSlice";
+import useApi from "@/hooks/useApi";
 import {
   ManageUserSchema,
   SignUpData,
@@ -37,7 +36,7 @@ const UpdateUser = ({
   isUpdateMyProfile = false,
   mutateServer,
 }) => {
-  const roles = useSelector(getRoles);
+  const allRolesSWR = useApi(MiscellaneousService.getRoles());
   const formRef = useRef(null);
   const [error, setError] = useState(null);
   const [userInfo, setUserInfo] = useState(SignUpData);
@@ -71,15 +70,18 @@ const UpdateUser = ({
 
   const onUpdateUser = async (data) => {
     try {
+      let apiRequestInfo;
+
       if (viewUser) {
-        const apiRequestInfo = isUpdateMyProfile
+        apiRequestInfo = isUpdateMyProfile
           ? MiscellaneousService.updateMyProfile(data)
           : MiscellaneousService.updateUserProfile(data);
-        const response = await mutateServer(apiRequestInfo);
-        console.log("RESPONSE DATA: ", response);
       } else {
-        await mutateServer(MiscellaneousService.createUser(data));
+        apiRequestInfo = MiscellaneousService.createUser(data);
       }
+
+      await mutateServer(apiRequestInfo);
+
       setError("");
       onCloseModal();
     } catch (error) {
@@ -96,7 +98,7 @@ const UpdateUser = ({
   };
 
   const createRoleTypeOption = () => {
-    return roles.map((role) => (
+    return allRolesSWR.data?.map((role) => (
       <option key={role._id} value={role._id}>
         {role.name}
       </option>

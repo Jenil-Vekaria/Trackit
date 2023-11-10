@@ -242,9 +242,25 @@ export const getProjectStat = async (req, res) => {
             {
                 $group: {
                     _id: "$type",
-                    value: { $sum: 1 }
+                    value: { $sum: 1 },
+                }
+            },
+            {
+                $lookup: {
+                    from: "tickettypes",
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "ticketTypeInfo"
+                }
+            },
+            {
+                $project: {
+                    ticketTypeInfo: { $arrayElemAt: ["$ticketTypeInfo", 0] },
+                    value: 1,
+                    _id: 0
                 }
             }
+
         ]);
 
         return res.json({

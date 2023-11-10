@@ -89,12 +89,10 @@ const Dashboard = ({ projectId }) => {
       ],
     };
 
-    stat.ticketTypeCount.forEach((ticketType) => {
-      data.datasets[0].data.push(ticketType.value);
+    stat.ticketTypeCount.forEach((ticketTypeCountStat) => {
+      data.datasets[0].data.push(ticketTypeCountStat.value);
 
-      const ticketTypeInfo = MiscellaneousService.getTicketTypeInfo(
-        ticketType._id
-      );
+      const ticketTypeInfo = ticketTypeCountStat.ticketTypeInfo;
       const backgroundColour = hexToRgb(ticketTypeInfo.colour, 1);
 
       data.labels.push(ticketTypeInfo.name);

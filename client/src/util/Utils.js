@@ -41,5 +41,5 @@ export const hexToRgb = (hex, opacity) => {
 };
 
 export const getUserFullname = (object) => {
-    return object.firstName + " " + object.lastName;
+    return object?.firstName + " " + object?.lastName;
 };

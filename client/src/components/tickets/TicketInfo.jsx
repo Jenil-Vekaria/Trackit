@@ -12,8 +12,8 @@ import {
 import { Field, Form, Formik } from "formik";
 import moment from "moment/moment";
 import React from "react";
-import { useSelector } from "react-redux";
-import { getTicketType } from "@/features/miscellaneousSlice";
+import MiscellaneousService from "@/services/miscellaneous-service";
+import useApi from "@/hooks/useApi";
 import { usePermissions } from "@/hooks/usePermissions";
 import {
   Permissions,
@@ -31,7 +31,7 @@ const TicketInfo = ({
   setTicketDescription,
 }) => {
   const canManageTickets = usePermissions(Permissions.canManageTickets);
-  const ticketTypes = useSelector(getTicketType);
+  const ticketTypesSWR = useApi(MiscellaneousService.getAllTicketType());
 
   return (
     <Formik
@@ -80,7 +80,7 @@ const TicketInfo = ({
                   <option value="" disabled>
                     Select
                   </option>
-                  {createTicketTypeSelectOptions(ticketTypes)}
+                  {createTicketTypeSelectOptions(ticketTypesSWR.data || [])}
                 </Field>
                 <FormErrorMessage>{errors.type}</FormErrorMessage>
               </FormControl>

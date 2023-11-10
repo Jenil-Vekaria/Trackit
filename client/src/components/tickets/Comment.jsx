@@ -18,15 +18,17 @@ import React, { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AuthService from "@/services/auth-service";
 import CommentService from "@/services/comment-service";
+import useAuthStore from "@/hooks/useAuth";
 import { Permissions, getUserFullname } from "@/util/Utils";
 import PermissionsRender from "../others/PermissionsRender";
 
 const Comment = ({ mutateServer, commentData, setError }) => {
+  const useAuth = useAuthStore();
   const [isEditing, setisEditing] = useState(false);
   const [comment, setcomment] = useState(commentData.text);
   const { isOpen, onToggle, onClose } = useDisclosure();
 
-  const signedInUserId = AuthService.getCurrentUser()?._id;
+  const signedInUserId = useAuth.userProfile._id;
   const isMyComment = commentData.userId._id === signedInUserId;
   const isCommentEdited = commentData.createdOn !== commentData.updatedOn;
 

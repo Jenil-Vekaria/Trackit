@@ -20,7 +20,7 @@ import useAuthStore from "@/hooks/useAuth";
 import { usePermissions } from "@/hooks/usePermissions";
 import { Permissions, getUserFullname } from "@/util/Utils";
 import logo from "@/assets/Trackit_Plain.png";
-import UpdateUser from "../administration/UpdateUser";
+import UpdateUser from "../../administration/UpdateUser";
 import NavItem from "./NavItem";
 
 const Navbar = () => {

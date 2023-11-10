@@ -1,6 +1,5 @@
 import { Button, Flex, Spacer, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import MiscellaneousService from "@/services/miscellaneous-service";
 import useApi from "@/hooks/useApi";
 import { MANAGE_ROLES } from "../../util/TableDataDisplay";
