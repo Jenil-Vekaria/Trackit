@@ -5,7 +5,7 @@
     <img src="client/src/assets/Trackit_Background.png" alt="Trackit">
   </a>
 
-  <h3 align="center">Issue and Project Tracking System</h3>
+  <h3 align="center">Issue and Project Tracking System <a href="https://trackit-demo.vercel.app/">(DEMO)</a></h3>
 
   <p align="center">
     Use Trackit! Tracking system that allows team members to collaborate, discuss and manage projects effectively 
