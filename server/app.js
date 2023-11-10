@@ -7,9 +7,7 @@ import ticketTypeRoutes from './routes/ticketType.route.js';
 import userRoutes from "./routes/user.route.js";
 import ticketRoutes from "./routes/ticket.route.js";
 import commentRoutes from "./routes/comment.route.js";
-import testRoutes from "./routes/test.route.js";
 import { handleError, routeNotFound, authMiddleware } from './middleware/middleware.js';
-import { isProduction } from "./config/config.js";
 
 const app = express();
 
@@ -27,10 +25,6 @@ app.use('/project', authMiddleware, projectRoutes);
 app.use('/comment', authMiddleware, commentRoutes);
 app.use('/ticket', authMiddleware, ticketRoutes);
 app.use('/ticketType', authMiddleware, ticketTypeRoutes);
-
-if (!isProduction) {
-    app.use("/test", testRoutes);
-}
 
 app.use(handleError);
 app.use(routeNotFound);

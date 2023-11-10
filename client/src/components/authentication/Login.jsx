@@ -9,26 +9,38 @@ import {
   Input,
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AuthService from "@/services/auth-service";
 import MiscellaneousService from "@/services/miscellaneous-service";
+import useApi from "@/hooks/useApi";
+import useAuthStore from "@/hooks/useAuth";
 import { LoginData, LoginSchema } from "@/util/ValidationSchemas";
 
 export const Login = () => {
   const [error, seterror] = useState("");
+  const [isLogging, setisLogging] = useState(false);
   const router = useRouter();
+  const loginSWR = useApi(null);
+  const authStore = useAuthStore();
+
+  useEffect(() => {
+    if (loginSWR.data) {
+      authStore.setAccessToken(loginSWR.data.accessToken);
+      authStore.setUserProfile(loginSWR.data.userProfile);
+      router.reload();
+    }
+  }, [loginSWR.data]);
 
   const onHandleFormSubmit = async (values) => {
     seterror("");
+    setisLogging(true);
 
     try {
-      await AuthService.login(values);
-      await MiscellaneousService.fetchInitialData();
-
-      router.reload();
+      await loginSWR.mutateServer(AuthService.login(values));
     } catch (error) {
-      seterror(error.response.data.message);
+      seterror(error);
     }
+    setisLogging(false);
   };
 
   return (
@@ -66,7 +78,14 @@ export const Login = () => {
               <FormErrorMessage>{errors.password}</FormErrorMessage>
             </FormControl>
 
-            <Button colorScheme="blue" w="full" mt={10} type="submit">
+            <Button
+              colorScheme="blue"
+              w="full"
+              mt={10}
+              type="submit"
+              isLoading={isLogging}
+              loadingText="Logging In"
+            >
               Login
             </Button>
           </Form>

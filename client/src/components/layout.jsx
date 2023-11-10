@@ -3,18 +3,23 @@ import Auth from "@/pages/auth";
 import { Flex } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import AuthService from "@/services/auth-service";
-import Navbar from "./navigationBar/Navbar";
+import Navbar from "./others/navigationBar/Navbar";
 
 const Layout = ({ children }) => {
-  const [isAuthorized, setIsAuthorized] = useState(AuthService.isAuthorized());
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
-    setIsAuthorized(AuthService.isAuthorized());
+    const authorized = AuthService.isAuthorized();
+    setIsAuthorized(authorized);
+
+    if (!authorized) {
+      router.replace("/");
+    }
   }, []);
 
   if (!isAuthorized) {
-    router.push("/");
     return <Auth />;
   }
 

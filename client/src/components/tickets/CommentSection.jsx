@@ -14,6 +14,7 @@ import { Field, Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
 import { IoMdSend } from "react-icons/io";
 import CommentService from "@/services/comment-service";
+import useApi from "@/hooks/useApi";
 import { Permissions } from "@/util/Utils";
 import {
   CreateCommentData,
@@ -23,31 +24,22 @@ import PermissionsRender from "../others/PermissionsRender";
 import Comment from "./Comment";
 
 const CommentSection = ({ ticketId }) => {
-  const [comments, setComments] = useState([]);
-  const [error, seterror] = useState("");
-
-  const getTicketComments = async () => {
-    if (ticketId) {
-      const comments = await CommentService.getTicketComments(ticketId);
-      setComments(comments);
-    }
-  };
-
-  useEffect(() => {
-    getTicketComments();
-  }, []);
+  const [error, setError] = useState("");
+  const commentsSWR = useApi(CommentService.getTicketComments(ticketId));
 
   const onComment = async (values, { resetForm }) => {
-    seterror("");
-
     try {
-      await CommentService.createTicketComment(ticketId, values);
+      await commentsSWR.mutateServer(
+        CommentService.createTicketComment(ticketId, values)
+      );
       resetForm();
-      getTicketComments();
+      setError("");
     } catch (error) {
-      seterror(error);
+      console.log(error);
+      setError(error);
     }
   };
+
   return (
     <Flex width="100%" direction="column">
       <Flex
@@ -58,13 +50,13 @@ const CommentSection = ({ ticketId }) => {
         overflowY="auto"
         mb={4}
       >
-        {comments.length ? (
-          comments.map((comment) => (
+        {commentsSWR.data ? (
+          commentsSWR.data?.map((comment) => (
             <Comment
               key={comment._id}
-              getTicketComments={getTicketComments}
-              seterror={seterror}
-              {...comment}
+              mutateServer={commentsSWR.mutateServer}
+              setError={setError}
+              commentData={comment}
             />
           ))
         ) : (

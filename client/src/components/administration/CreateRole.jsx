@@ -26,18 +26,21 @@ import * as Constants from "@/util/Constants";
 import { CreateRoleData, CreateRoleSchema } from "@/util/ValidationSchemas";
 import AlertModal from "../others/AlertModal";
 
-const CreateRole = ({ data, isOpen, onClose }) => {
+const CreateRole = ({ isOpen, onClose, role, mutateServer }) => {
+  const isNewRole = !role;
   const alertDialogDisclosure = useDisclosure();
   const formRef = useRef(null);
-  const roleData = data || CreateRoleData;
   const [permissions, setPermissions] = useState([]);
-  const [error, seterror] = useState(null);
+  const [roleData, setRoleData] = useState(CreateRoleData);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (data) {
-      setPermissions(data.permissions);
+    if (isOpen && role) {
+      setRoleData(role);
+      console.log(role.permissions);
+      setPermissions(role.permissions);
     }
-  }, [data]);
+  }, [isOpen]);
 
   const displayPermissions = [
     {
@@ -71,37 +74,46 @@ const CreateRole = ({ data, isOpen, onClose }) => {
     }
   };
 
-  const closeCreateRoleDiaglog = () => {
+  const closeModal = () => {
+    setRoleData(CreateRoleData);
     setPermissions([]);
-    seterror("");
+    setError("");
     onClose();
   };
 
-  const onRoleDelete = async (closeAlertModal) => {
-    closeAlertModal();
-
+  const onRoleDelete = async () => {
+    alertDialogDisclosure.onClose();
     try {
-      await MiscellaneousService.deleteRole(data._id);
-      closeCreateRoleDiaglog();
+      const apiRequestInfo = MiscellaneousService.deleteRole(role._id);
+      await mutateServer(apiRequestInfo);
+      closeModal();
     } catch (error) {
-      seterror(error);
+      setError(error);
     }
   };
 
-  const onFormSubmit = async (value, action) => {
-    const updatedData = { ...value, permissions };
+  const onFormSubmit = async (data) => {
+    try {
+      const roleDataCopy = { ...data, permissions };
 
-    if (data) {
-      await MiscellaneousService.updateRole(updatedData);
-    } else {
-      await MiscellaneousService.createRole(updatedData);
+      let apiRequestInfo = {};
+
+      if (isNewRole) {
+        apiRequestInfo = MiscellaneousService.createRole(roleDataCopy);
+      } else {
+        apiRequestInfo = MiscellaneousService.updateRole(roleDataCopy);
+      }
+
+      await mutateServer(apiRequestInfo);
+
+      closeModal();
+    } catch (error) {
+      setError(error);
     }
-
-    onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={closeCreateRoleDiaglog} size="md">
+    <Modal isOpen={isOpen} onClose={closeModal} size="md">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Create New Role</ModalHeader>
@@ -143,9 +155,7 @@ const CreateRole = ({ data, isOpen, onClose }) => {
                           size="lg"
                           value={permission.value}
                           onChange={onPermissionToggle}
-                          defaultChecked={roleData.permissions.includes(
-                            permission.value
-                          )}
+                          isChecked={permissions.includes(permission.value)}
                         />
                       </Box>
                       <FormHelperText fontSize="xs" as="i">
@@ -159,15 +169,8 @@ const CreateRole = ({ data, isOpen, onClose }) => {
           </Flex>
         </ModalBody>
 
-        <ModalFooter>
-          <Button
-            colorScheme="blue"
-            mr={3}
-            onClick={() => formRef.current?.handleSubmit()}
-          >
-            Create
-          </Button>
-          {data ? (
+        <ModalFooter gap={3}>
+          {role ? (
             <Button colorScheme="red" onClick={alertDialogDisclosure.onOpen}>
               Delete
             </Button>
@@ -182,6 +185,12 @@ const CreateRole = ({ data, isOpen, onClose }) => {
               Cancel
             </Button>
           )}
+          <Button
+            colorScheme="blue"
+            onClick={() => formRef.current?.handleSubmit()}
+          >
+            {isNewRole ? "Create" : "Save"}
+          </Button>
         </ModalFooter>
       </ModalContent>
 
@@ -189,7 +198,8 @@ const CreateRole = ({ data, isOpen, onClose }) => {
         title={"Delete role"}
         body="Are you sure you to delete this role?"
         onCTA={onRoleDelete}
-        {...alertDialogDisclosure}
+        isOpen={alertDialogDisclosure.isOpen}
+        onClose={alertDialogDisclosure.onClose}
       />
     </Modal>
   );

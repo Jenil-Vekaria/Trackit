@@ -5,9 +5,10 @@ export const getRoles = async (req, res) => {
     try {
         const roles = await Role.find({});
 
-        return res.json({ roles });
+        return res.json(roles);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -18,14 +19,15 @@ export const addRole = async (req, res) => {
         const exisitingRole = await Role.findOne({ name });
 
         if (exisitingRole) {
-            return res.status(400).json({ error: "Role already exist" });
+            return res.status(400).json({ message: "Role already exist" });
         }
 
         const role = await Role.create({ name, permissions });
 
-        return res.json({ role });
+        return res.json(role);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -43,7 +45,8 @@ export const deleteRole = async (req, res) => {
 
         return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).json({ error: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -54,11 +57,12 @@ export const updateRole = async (req, res) => {
     try {
         const updatedRole = await Role.findOneAndUpdate({ _id: roleId }, { name, permissions }, { new: true });
 
-        return res.json({ updatedRole });
+        return res.json(updatedRole);
 
     } catch (error) {
         console.error(error.message);
-        return res.status(500).json({ error: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 
 };

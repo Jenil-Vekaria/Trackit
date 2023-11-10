@@ -17,12 +17,13 @@ export const authMiddleware = async (req, res, next) => {
                     return next();
                 }
             }).catch((error) => {
-                return res.status(403).json({ error: "User not found" });
+                return res.status(403).json({ message: "User not found" });
             });
 
         });
     }
     else {
+        console.log("authMiddleware issue");
         return res.sendStatus(403);
     }
 };
@@ -32,13 +33,14 @@ export const handleError = async (error, req, res, next) => {
     const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
     res.status(statusCode);
     res.json({
-        error: error.message
+        message: error.message
     });
 };
 
 
 export const routeNotFound = async (req, res) => {
-    res.status(404).json({ error: "Route not found" });
+    console.log("Route not found");
+    res.status(404).json({ message: "Something went wrong" });
 };
 
 
@@ -49,7 +51,7 @@ export const validateResource = (resourceSchema) => {
                 next();
             })
             .catch((err) => {
-                res.status(400).json({ error: err.errors[0] });
+                res.status(400).json({ message: err.errors[0] });
             });
     };
 };
@@ -57,7 +59,7 @@ export const validateResource = (resourceSchema) => {
 export const validateParamId = (paramId) => {
     return (req, res, next) => {
         if (!mongoose.Types.ObjectId.isValid(req.params[paramId])) {
-            return res.status(403).json({ message: `Invalid ${paramId}` });
+            return res.status(404).json({ message: `Invalid ${paramId}` });
         }
 
         next();

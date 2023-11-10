@@ -11,12 +11,14 @@ export const getUserTickets = async (req, res) => {
         const tickets = await Ticket.find({ assignees: userId })
             .populate({ path: "projectId", select: { title: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
+            .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
-        return res.json({ tickets });
+        return res.json(tickets);
 
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 
 };
@@ -36,12 +38,14 @@ export const getProjectTickets = async (req, res) => {
 
         const tickets = await Ticket.find({ projectId })
             .populate({ path: "projectId", select: { title: 1 } })
+            .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
-            .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
+            .populate({ path: "assignees", select: { firstName: 1, lastName: 1 }, populate: { path: "roleId", select: { _id: 0, name: 1 } } });
 
-        return res.json({ tickets });
+        return res.json(tickets);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -55,6 +59,7 @@ export const getTicketInfo = async (req, res) => {
         const ticket = await Ticket.findOne({ _id: ticketId })
             .populate({ path: "projectId", select: { title: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
+            .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
         // Ensure the user belongs to the project
@@ -68,10 +73,11 @@ export const getTicketInfo = async (req, res) => {
             return res.status(403).json({ message: "Ticket does not exist" });
         }
 
-        return res.json({ ticket });
+        return res.json(ticket);
 
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -102,12 +108,13 @@ export const createTicket = async (req, res) => {
         const ticket = await Ticket.findById(newTicket._id)
             .populate({ path: "projectId", select: { title: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
+            .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
-        return res.json({ ticket });
+        return res.json(ticket);
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -132,14 +139,15 @@ export const updateTicket = async (req, res) => {
         const updatedTicket = await Ticket.findById(req.body._id)
             .populate({ path: "projectId", select: { title: 1 } })
             .populate({ path: "type", select: { __v: 0 } })
+            .populate({ path: "createdBy", select: { firstName: 1, lastName: 1 } })
             .populate({ path: "assignees", select: { firstName: 1, lastName: 1 } });
 
-        return res.json({ ticket: updatedTicket });
+        return res.json(updatedTicket);
 
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };
 
@@ -155,6 +163,7 @@ export const deleteTicket = async (req, res) => {
 
         return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.log(error);
+        return res.status(500).json({ message: "Internal server issue" });
     }
 };

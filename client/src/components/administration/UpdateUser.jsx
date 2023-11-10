@@ -21,43 +21,84 @@ import {
 } from "@chakra-ui/react";
 import { Field, Form, Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
 import MiscellaneousService from "@/services/miscellaneous-service";
-import { getRoles } from "@/features/miscellaneousSlice";
-import { ManageUserSchema, SignupSchema } from "@/util/ValidationSchemas";
+import useApi from "@/hooks/useApi";
+import {
+  ManageUserSchema,
+  SignUpData,
+  SignupSchema,
+} from "@/util/ValidationSchemas";
 
 const UpdateUser = ({
   isOpen,
   closeModal,
   viewUser,
   isUpdateMyProfile = false,
+  mutateServer,
 }) => {
-  const roles = useSelector(getRoles);
+  const allRolesSWR = useApi(MiscellaneousService.getRoles());
   const formRef = useRef(null);
   const [error, setError] = useState(null);
-  const [userInfo, setUserInfo] = useState({});
+  const [userInfo, setUserInfo] = useState(SignUpData);
   const [showPassword, setShowPassword] = useBoolean();
+  const isUpdatingUserProfile = !isUpdateMyProfile && viewUser;
+
+  const modalTitle = isUpdateMyProfile
+    ? "My Profile"
+    : viewUser
+    ? "Update User"
+    : "Create User";
 
   useEffect(() => {
-    if (viewUser) {
-      const userInfoCopy = { ...viewUser };
-      userInfoCopy.roleId = viewUser.roleId?._id;
+    if (isOpen && viewUser) {
+      const userInfoCopy = {
+        _id: viewUser._id,
+        firstName: viewUser.firstName,
+        lastName: viewUser.lastName,
+        roleId: viewUser.roleId?._id,
+        email: viewUser.email,
+      };
+
+      if (isUpdateMyProfile) {
+        userInfoCopy.password = "";
+        userInfoCopy.confirmPassword = "";
+      }
 
       setUserInfo(userInfoCopy);
     }
-  }, [viewUser]);
+  }, [isOpen]);
 
-  const onUpdateUser = async (values, action) => {
+  const onUpdateUser = async (data) => {
     try {
-      await MiscellaneousService.updateUserProfile(values);
-      closeModal();
+      let apiRequestInfo;
+
+      if (viewUser) {
+        apiRequestInfo = isUpdateMyProfile
+          ? MiscellaneousService.updateMyProfile(data)
+          : MiscellaneousService.updateUserProfile(data);
+      } else {
+        apiRequestInfo = MiscellaneousService.createUser(data);
+      }
+
+      await mutateServer(apiRequestInfo);
+
+      setError("");
+      onCloseModal();
     } catch (error) {
-      setError(error.response.data.message);
+      console.log("ERROR: ", error);
+      setError(error);
     }
   };
 
+  const onCloseModal = () => {
+    setShowPassword.off();
+    setUserInfo(SignUpData);
+    setError("");
+    closeModal();
+  };
+
   const createRoleTypeOption = () => {
-    return roles.map((role) => (
+    return allRolesSWR.data?.map((role) => (
       <option key={role._id} value={role._id}>
         {role.name}
       </option>
@@ -65,24 +106,16 @@ const UpdateUser = ({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => {
-        setShowPassword.off();
-        setError("");
-        closeModal();
-      }}
-      size="md"
-    >
+    <Modal isOpen={isOpen} onClose={onCloseModal} size="md">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Update User</ModalHeader>
+        <ModalHeader>{modalTitle}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Formik
             initialValues={userInfo}
             validationSchema={
-              isUpdateMyProfile ? SignupSchema : ManageUserSchema
+              isUpdatingUserProfile ? ManageUserSchema : SignupSchema
             }
             onSubmit={onUpdateUser}
             innerRef={formRef}
@@ -105,55 +138,39 @@ const UpdateUser = ({
                     isInvalid={errors.firstName && touched.firstName}
                   >
                     <FormLabel>First Name</FormLabel>
-                    <Field
-                      as={Input}
-                      name="firstName"
-                      type="text"
-                      disabled={!isUpdateMyProfile}
-                    />
+                    <Field as={Input} name="firstName" type="text" />
                     <FormErrorMessage>{errors.firstName}</FormErrorMessage>
                   </FormControl>
 
                   <FormControl isInvalid={errors.lastName && touched.lastName}>
                     <FormLabel>Last Name</FormLabel>
-                    <Field
-                      as={Input}
-                      name="lastName"
-                      type="text"
-                      disabled={!isUpdateMyProfile}
-                    />
+                    <Field as={Input} name="lastName" type="text" />
                     <FormErrorMessage>{errors.lastName}</FormErrorMessage>
                   </FormControl>
                 </Flex>
 
                 <FormControl mt={4} isInvalid={errors.email && touched.email}>
                   <FormLabel>Email</FormLabel>
-                  <Field
-                    as={Input}
-                    name="email"
-                    type="email"
-                    disabled={!isUpdateMyProfile}
-                  />
+                  <Field as={Input} name="email" type="email" />
                   <FormErrorMessage>{errors.email}</FormErrorMessage>
                 </FormControl>
-
-                <FormControl mt={4} isInvalid={errors.roleId && touched.roleId}>
-                  <FormLabel>Role</FormLabel>
-                  <Field
-                    as={Select}
-                    name="roleId"
-                    type="select"
-                    disabled={isUpdateMyProfile}
+                {!isUpdateMyProfile ? (
+                  <FormControl
+                    mt={4}
+                    isInvalid={errors.roleId && touched.roleId}
                   >
-                    <option value="" disabled selected>
-                      Select
-                    </option>
-                    {createRoleTypeOption()}
-                  </Field>
-                  <FormErrorMessage>{errors.roleId}</FormErrorMessage>
-                </FormControl>
+                    <FormLabel>Role</FormLabel>
+                    <Field as={Select} name="roleId" type="select">
+                      <option value="" disabled>
+                        Select
+                      </option>
+                      {createRoleTypeOption()}
+                    </Field>
+                    <FormErrorMessage>{errors.roleId}</FormErrorMessage>
+                  </FormControl>
+                ) : null}
 
-                {isUpdateMyProfile ? (
+                {!isUpdatingUserProfile ? (
                   <>
                     <FormControl
                       mt={4}
@@ -165,7 +182,6 @@ const UpdateUser = ({
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter password"
                         name="password"
-                        disabled
                       />
                       <FormErrorMessage>{errors.password}</FormErrorMessage>
                     </FormControl>
@@ -183,14 +199,9 @@ const UpdateUser = ({
                           type={showPassword ? "text" : "password"}
                           placeholder="Enter password"
                           name="confirmPassword"
-                          disabled
                         />
                         <InputRightElement width="4.5rem">
-                          <Button
-                            size="sm"
-                            onClick={setShowPassword.toggle}
-                            isDisabled
-                          >
+                          <Button size="sm" onClick={setShowPassword.toggle}>
                             {showPassword ? "Hide" : "Show"}
                           </Button>
                         </InputRightElement>
@@ -206,31 +217,19 @@ const UpdateUser = ({
           </Formik>
         </ModalBody>
 
-        <ModalFooter>
-          <Button
-            colorScheme="blue"
-            mr={3}
-            isDisabled
-            onClick={() => formRef.current?.handleSubmit()}
-          >
-            Save
-          </Button>
-          {isUpdateMyProfile ? (
-            <Button
-              colorScheme="gray"
-              onClick={() => {
-                setShowPassword.off();
-                setError("");
-                closeModal();
-              }}
-            >
-              Cancel
-            </Button>
-          ) : (
+        <ModalFooter gap={3}>
+          {viewUser ? (
             <Tooltip label="Not Implemeted">
               <Button colorScheme="red">Delete</Button>
             </Tooltip>
-          )}
+          ) : null}
+
+          <Button
+            colorScheme="blue"
+            onClick={() => formRef.current?.handleSubmit()}
+          >
+            {!viewUser ? "Create" : "Save"}
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

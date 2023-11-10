@@ -1,37 +1,35 @@
 import Head from "next/head";
 import { Flex, Heading, useDisclosure } from "@chakra-ui/react";
-import "@inovua/reactdatagrid-community/index.css";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
+import Loading from "@/components/others/Loading";
+import useApi from "@/hooks/useApi";
 import Table from "../components/others/Table";
 import CreateTicket from "../components/tickets/CreateTicket";
-import { getTickets } from "../features/ticketSlice";
 import TicketService from "../services/ticket-service";
-import { TICKETS_COLUMNS } from "../util/TableDataDisplay";
+import {
+  MY_TICKETS_COLUMNS,
+  TICKETS_DEFAULT_SORT,
+} from "../util/TableDataDisplay";
 
 const Tickets = () => {
-  const tickets = useSelector(getTickets);
-  const [myTickets, setmyTickets] = useState([]);
+  const myTicketsSWR = useApi(TicketService.getUserTickets());
+
   const [viewTicket, setViewTicket] = useState(null);
-  const [viewTicketProjectId, setViewTicketProjectId] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const getUserTickets = async () => {
-    await TicketService.getUserTickets();
-  };
-
-  const onTicketClick = (rowProps, event) => {
+  const onTicketClick = (rowProps, _) => {
     setViewTicket(rowProps.data);
-    setViewTicketProjectId(rowProps.data.projectId._id);
     onOpen();
   };
-  useEffect(() => {
-    getUserTickets();
-  }, []);
 
-  useEffect(() => {
-    setmyTickets(tickets);
-  }, [tickets]);
+  const onModalClose = () => {
+    setViewTicket(null);
+    onClose();
+  };
+
+  if (myTicketsSWR.isLoading) {
+    return <Loading />;
+  }
 
   return (
     <Flex w="100%" direction="column" padding={10}>
@@ -47,19 +45,20 @@ const Tickets = () => {
       <br />
 
       <Table
-        tableData={myTickets}
-        columns={TICKETS_COLUMNS}
-        searchPlaceholder="Search for tickets"
+        tableData={myTicketsSWR.data}
+        columns={MY_TICKETS_COLUMNS}
+        defaultSortInfo={TICKETS_DEFAULT_SORT}
+        searchPlaceholder="Search tickets by type, title, project, status ..."
         height={450}
         onRowClick={onTicketClick}
+        isLoading={myTicketsSWR.isLoading}
       />
 
       <CreateTicket
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={onModalClose}
         ticket={viewTicket}
-        setviewTicket={setViewTicket}
-        projectId={viewTicketProjectId}
+        mutateServer={myTicketsSWR.mutateServer}
       />
     </Flex>
   );

@@ -1,176 +1,111 @@
-import axios from "axios";
-import AuthService from "./auth-service";
-import { addRole, addTicketType, removeRole, removeTicketType, setRole, setRoles, setTicketType, setTicketTypes, setUser, setUsers } from "../features/miscellaneousSlice.js";
-import { store } from "../store/store.js";
-import { setLogin } from "../features/authSlice";
+import useAuthStore from "@/hooks/useAuth";
 
-const API = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_ENDPOINT });
-
-API.interceptors.request.use((req) => {
-    const { accessToken } = AuthService.getCurrentUser();
-
-    if (accessToken)
-        req.headers["x-access-token"] = accessToken;
-
-    return req;
-});
-
-const updateUserProfile = async (userData) => {
-    try {
-        const { data: { updatedUser } } = await API.patch("/user/update", userData);
-        const { _id, accessToken } = AuthService.getCurrentUser();
-
-        if (updatedUser._id === _id) {
-            updatedUser.accessToken = accessToken;
-            store.dispatch(setLogin(updatedUser));
-        }
-
-        store.dispatch(setUser(updatedUser));
-
-    } catch (error) {
-        throw error;
-    }
+const updateUserProfile = (data) => {
+    return {
+        url: "/user/update",
+        method: "patch",
+        data
+    };
 };
 
-const getTicketType = async () => {
-    try {
-        const { data } = await API.get("/ticketType");
-        store.dispatch(setTicketTypes(data.ticketType));
-    } catch (error) {
-        console.error(error);
-    }
+const updateMyProfile = (data) => {
+    return {
+        url: "/user/updateMyProfile",
+        method: "patch",
+        data
+    };
 };
 
-const createTicketType = async (ticketData) => {
-    try {
-        const { data } = await API.post("/ticketType", ticketData);
-        store.dispatch(addTicketType(data.ticketType));
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const getUsers = (query = "") => {
+    return {
+        method: "get",
+        url: `/user/all${"?" + query}`
+    };
+};
+
+const createUser = (data) => {
+    return {
+        method: "post",
+        url: "/user/create",
+        data
+    };
 };
 
 
-const updateTicketType = async (ticketData) => {
-    try {
-        const { data } = await API.patch("/ticketType", ticketData);
-        store.dispatch(setTicketType(data.ticketType));
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const getAllTicketType = () => {
+    return {
+        url: "/ticketType",
+        method: "get"
+    };
 };
 
-const deleteTicketType = async (ticketName) => {
-    try {
-        await API.delete(`/ticketType/${ticketName}`);
-        store.dispatch(removeTicketType(ticketName));
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const createTicketType = (data) => {
+    return {
+        url: "/ticketType",
+        method: "post",
+        data
+    };
 };
 
-const getUsers = async () => {
-    try {
-        const { data } = await API.get("/user/all");
-        store.dispatch(setUsers(data.users));
-    } catch (error) {
-        console.error(error);
-    }
+
+const updateTicketType = (data) => {
+    return {
+        url: `/ticketType`,
+        method: "patch",
+        data
+    };
 };
 
-const getRoles = async () => {
-    try {
-        const { data } = await API.get("/role");
-        store.dispatch(setRoles(data.roles));
-    } catch (error) {
-        console.error(error);
-    }
+const deleteTicketType = (ticketTypeId) => {
+    return {
+        url: `/ticketType/${ticketTypeId}`,
+        method: "delete"
+    };
 };
 
-const createRole = async (roleData) => {
-    try {
-        const { data } = await API.post("/role", roleData);
-        store.dispatch(addRole(data.role));
-    } catch (error) {
-        console.error(error);
-    }
+const getRoles = () => {
+    return {
+        url: "/role",
+        method: "get"
+    };
 };
 
-const updateRole = async (roleData) => {
-    try {
-        const { data } = await API.patch(`/role/${roleData._id}`, roleData);
-
-        store.dispatch(setRole(data.updatedRole));
-    } catch (error) {
-        console.error(error);
-    }
+const createRole = (data) => {
+    return {
+        url: "/role",
+        method: "post",
+        data
+    };
 };
 
-const deleteRole = async (roleId) => {
-    try {
-        await API.delete(`/role/${roleId}`);
-
-        store.dispatch(removeRole(roleId));
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const updateRole = (data) => {
+    return {
+        url: `/role/${data._id}`,
+        method: "patch",
+        data
+    };
 };
 
-const fetchInitialData = async () => {
-    try {
-        await getTicketType();
-        await getUsers();
-        await getRoles();
-    } catch (error) {
-        console.error(error);
-    }
+const deleteRole = (roleId) => {
+    return {
+        url: `/role/${roleId}`,
+        method: "delete"
+    };
 };
-
-const getUserInfo = (userId) => {
-    const state = store.getState();
-    const user = state.miscellaneous.users.filter(user => user._id === userId);
-
-    return user[0];
-};
-
-const getUserFullName = (userId) => {
-    const state = store.getState();
-    const user = state.miscellaneous.users.filter(user => user._id === userId);
-
-    return user[0].firstName + " " + user[0].lastName;
-};
-
-const getTicketTypeInfo = (ticketTypeId) => {
-    const state = store.getState();
-    const ticketType = state.miscellaneous.ticketType.filter(ticketType => ticketType._id === ticketTypeId);
-
-    return ticketType[0];
-};
-
-const getRoleInfo = (roleId) => {
-    const state = store.getState();
-    const role = state.miscellaneous.roles.filter(role => role._id === roleId);
-
-    return role[0] || {};
-};
-
 
 const MiscellaneousService = {
-    getTicketType,
+    updateMyProfile,
     getUsers,
-    getUserInfo,
-    getUserFullName,
-    getTicketTypeInfo,
+    createUser,
+    getAllTicketType,
     createTicketType,
     updateTicketType,
     deleteTicketType,
     getRoles,
-    getRoleInfo,
     updateUserProfile,
     createRole,
     updateRole,
-    deleteRole,
-    fetchInitialData
+    deleteRole
 };
 
 export default MiscellaneousService;

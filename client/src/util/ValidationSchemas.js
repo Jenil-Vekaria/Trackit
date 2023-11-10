@@ -11,6 +11,7 @@ export const SignupSchema = Yup.object().shape({
         [Yup.ref("password"), null],
         "Passwords must match",
     ),
+    roleId: Yup.string().required("Role is required")
 });
 
 export const SignUpData = {
@@ -19,6 +20,7 @@ export const SignUpData = {
     email: "",
     password: "",
     confirmPassword: "",
+    roleId: ""
 };
 
 
@@ -79,7 +81,7 @@ export const CreateRoleData = {
 
 export const CreateTicketTypeSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
-    iconName: Yup.string().required("Required"),
+    iconName: Yup.string(),
     colour: Yup.string().required("Required"),
 });
 

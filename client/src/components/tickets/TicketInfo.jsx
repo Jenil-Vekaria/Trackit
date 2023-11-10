@@ -1,5 +1,6 @@
 import {
   Alert,
+  AlertIcon,
   Flex,
   FormControl,
   FormErrorMessage,
@@ -11,8 +12,8 @@ import {
 import { Field, Form, Formik } from "formik";
 import moment from "moment/moment";
 import React from "react";
-import { useSelector } from "react-redux";
-import { getTicketType } from "@/features/miscellaneousSlice";
+import MiscellaneousService from "@/services/miscellaneous-service";
+import useApi from "@/hooks/useApi";
 import { usePermissions } from "@/hooks/usePermissions";
 import {
   Permissions,
@@ -26,12 +27,11 @@ const TicketInfo = ({
   ticketInfo,
   onHandleFormSubmit,
   formRef,
-  error,
   ticketDescription,
   setTicketDescription,
 }) => {
   const canManageTickets = usePermissions(Permissions.canManageTickets);
-  const ticketTypes = useSelector(getTicketType);
+  const ticketTypesSWR = useApi(MiscellaneousService.getAllTicketType());
 
   return (
     <Formik
@@ -41,14 +41,8 @@ const TicketInfo = ({
       innerRef={formRef}
       enableReinitialize
     >
-      {({ errors, touched }) => (
+      {({ errors, touched, handleChange }) => (
         <Form>
-          {error && (
-            <Alert status="error" variant="left-accent" mb={2} fontSize="sm">
-              {error}
-            </Alert>
-          )}
-
           <Flex gap={3}>
             <Flex direction="column" flex={1} gap={3}>
               <FormControl isInvalid={errors.title && touched.title}>
@@ -57,6 +51,7 @@ const TicketInfo = ({
                   as={Input}
                   name="title"
                   type="text"
+                  onChange={handleChange}
                   disabled={!canManageTickets}
                 />
                 <FormErrorMessage>{errors.title}</FormErrorMessage>
@@ -67,7 +62,7 @@ const TicketInfo = ({
                 <RichTextEditor
                   content={ticketDescription}
                   setContent={setTicketDescription}
-                  readOnly={!canManageTickets}
+                  disabled={!canManageTickets}
                 />
               </FormControl>
             </Flex>
@@ -79,12 +74,13 @@ const TicketInfo = ({
                   as={Select}
                   name="type"
                   type="select"
+                  onChange={handleChange}
                   disabled={!canManageTickets}
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select
                   </option>
-                  {createTicketTypeSelectOptions(ticketTypes)}
+                  {createTicketTypeSelectOptions(ticketTypesSWR.data || [])}
                 </Field>
                 <FormErrorMessage>{errors.type}</FormErrorMessage>
               </FormControl>
@@ -94,9 +90,10 @@ const TicketInfo = ({
                   as={Select}
                   name="status"
                   type="select"
+                  onChange={handleChange}
                   disabled={!canManageTickets}
                 >
-                  <option value="" disabled selected>
+                  <option value="" disabled>
                     Select
                   </option>
                   {createTicketStatusSelectOptions()}
@@ -112,6 +109,7 @@ const TicketInfo = ({
                     as={Input}
                     name="estimatedTime"
                     type="number"
+                    onChange={handleChange}
                     disabled={!canManageTickets}
                   />
                   <FormErrorMessage>{errors.estimatedTime}</FormErrorMessage>
@@ -127,9 +125,10 @@ const TicketInfo = ({
                     as={Select}
                     name="estimatedTimeUnit"
                     type="select"
+                    onChange={handleChange}
                     disabled={!canManageTickets}
                   >
-                    <option value="" disabled selected>
+                    <option value="" disabled>
                       Select
                     </option>
                     <option value="h">Hour(s)</option>

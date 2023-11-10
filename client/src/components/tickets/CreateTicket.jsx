@@ -1,4 +1,6 @@
 import {
+  Alert,
+  AlertIcon,
   Button,
   Heading,
   Modal,
@@ -15,14 +17,14 @@ import {
   Tabs,
   Text,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import ProjectService from "@/services/project-service";
 import TicketService from "@/services/ticket-service";
+import useApi from "@/hooks/useApi";
 import { usePermissions } from "@/hooks/usePermissions";
-import { USERS_COLUMNS } from "@/util/TableDataDisplay";
+import { PROJECT_ASSIGNEES_COLUMNS } from "@/util/TableDataDisplay";
 import { Permissions } from "@/util/Utils";
 import { CreateTicketData } from "@/util/ValidationSchemas";
 import AlertModal from "../others/AlertModal";
@@ -35,97 +37,60 @@ const CreateTicket = ({
   isOpen,
   onClose,
   ticket,
-  setviewTicket,
-  projectId,
-  projectTitle,
+  mutateServer,
+  projectInfo,
 }) => {
   const isNewTicket = ticket ? false : true;
 
-  const [projectAssignees, setProjectAssignees] = useState([]);
-
-  const [ticketAssignees, setTicketAssignees] = useState([]);
+  const [selectedAssigneeIds, setSelectedAssigneeIds] = useState([]);
   const [ticketDescription, setTicketDescription] = useState("");
   const [ticketInfo, setTicketInfo] = useState(CreateTicketData);
-
   const [error, setError] = useState("");
+  const [project, setProject] = useState(projectInfo);
+
+  const projectSWR = useApi(
+    ProjectService.getProjectInfo(ticket?.projectId._id),
+    !projectInfo && ticket
+  );
 
   const canManageTickets = usePermissions(Permissions.canManageTickets);
 
   const alertModalDisclosure = useDisclosure();
   const formRef = useRef();
-  const toast = useToast();
 
   useEffect(() => {
-    setProjectAssignees(ProjectService.getProjectAssignees(projectId));
+    if (projectSWR.data) {
+      setProject(projectSWR.data);
+    }
+  }, [projectSWR]);
 
-    if (ticket) {
+  useEffect(() => {
+    if (isOpen && ticket) {
       const ticketCopy = { ...ticket };
 
-      ticketCopy.assignees = ticket.assignees.map((assignee) => assignee._id);
-      ticketCopy.projectId = projectId;
+      ticketCopy._id = ticket._id;
+      ticketCopy.projectId = ticket.projectId._id;
       ticketCopy.type = ticket.type._id;
+      ticketCopy.assignees = ticket.assignees.map((assignee) => assignee._id);
 
-      setTicketDescription(ticketCopy.description);
-      setTicketAssignees(ticketCopy.assignees);
       setTicketInfo(ticketCopy);
+      setSelectedAssigneeIds(ticketCopy.assignees);
+      setTicketDescription(ticket.description);
     }
-  }, [ticket]);
+  }, [isOpen]);
 
   const onTicketAssigneeClick = ({ selected }) => {
-    //"selected" is an object with key-value pair (eg. {<assigneeId>: true})
-    setTicketAssignees(Object.keys(selected));
-  };
-
-  const getSelectedTicketAssignees = () => {
-    const selectedAssignees = {};
-
-    if (!isNewTicket) {
-      ticket.assignees.forEach((assignee) => {
-        selectedAssignees[assignee._id] = true;
-      });
-    }
-
-    return selectedAssignees;
-  };
-
-  const onHandleFormSubmit = async (values) => {
-    const ticketFormData = { ...values };
-    ticketFormData.assignees = ticketAssignees;
-    ticketFormData.description = ticketDescription;
-
-    try {
-      if (isNewTicket) {
-        await TicketService.createTicket(ticketFormData, projectId);
-      } else {
-        await TicketService.updateTicket(ticketFormData, projectId);
-      }
-
-      toast({
-        title: `Ticket ${ticket ? "updated" : "created"}`,
-        status: "success",
-        duration: 500,
-        isClosable: true,
-      });
-
-      closeTicketModal();
-    } catch (error) {
-      setError(error);
-    }
-  };
-
-  const resetFields = () => {
-    setviewTicket(null);
-    setTicketAssignees([]);
-    setTicketInfo(CreateTicketData);
-    setError("");
-    setTicketDescription("");
+    setSelectedAssigneeIds(Object.keys(selected));
   };
 
   const onTicketDelete = async () => {
     alertModalDisclosure.onClose();
 
     try {
-      await TicketService.deleteTicket(ticket._id);
+      const apiRequestInfo = TicketService.deleteTicket(ticket._id);
+
+      await mutateServer(apiRequestInfo);
+
       closeTicketModal();
     } catch (error) {
       setError(error);
@@ -133,8 +98,32 @@ const CreateTicket = ({
   };
 
   const closeTicketModal = () => {
-    resetFields();
+    setSelectedAssigneeIds([]);
+    setTicketDescription("");
+    setTicketInfo(CreateTicketData);
+    setError("");
     onClose();
+  };
+
+  const onHandleFormSubmit = async (data) => {
+    try {
+      const ticketData = { ...data };
+      ticketData.assignees = selectedAssigneeIds;
+      ticketData.description = ticketDescription;
+
+      let apiRequestInfo = {};
+
+      if (isNewTicket) {
+        apiRequestInfo = TicketService.createTicket(project._id, ticketData);
+      } else {
+        apiRequestInfo = TicketService.updateTicket(project._id, ticketData);
+      }
+
+      await mutateServer(apiRequestInfo);
+      closeTicketModal();
+    } catch (error) {
+      setError(error);
+    }
   };
 
   return (
@@ -151,7 +140,7 @@ const CreateTicket = ({
             {!isNewTicket ? "Edit" : "Create"} Ticket
           </Heading>
           <Text fontSize="sm" as="i" fontWeight={400} mt={2}>
-            Project: {ticket?.projectId.title || ""}
+            Project: {project?.title}
           </Text>
         </ModalHeader>
 
@@ -164,6 +153,13 @@ const CreateTicket = ({
               {!isNewTicket && <Tab>Comments</Tab>}
               <Tab>Assignees</Tab>
             </TabList>
+
+            {error && (
+              <Alert status="error" variant="left-accent" mb={2} fontSize="sm">
+                <AlertIcon />
+                {error}
+              </Alert>
+            )}
 
             <TabPanels>
               <TabPanel>
@@ -185,13 +181,13 @@ const CreateTicket = ({
 
               <TabPanel>
                 <Table
-                  tableData={projectAssignees}
-                  columns={USERS_COLUMNS}
+                  tableData={project?.assignees}
+                  columns={PROJECT_ASSIGNEES_COLUMNS}
                   searchPlaceholder={"Search for users"}
                   height={300}
                   hasCheckboxColumn={true}
                   sortable={false}
-                  selectedRow={getSelectedTicketAssignees()}
+                  selectedRowIds={selectedAssigneeIds}
                   onSelectionChange={onTicketAssigneeClick}
                   disableCheckBox={!canManageTickets}
                 />

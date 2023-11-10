@@ -20,14 +20,6 @@ import PageNotFound from "./404";
 const Administration = () => {
   const canManageAdminPage = usePermissions(Permissions.canManageAdminPage);
 
-  const fetchAdminData = async () => {
-    await MiscellaneousService.fetchInitialData();
-  };
-
-  useEffect(() => {
-    fetchAdminData();
-  }, []);
-
   if (!canManageAdminPage) {
     return <PageNotFound />;
   }

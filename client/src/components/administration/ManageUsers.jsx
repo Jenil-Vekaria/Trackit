@@ -1,22 +1,22 @@
-import { useDisclosure } from "@chakra-ui/react";
+import { Button, Flex, Spacer, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { getUsers } from "@/features/miscellaneousSlice";
+import MiscellaneousService from "@/services/miscellaneous-service";
+import useApi from "@/hooks/useApi";
 import { MANAGE_USERS_COLUMNS } from "@/util/TableDataDisplay";
 import Table from "../others/Table";
 import UpdateUser from "./UpdateUser";
 
 const ManageUsers = () => {
-  const allUsers = useSelector(getUsers(false));
-  const [viewUser, setViewUser] = useState({});
+  const allUsersSWR = useApi(MiscellaneousService.getUsers("excludeUser=true"));
+  const [viewUser, setViewUser] = useState(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const onUserClick = (rowProps, event) => {
+  const onUserClick = (rowProps, _) => {
     setViewUser(rowProps.data);
     onOpen();
   };
 
-  const closeModal = () => {
+  const closeModal = async () => {
     setViewUser(null);
     onClose();
   };
@@ -24,13 +24,26 @@ const ManageUsers = () => {
   return (
     <>
       <Table
-        tableData={allUsers}
+        tableData={allUsersSWR.data}
         columns={MANAGE_USERS_COLUMNS}
         searchPlaceholder="Search for users"
         onRowClick={onUserClick}
-        height={480}
+        height={420}
+        isLoading={allUsersSWR.isLoading}
       />
-      <UpdateUser isOpen={isOpen} closeModal={closeModal} viewUser={viewUser} />
+      <br />
+      <Spacer />
+      <Flex justify="flex-end">
+        <Button colorScheme="blue" pos="right" onClick={() => onOpen()}>
+          Add New User
+        </Button>
+      </Flex>
+      <UpdateUser
+        isOpen={isOpen}
+        closeModal={closeModal}
+        viewUser={viewUser}
+        mutateServer={allUsersSWR.mutateServer}
+      />
     </>
   );
 };

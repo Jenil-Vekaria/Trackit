@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Alert,
   Button,
@@ -19,97 +20,119 @@ import {
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
-import * as BsIcon from "react-icons/bs";
 import MiscellaneousService from "@/services/miscellaneous-service";
-import { BS_ICONS } from "@/util/Constants";
-import { ICONS_COLUMNS } from "@/util/TableDataDisplay";
 import {
   CreateTicketTypeData,
   CreateTicketTypeSchema,
 } from "@/util/ValidationSchemas";
 import AlertModal from "../others/AlertModal";
-import Table from "../others/Table";
+import SearchBar from "../others/SearchBar";
 
-const CreateTicketType = ({
-  data,
-  isOpen,
-  onClose,
-  canDeleteTicketType = true,
-}) => {
-  const alertDialgoDisclosure = useDisclosure();
-  const [ticketType, setTicketType] = useState(CreateTicketTypeData);
+const CreateTicketType = ({ isOpen, onClose, ticketType, mutateServer }) => {
+  const isNewTicketType = !ticketType;
+
+  const [ticketTypeData, setTicketTypeData] = useState(CreateTicketTypeData);
   const [iconColour, setIconColour] = useState("#000000");
-  const [iconName, setIconName] = useState("");
+  const [selectedIcon, setSelectedIcon] = useState(null);
+  const [iconName, setIconName] = useState(null);
   const [error, setError] = useState("");
+
   const formRef = useRef(null);
+  const alertDialogDisclosure = useDisclosure();
+
+  let bsIcons = null;
 
   useEffect(() => {
-    if (data) {
-      setIconColour(data.colour);
-      setIconName(data.iconName);
-      setTicketType(data);
+    if (isOpen && ticketType) {
+      setTicketTypeData(ticketType);
+      setIconColour(ticketType.colour);
+      getIcon(ticketType.iconName);
     }
-  }, [data]);
+  }, [isOpen]);
+
+  const getIcon = async (iconName) => {
+    try {
+      bsIcons = await import("react-icons/bs");
+      if (bsIcons[iconName]) {
+        setSelectedIcon(() => bsIcons[iconName]);
+        setIconName(iconName);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onIconSearch = ({ target: { value } }) => {
+    const trimmedValue = value.trim();
+    getIcon(trimmedValue);
+  };
 
   const onColourChange = ({ target: { value } }) => {
     setIconColour(value);
   };
 
-  const onIconClick = (rowProps, action) => {
-    setIconName(rowProps.data.name);
-    setTicketType({
-      ...formRef.current?.values,
-      iconName: rowProps.data.name,
-    });
-  };
-
-  const closeCreateTicketTypeModal = () => {
+  const closeModal = () => {
     setError("");
     setIconColour("#000000");
-    setIconName("");
-    setTicketType(CreateTicketTypeData);
+    setSelectedIcon(null);
+    setTicketTypeData(CreateTicketTypeData);
     onClose();
   };
 
-  const deleteTicketType = async (closeAlertModal) => {
-    closeAlertModal();
+  const deleteTicketType = async () => {
+    alertDialogDisclosure.onClose();
 
     try {
-      await MiscellaneousService.deleteTicketType(ticketType.name);
-      closeCreateTicketTypeModal();
+      const apiRequestInfo = MiscellaneousService.deleteTicketType(
+        ticketTypeData._id
+      );
+      await mutateServer(apiRequestInfo);
+      closeModal();
     } catch (error) {
       setError(error);
     }
   };
 
-  const onFormSubmit = async (value, action) => {
-    const ticketTypeData = { ...value, colour: iconColour };
+  const onFormSubmit = async (data) => {
+    console.log("FORM");
+    if (!iconName) {
+      setError("Must select an icon");
+      return;
+    }
 
     try {
-      if (data) {
-        await MiscellaneousService.updateTicketType(ticketTypeData);
+      const ticketTypeCopy = { ...data, iconName, colour: iconColour };
+      let apiRequestInfo;
+
+      if (isNewTicketType) {
+        apiRequestInfo = MiscellaneousService.createTicketType(ticketTypeCopy);
       } else {
-        await MiscellaneousService.createTicketType(ticketTypeData);
+        apiRequestInfo = MiscellaneousService.updateTicketType(ticketTypeCopy);
       }
-      closeCreateTicketTypeModal();
+
+      await mutateServer(apiRequestInfo);
+
+      closeModal();
     } catch (error) {
       setError(error);
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={closeCreateTicketTypeModal} size="md">
+    <Modal isOpen={isOpen} onClose={closeModal} size="md">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{data ? "Update" : "Create"} Ticket Type</ModalHeader>
+        <ModalHeader>
+          {isNewTicketType ? "Update" : "Create"} Ticket Type
+        </ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Flex direction="column" gap={3}>
             <Flex gap={2}>
               <Text as="b">Preview:</Text>
-              {iconName ? (
+              {selectedIcon ? (
                 <Icon
-                  as={BsIcon[iconName]}
+                  as={selectedIcon}
                   bg={iconColour}
                   color="gray.50"
                   w={6}
@@ -121,7 +144,7 @@ const CreateTicketType = ({
             </Flex>
 
             <Formik
-              initialValues={ticketType}
+              initialValues={ticketTypeData}
               validationSchema={CreateTicketTypeSchema}
               onSubmit={onFormSubmit}
               innerRef={formRef}
@@ -159,19 +182,21 @@ const CreateTicketType = ({
                     </FormControl>
                   </Flex>
 
-                  <FormControl isInvalid={errors.iconName && touched.iconName}>
+                  <FormControl>
                     <FormLabel fontWeight="bold" font color="inputLabel">
                       Select an Icon
+                      <Link
+                        href="https://react-icons.github.io/react-icons/icons?name=bs"
+                        passHref
+                        target="_blank"
+                      >
+                        (Click Here)
+                      </Link>
                     </FormLabel>
-                    <FormErrorMessage>{errors.iconName}</FormErrorMessage>
-
-                    <Table
-                      tableData={BS_ICONS}
-                      columns={ICONS_COLUMNS}
-                      searchPlaceholder="Search for icon"
-                      searchbarVariant="outline"
-                      onRowClick={onIconClick}
-                      height={210}
+                    <SearchBar
+                      handleSearchInputChange={onIconSearch}
+                      placeholder="Search for icon"
+                      variant="outline"
                     />
                   </FormControl>
                 </>
@@ -180,31 +205,34 @@ const CreateTicketType = ({
           </Flex>
         </ModalBody>
 
-        <ModalFooter>
-          <Button
-            colorScheme="blue"
-            mr={3}
-            onClick={() => formRef.current?.handleSubmit()}
-          >
-            Create
-          </Button>
-          {data && canDeleteTicketType ? (
-            <Button colorScheme="red" onClick={alertDialgoDisclosure.onOpen}>
+        <ModalFooter gap={3}>
+          {!isNewTicketType ? (
+            <Button colorScheme="red" onClick={alertDialogDisclosure.onOpen}>
               Delete
             </Button>
           ) : (
-            <Button colorScheme="gray" onClick={closeCreateTicketTypeModal}>
+            <Button colorScheme="gray" onClick={closeModal}>
               Cancel
             </Button>
           )}
+          <Button
+            colorScheme="blue"
+            onClick={() => {
+              console.log("create ticket type", formRef.current);
+              formRef.current?.handleSubmit();
+            }}
+          >
+            {isNewTicketType ? "Create" : "Save"}
+          </Button>
         </ModalFooter>
       </ModalContent>
 
       <AlertModal
         title={"Delete Ticket Type"}
-        body={`Are you sure you to delete this "${ticketType.name}" ticket type ?`}
+        body={`Are you sure you to delete this "${ticketTypeData.name}" ticket type ?`}
         onCTA={deleteTicketType}
-        {...alertDialgoDisclosure}
+        onClose={alertDialogDisclosure.onClose}
+        isOpen={alertDialogDisclosure.isOpen}
       />
     </Modal>
   );

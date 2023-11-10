@@ -1,36 +1,35 @@
 import { Button, Flex, Spacer, useDisclosure } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-
-import { getRoles } from "../../features/miscellaneousSlice";
+import MiscellaneousService from "@/services/miscellaneous-service";
+import useApi from "@/hooks/useApi";
 import { MANAGE_ROLES } from "../../util/TableDataDisplay";
 import Table from "../others/Table";
 import CreateRole from "./CreateRole";
 
 const ManageRoles = () => {
-  const roles = useSelector(getRoles);
-  const [roleData, setRoleData] = useState(null);
+  const allRolesSWR = useApi(MiscellaneousService.getRoles());
+  const [viewRole, setViewRole] = useState(null);
   const { isOpen, onClose, onOpen } = useDisclosure();
 
-  const onRoleClick = (rowProps, event) => {
-    setRoleData(rowProps.data);
+  const onRoleClick = (rowProps, _) => {
+    setViewRole(rowProps.data);
     onOpen();
   };
 
   const closeModal = () => {
-    setRoleData(null);
+    setViewRole(null);
     onClose();
   };
 
   return (
     <>
       <Table
-        tableData={roles}
+        tableData={allRolesSWR.data}
         columns={MANAGE_ROLES}
         rowHeight={null}
         onRowClick={onRoleClick}
         height={420}
-        searchPlaceholder="Search for role name"
+        searchPlaceholder="Search for role"
       />
       <br />
       <Spacer />
@@ -40,7 +39,12 @@ const ManageRoles = () => {
         </Button>
       </Flex>
 
-      <CreateRole isOpen={isOpen} onClose={closeModal} data={roleData} />
+      <CreateRole
+        isOpen={isOpen}
+        onClose={closeModal}
+        role={viewRole}
+        mutateServer={allRolesSWR.mutateServer}
+      />
     </>
   );
 };

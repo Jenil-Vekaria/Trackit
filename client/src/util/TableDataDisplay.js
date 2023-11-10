@@ -3,6 +3,7 @@ import moment from "moment";
 import { AvatarGroup, Badge, Icon, Tooltip } from "@chakra-ui/react";
 import * as BsIcon from "react-icons/bs";
 import TooltipAvatar from "../components/others/TooltipAvatar";
+import { getUserFullname } from "./Utils";
 
 
 const styles = {
@@ -122,8 +123,8 @@ export const TICKETS_COLUMNS = [
         name: "createdBy",
         header: "CREATED BY",
         flex: 1,
-        render: ({ value }) => {
-            return MiscellaneousService.getUserFullName(value);
+        render: ({ data }) => {
+            return data.createdBy.firstName + " " + data.createdBy.lastName;
         },
 
     },
@@ -138,22 +139,127 @@ export const TICKETS_COLUMNS = [
     }
 ];
 
+export const MY_TICKETS_COLUMNS = [
+    {
+        name: "type",
+        searchInField: ["type.name"],
+        header: "TYPE",
+        width: 55,
+        headerEllipsis: false,
+        render: ({ value }) => {
+            const { iconName, colour, name } = value;
+            return (
+                <Tooltip label={name}>
+                    <span>
+                        <Icon as={BsIcon[iconName]} bg={colour} color="gray.50" w={6} h={6} p={1} borderRadius={5} />
+                    </span>
+                </Tooltip>
+            );
+        },
+    },
+    {
+        name: "projectId",
+        searchInField: ["projectId.title"],
+        header: "PROJECT",
+        flex: 1,
+        render: ({ data }) => {
+            return <span style={styles}>{data.projectId.title}</span>;
+        },
+    },
+    {
+        name: "title",
+        searchInField: ["title"],
+        header: "TITLE",
+        flex: 3,
+        render: ({ value }) => {
+            return <span style={styles}>{value}</span>;
+        },
+    },
+    {
+        name: "status",
+        searchInField: ["status"],
+        header: "STATUS",
+        flex: 1,
+        render: ({ value }) => {
+            switch (value) {
+                case "Open":
+                    return <Badge colorScheme='orange'>{value}</Badge>;
+                case "In-Progress":
+                    return <Badge colorScheme='blue'>{value}</Badge>;
+                case "Done":
+                    return <Badge colorScheme='green'>{value}</Badge>;
+                case "Archived":
+                    return <Badge colorScheme='facebook'>{value}</Badge>;
+                default:
+                    return <Badge colorScheme='green'>{value}</Badge>;
+            }
+        },
+    },
+    {
+        name: "assignees",
+        header: "ASSIGNEES",
+        flex: 1,
+        render: ({ value }) => {
+            return (
+                <AvatarGroup size="sm" max={5}>
+                    {
+                        value.map(assignee => (
+                            <TooltipAvatar key={assignee._id} name={assignee.firstName + " " + assignee.lastName} />
+                        ))
+                    }
+                </AvatarGroup>
+            );
+        },
+
+    },
+    {
+        name: "createdBy",
+        header: "CREATED BY",
+        flex: 1,
+        render: ({ data }) => {
+            return data.createdBy.firstName + " " + data.createdBy.lastName;
+        },
+
+    }
+];
+
 export const USERS_COLUMNS = [
     {
         name: "_id",
         searchInField: ["firstName", "lastName"],
         header: "NAME",
         flex: 1,
-        render: ({ value }) => {
-            return MiscellaneousService.getUserFullName(value);
+        render: ({ data }) => {
+            return data.firstName + " " + data.lastName;
         }
     },
     {
         name: "roleId",
         header: "ROLE",
         flex: 1,
-        render: ({ value }) => {
-            return value.name;
+        render: ({ data }) => {
+            return data.roleId.name;
+        }
+    }
+];
+
+export const PROJECT_ASSIGNEES_COLUMNS = [
+    {
+        name: "_id",
+        searchInField: ["firstName", "lastName"],
+        header: "NAME",
+        flex: 1,
+        render: ({ data }) => {
+            return data.firstName + " " + data.lastName;
+
+        }
+    },
+    {
+        name: "assignees",
+        header: "ROLE",
+        flex: 1,
+        render: ({ data }) => {
+            return data.roleId.name;
         }
     }
 ];
@@ -164,11 +270,11 @@ export const MANAGE_USERS_COLUMNS = [
         searchInField: ["firstName", "lastName"],
         header: "NAME",
         flex: 1,
-        render: ({ value }) => {
+        render: ({ data }) => {
 
             return (
                 <span style={styles}>
-                    {MiscellaneousService.getUserFullName(value)}
+                    {getUserFullname(data)}
                 </span>
             );
         }
@@ -229,8 +335,8 @@ export const MANAGE_TICKET_TYPES_COLUMNS = [
         searchInField: ["name"],
         width: 55,
         headerEllipsis: false,
-        render: ({ value }) => {
-            const { iconName, colour } = MiscellaneousService.getTicketTypeInfo(value);
+        render: ({ data }) => {
+            const { iconName, colour } = data;
             return (
                 <Icon as={BsIcon[iconName]} bg={colour} color="gray.50" w={6} h={6} p={1} borderRadius={5} />
             );
@@ -241,7 +347,7 @@ export const MANAGE_TICKET_TYPES_COLUMNS = [
         header: "ICON NAME",
         flex: 1,
         searchInField: ["iconName"],
-        render: ({ value }) => <span style={styles}>{value}</span>
+        render: ({ data }) => <span style={styles}>{data.name}</span>
     }
 ];
 

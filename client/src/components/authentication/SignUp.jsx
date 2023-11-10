@@ -47,7 +47,7 @@ export const SignUp = () => {
       p={[8, 10]}
       mt={[10]}
       mx="auto"
-      background="hover"
+      background="secondary"
       borderRadius={10}
       boxShadow="md"
     >

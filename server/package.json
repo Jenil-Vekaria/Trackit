@@ -6,6 +6,7 @@
 	"type": "module",
 	"scripts": {
 		"test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watchAll --detectOpenHandles --verbose",
+		"seed": "node ./seed/seedDB.js",
 		"start": "nodemon server.js"
 	},
 	"author": "",

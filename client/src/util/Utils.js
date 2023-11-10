@@ -39,3 +39,7 @@ export const hexToRgb = (hex, opacity) => {
 
     return `rgba(${r}, ${g}, ${b}, ${opacity})`;
 };
+
+export const getUserFullname = (object) => {
+    return object?.firstName + " " + object?.lastName;
+};

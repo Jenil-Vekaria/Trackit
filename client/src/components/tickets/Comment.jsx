@@ -18,55 +18,51 @@ import React, { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import AuthService from "@/services/auth-service";
 import CommentService from "@/services/comment-service";
-import { Permissions } from "@/util/Utils";
+import useAuthStore from "@/hooks/useAuth";
+import { Permissions, getUserFullname } from "@/util/Utils";
 import PermissionsRender from "../others/PermissionsRender";
 
-const Comment = ({
-  _id,
-  username,
-  text,
-  userId,
-  getTicketComments,
-  updatedOn,
-  createdOn,
-  seterror,
-}) => {
+const Comment = ({ mutateServer, commentData, setError }) => {
+  const useAuth = useAuthStore();
   const [isEditing, setisEditing] = useState(false);
-  const [comment, setcomment] = useState(text);
+  const [comment, setcomment] = useState(commentData.text);
   const { isOpen, onToggle, onClose } = useDisclosure();
-  const signedInUserId = AuthService.getCurrentUser()?._id;
-  const isSignedInUsersComment = userId === signedInUserId;
-  const isCommentEdited = createdOn !== updatedOn;
+
+  const signedInUserId = useAuth.userProfile._id;
+  const isMyComment = commentData.userId._id === signedInUserId;
+  const isCommentEdited = commentData.createdOn !== commentData.updatedOn;
 
   const onCommentEditSaveClick = async () => {
-    seterror("");
+    setisEditing((prev) => !prev);
+    onClose();
+
     if (isEditing) {
       try {
-        await CommentService.updateTicketComment(_id, { text: comment });
-        getTicketComments();
+        await mutateServer(
+          CommentService.updateTicketComment(commentData._id, {
+            text: comment,
+          })
+        );
+        onClose();
+        setError("");
       } catch (error) {
-        seterror(error);
+        setError(error);
       }
     }
-
-    onClose();
-    setisEditing((prev) => !prev);
   };
 
   const onCommentDeleteClick = async () => {
-    seterror("");
     try {
       onClose();
-      await CommentService.deleteTicketComment(_id);
-      getTicketComments();
+      await mutateServer(CommentService.deleteTicketComment(commentData._id));
     } catch (error) {
-      seterror(error);
+      setError(error);
     }
   };
 
   const getCommentDateTime = () => {
     const now = moment();
-    const end = moment(updatedOn);
+    const end = moment(commentData.updatedOn);
     const duration = moment.duration(now.diff(end));
     const days = duration.asDays();
 
@@ -86,11 +82,11 @@ const Comment = ({
       boxShadow="xs"
       width="100%"
     >
-      <Avatar name={username} size="sm" />
+      <Avatar name={getUserFullname(commentData.userId)} size="sm" />
       <Flex direction="column" width="100%">
         <Flex gap={3}>
           <Text fontSize="sm" as="b">
-            {username}
+            {getUserFullname(commentData.userId)}
           </Text>
           <Text fontSize="sm" color="gray" align="right">
             {getCommentDateTime()} {isCommentEdited ? "(Edited)" : ""}
@@ -109,7 +105,7 @@ const Comment = ({
       </Flex>
 
       <PermissionsRender permissionCheck={Permissions.canManageTickets}>
-        {isSignedInUsersComment ? (
+        {isMyComment ? (
           <Popover isOpen={isOpen}>
             <PopoverTrigger>
               <IconButton
