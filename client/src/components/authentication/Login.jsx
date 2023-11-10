@@ -37,7 +37,6 @@ export const Login = () => {
 
     try {
       await loginSWR.mutateServer(AuthService.login(values));
-      await MiscellaneousService.fetchInitialData();
     } catch (error) {
       seterror(error);
     }

@@ -6,7 +6,7 @@ export const getTicketType = async (req, res) => {
 
         const ticketType = await TicketType.find({});
 
-        return res.json({ ticketType });
+        return res.json(ticketType);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal server issue" });
@@ -26,7 +26,7 @@ export const addTicketType = async (req, res) => {
 
         const ticketType = await TicketType.create({ name, iconName, colour });
 
-        return res.status(200).json({ ticketType });
+        return res.json(ticketType);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal server issue" });
@@ -49,7 +49,7 @@ export const updateTicketType = async (req, res) => {
 
         const updatedTicketType = await ticketType.save();
 
-        return res.json({ ticketType: updatedTicketType });
+        return res.json(updatedTicketType);
 
     } catch (error) {
         console.log(error);
@@ -58,22 +58,22 @@ export const updateTicketType = async (req, res) => {
 };
 
 export const deleteTicketType = async (req, res) => {
-    const { name } = req.params;
+    const { ticketTypeId } = req.params;
 
     try {
-        const ticketType = await TicketType.findOne({ name });
+        const ticketType = await TicketType.findById(ticketTypeId);
 
         if (!ticketType) {
             return res.status(403).json({ message: "Ticket type not found" });
         }
 
-        const totalTicketsWithThisTicketType = await Ticket.find({ type: ticketType._id }).count();
+        const totalTicketsWithThisTicketType = await Ticket.find({ type: ticketTypeId }).count();
 
         if (totalTicketsWithThisTicketType > 0) {
-            return res.status(405).json({ message: `Forbidden: ${totalTicketsWithThisTicketType} ticket(s) is associated with ticket type "${name}"` });
+            return res.status(405).json({ message: `Forbidden: ${totalTicketsWithThisTicketType} ticket(s) is associated with ticket type "${ticketType.name}"` });
         }
 
-        await TicketType.deleteOne({ name });
+        await TicketType.deleteOne({ _id: ticketTypeId });
 
         return res.sendStatus(200);
     } catch (error) {

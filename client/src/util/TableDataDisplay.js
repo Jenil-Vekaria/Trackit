@@ -335,8 +335,8 @@ export const MANAGE_TICKET_TYPES_COLUMNS = [
         searchInField: ["name"],
         width: 55,
         headerEllipsis: false,
-        render: ({ value }) => {
-            const { iconName, colour } = MiscellaneousService.getTicketTypeInfo(value);
+        render: ({ data }) => {
+            const { iconName, colour } = data;
             return (
                 <Icon as={BsIcon[iconName]} bg={colour} color="gray.50" w={6} h={6} p={1} borderRadius={5} />
             );
@@ -347,7 +347,7 @@ export const MANAGE_TICKET_TYPES_COLUMNS = [
         header: "ICON NAME",
         flex: 1,
         searchInField: ["iconName"],
-        render: ({ value }) => <span style={styles}>{value}</span>
+        render: ({ data }) => <span style={styles}>{data.name}</span>
     }
 ];
 

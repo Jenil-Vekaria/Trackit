@@ -81,7 +81,7 @@ export const CreateRoleData = {
 
 export const CreateTicketTypeSchema = Yup.object().shape({
     name: Yup.string().required("Required"),
-    iconName: Yup.string().required("Required"),
+    iconName: Yup.string(),
     colour: Yup.string().required("Required"),
 });
 

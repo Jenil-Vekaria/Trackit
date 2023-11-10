@@ -10,6 +10,6 @@ const validation = [checkUserPermissions("ticket type", Permissions.canManageAdm
 router.get("/", getTicketType);
 router.post("/", validation, addTicketType);
 router.patch("/", validation, updateTicketType);
-router.delete("/:name", deleteTicketType);
+router.delete("/:ticketTypeId", deleteTicketType);
 
 export default router;

@@ -47,41 +47,35 @@ const createUser = (data) => {
 };
 
 
-const getTicketType = async () => {
-    try {
-        const { data } = await API.get("/ticketType");
-        store.dispatch(setTicketTypes(data.ticketType));
-    } catch (error) {
-        console.error(error);
-    }
+const getAllTicketType = () => {
+    return {
+        url: "/ticketType",
+        method: "get"
+    };
 };
 
-const createTicketType = async (ticketData) => {
-    try {
-        const { data } = await API.post("/ticketType", ticketData);
-        store.dispatch(addTicketType(data.ticketType));
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const createTicketType = (data) => {
+    return {
+        url: "/ticketType",
+        method: "post",
+        data
+    };
 };
 
 
-const updateTicketType = async (ticketData) => {
-    try {
-        const { data } = await API.patch("/ticketType", ticketData);
-        store.dispatch(setTicketType(data.ticketType));
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const updateTicketType = (data) => {
+    return {
+        url: `/ticketType`,
+        method: "patch",
+        data
+    };
 };
 
-const deleteTicketType = async (ticketName) => {
-    try {
-        await API.delete(`/ticketType/${ticketName}`);
-        store.dispatch(removeTicketType(ticketName));
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const deleteTicketType = (ticketTypeId) => {
+    return {
+        url: `/ticketType/${ticketTypeId}`,
+        method: "delete"
+    };
 };
 
 const getRoles = () => {
@@ -114,15 +108,6 @@ const deleteRole = (roleId) => {
     };
 };
 
-const fetchInitialData = async () => {
-    try {
-        await getTicketType();
-        await getUsers();
-    } catch (error) {
-        console.error(error);
-    }
-};
-
 const getUserInfo = (userId) => {
     const state = store.getState();
     const user = state.miscellaneous.users.filter(user => user._id === userId);
@@ -153,7 +138,7 @@ const getRoleInfo = (roleId) => {
 
 
 const MiscellaneousService = {
-    getTicketType,
+    getAllTicketType,
     getUsers,
     getUserInfo,
     createUser,
@@ -168,7 +153,6 @@ const MiscellaneousService = {
     createRole,
     updateRole,
     deleteRole,
-    fetchInitialData,
     updateMyProfile
 };
 
