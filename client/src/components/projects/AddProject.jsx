@@ -29,6 +29,7 @@ import AuthService from "@/services/auth-service";
 import MiscellaneousService from "@/services/miscellaneous-service";
 import ProjectService from "@/services/project-service";
 import useApi from "@/hooks/useApi";
+import useAuthStore from "@/hooks/useAuth";
 import {
   PROJECT_ASSIGNEES_COLUMNS,
   USERS_COLUMNS,
@@ -42,6 +43,7 @@ import AlertModal from "../others/AlertModal";
 import Table from "../others/Table";
 
 const AddProject = ({ isOpen, onClose, projectInfo, mutateServer }) => {
+  const useAuth = useAuthStore();
   const isNewProject = projectInfo === undefined;
 
   const router = useRouter();
@@ -70,9 +72,7 @@ const AddProject = ({ isOpen, onClose, projectInfo, mutateServer }) => {
         projectInfo.assignees.map((assignee) => assignee._id)
       );
 
-      setIsProjectAuthor(
-        AuthService.getCurrentUser()._id === projectInfo.authorId._id
-      );
+      setIsProjectAuthor(useAuth.userProfile?._id === projectInfo.authorId._id);
     }
   }, [isOpen]);
 

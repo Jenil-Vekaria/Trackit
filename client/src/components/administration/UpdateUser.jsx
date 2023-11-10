@@ -22,7 +22,6 @@ import {
 import { Field, Form, Formik } from "formik";
 import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import AuthService from "@/services/auth-service";
 import MiscellaneousService from "@/services/miscellaneous-service";
 import { getRoles } from "@/features/miscellaneousSlice";
 import {
@@ -36,6 +35,7 @@ const UpdateUser = ({
   closeModal,
   viewUser,
   isUpdateMyProfile = false,
+  mutateServer,
 }) => {
   const roles = useSelector(getRoles);
   const formRef = useRef(null);
@@ -51,36 +51,48 @@ const UpdateUser = ({
     : "Create User";
 
   useEffect(() => {
-    setError(error);
-    if (viewUser) {
-      const userInfoCopy = { ...viewUser };
-      userInfoCopy.roleId = viewUser.roleId?._id;
+    if (isOpen && viewUser) {
+      const userInfoCopy = {
+        _id: viewUser._id,
+        firstName: viewUser.firstName,
+        lastName: viewUser.lastName,
+        roleId: viewUser.roleId?._id,
+        email: viewUser.email,
+      };
+
+      if (isUpdateMyProfile) {
+        userInfoCopy.password = "";
+        userInfoCopy.confirmPassword = "";
+      }
 
       setUserInfo(userInfoCopy);
-    } else {
-      setUserInfo(SignUpData);
     }
-  }, [viewUser]);
+  }, [isOpen]);
 
-  const onUpdateUser = async (values, action) => {
+  const onUpdateUser = async (data) => {
     try {
-      // If user data is passed into this component -> we are updating exisiting profile
       if (viewUser) {
-        await MiscellaneousService.updateUserProfile(values);
+        const apiRequestInfo = isUpdateMyProfile
+          ? MiscellaneousService.updateMyProfile(data)
+          : MiscellaneousService.updateUserProfile(data);
+        const response = await mutateServer(apiRequestInfo);
+        console.log("RESPONSE DATA: ", response);
+      } else {
+        await mutateServer(MiscellaneousService.createUser(data));
       }
-      // Else -> creating new user
-      else {
-        const newUser = { ...values };
-        await AuthService.signup(newUser);
-        action.resetForm();
-      }
-
-      await MiscellaneousService.getUsers();
-
-      closeModal();
+      setError("");
+      onCloseModal();
     } catch (error) {
+      console.log("ERROR: ", error);
       setError(error);
     }
+  };
+
+  const onCloseModal = () => {
+    setShowPassword.off();
+    setUserInfo(SignUpData);
+    setError("");
+    closeModal();
   };
 
   const createRoleTypeOption = () => {
@@ -92,15 +104,7 @@ const UpdateUser = ({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => {
-        setShowPassword.off();
-        setError("");
-        closeModal();
-      }}
-      size="md"
-    >
+    <Modal isOpen={isOpen} onClose={onCloseModal} size="md">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{modalTitle}</ModalHeader>
@@ -155,7 +159,7 @@ const UpdateUser = ({
                   >
                     <FormLabel>Role</FormLabel>
                     <Field as={Select} name="roleId" type="select">
-                      <option value="" disabled selected>
+                      <option value="" disabled>
                         Select
                       </option>
                       {createRoleTypeOption()}
@@ -211,20 +215,19 @@ const UpdateUser = ({
           </Formik>
         </ModalBody>
 
-        <ModalFooter>
-          <Button
-            colorScheme="blue"
-            mr={3}
-            onClick={() => formRef.current?.handleSubmit()}
-          >
-            {!viewUser ? "Create" : "Save"}
-          </Button>
-
+        <ModalFooter gap={3}>
           {viewUser ? (
             <Tooltip label="Not Implemeted">
               <Button colorScheme="red">Delete</Button>
             </Tooltip>
           ) : null}
+
+          <Button
+            colorScheme="blue"
+            onClick={() => formRef.current?.handleSubmit()}
+          >
+            {!viewUser ? "Create" : "Save"}
+          </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>

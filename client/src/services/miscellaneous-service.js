@@ -1,13 +1,12 @@
 import axios from "axios";
-import AuthService from "./auth-service";
-import { addRole, addTicketType, removeRole, removeTicketType, setRole, setRoles, setTicketType, setTicketTypes, setUser, setUsers } from "../features/miscellaneousSlice.js";
+import { addRole, addTicketType, removeRole, removeTicketType, setRole, setRoles, setTicketType, setTicketTypes } from "../features/miscellaneousSlice.js";
 import { store } from "../store/store.js";
-import { setLogin } from "../features/authSlice";
+import useAuthStore from "@/hooks/useAuth";
 
 const API = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_ENDPOINT });
 
 API.interceptors.request.use((req) => {
-    const { accessToken } = AuthService.getCurrentUser();
+    const accessToken = useAuthStore.getState().accessToken;
 
     if (accessToken)
         req.headers["x-access-token"] = accessToken;
@@ -15,22 +14,38 @@ API.interceptors.request.use((req) => {
     return req;
 });
 
-const updateUserProfile = async (userData) => {
-    try {
-        const { data: { updatedUser } } = await API.patch("/user/update", userData);
-        const { _id, accessToken } = AuthService.getCurrentUser();
 
-        if (updatedUser._id === _id) {
-            updatedUser.accessToken = accessToken;
-            store.dispatch(setLogin(updatedUser));
-        }
-
-        store.dispatch(setUser(updatedUser));
-
-    } catch (error) {
-        throw error;
-    }
+const updateUserProfile = (data) => {
+    return {
+        url: "/user/update",
+        method: "patch",
+        data
+    };
 };
+
+const updateMyProfile = (data) => {
+    return {
+        url: "/user/updateMyProfile",
+        method: "patch",
+        data
+    };
+};
+
+const getUsers = (query = "") => {
+    return {
+        method: "get",
+        url: `/user/all${"?" + query}`
+    };
+};
+
+const createUser = (data) => {
+    return {
+        method: "post",
+        url: "/user/create",
+        data
+    };
+};
+
 
 const getTicketType = async () => {
     try {
@@ -67,13 +82,6 @@ const deleteTicketType = async (ticketName) => {
     } catch (error) {
         throw error.response.data.message;
     }
-};
-
-const getUsers = () => {
-    return {
-        method: "get",
-        url: "/user/all"
-    };
 };
 
 const getRoles = async () => {
@@ -157,6 +165,7 @@ const MiscellaneousService = {
     getTicketType,
     getUsers,
     getUserInfo,
+    createUser,
     getUserFullName,
     getTicketTypeInfo,
     createTicketType,
@@ -168,7 +177,8 @@ const MiscellaneousService = {
     createRole,
     updateRole,
     deleteRole,
-    fetchInitialData
+    fetchInitialData,
+    updateMyProfile
 };
 
 export default MiscellaneousService;

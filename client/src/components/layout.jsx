@@ -7,6 +7,7 @@ import Navbar from "./navigationBar/Navbar";
 
 const Layout = ({ children }) => {
   const [isAuthorized, setIsAuthorized] = useState(AuthService.isAuthorized());
+
   const router = useRouter();
 
   useEffect(() => {

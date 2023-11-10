@@ -1,40 +1,24 @@
 import axios from "axios";
 import decode from 'jwt-decode';
-import { setLogin } from "../features/authSlice.js";
 import { store, persistor } from "../store/store.js";
+import useAuthStore from "@/hooks/useAuth.js";
 
 const API_URL = process.env.NEXT_PUBLIC_API_ENDPOINT + "/auth";
 
-const signup = async (user) => {
-    /*
-        @param - user
-        firstName
-        lastName
-        email
-        password
-        confirmPassword
-    */
-    try {
-        await axios.post(API_URL + "/signup", user);
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const signup = (data) => {
+    return {
+        url: "/auth/signup",
+        method: "post",
+        data
+    };
 };
 
-const login = async (user) => {
-    /*
-        @param - user
-        email
-        password
-    */
-    try {
-        const { data } = await axios.post(API_URL + "/login", user);
-        if (data.accessToken) {
-            store.dispatch(setLogin(data));
-        }
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const login = (data) => {
+    return {
+        url: "/auth/login",
+        method: "post",
+        data
+    };
 };
 
 const logout = () => {
@@ -48,21 +32,24 @@ const getCurrentUser = () => {
 };
 
 const isAuthorized = () => {
-    const user = getCurrentUser();
+    const authStore = useAuthStore.getState();
 
-    const token = user?.accessToken;
-    let isAuthorized = false;
+    const token = authStore.accessToken;
+
+    if (authStore.accessToken === null || authStore.userProfile === null) {
+        return false;
+    }
 
     if (token) {
         const decodeToken = decode(token);
 
         if (decodeToken.exp * 1000 < new Date().getTime())
-            isAuthorized = false;
+            return false;
         else
-            isAuthorized = true;
+            return true;
     }
 
-    return isAuthorized;
+    return false;
 };
 
 const AuthService = {

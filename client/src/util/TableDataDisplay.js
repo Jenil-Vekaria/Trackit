@@ -3,6 +3,7 @@ import moment from "moment";
 import { AvatarGroup, Badge, Icon, Tooltip } from "@chakra-ui/react";
 import * as BsIcon from "react-icons/bs";
 import TooltipAvatar from "../components/others/TooltipAvatar";
+import { getUserFullname } from "./Utils";
 
 
 const styles = {
@@ -269,11 +270,11 @@ export const MANAGE_USERS_COLUMNS = [
         searchInField: ["firstName", "lastName"],
         header: "NAME",
         flex: 1,
-        render: ({ value }) => {
+        render: ({ data }) => {
 
             return (
                 <span style={styles}>
-                    {MiscellaneousService.getUserFullName(value)}
+                    {getUserFullname(data)}
                 </span>
             );
         }

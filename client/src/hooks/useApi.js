@@ -1,11 +1,12 @@
 import AuthService from "@/services/auth-service";
 import axios from "axios";
 import useSWR from "swr";
+import useAuthStore from "./useAuth";
 
 const API = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_ENDPOINT });
 
 API.interceptors.request.use((req) => {
-    const { accessToken } = AuthService.getCurrentUser();
+    const accessToken = useAuthStore.getState().accessToken;
 
     if (accessToken)
         req.headers["x-access-token"] = accessToken;
@@ -14,14 +15,25 @@ API.interceptors.request.use((req) => {
 });
 
 
-const useApi = (apiRequestInfo, shouldFetch = true) => {
+const useApi = (apiRequestInfo, shouldFetch = true, revalidateIfStale = true) => {
 
-    const key = apiRequestInfo.method + "-" + apiRequestInfo.url; //getApiRequestInfo is a function and name will be used as unique key
+    let key = "";
+    let fetcher = () => null;
 
-    const swr = useSWR(shouldFetch ? key : null, () => api(apiRequestInfo), {
+    if (apiRequestInfo) {
+        key = apiRequestInfo.method + "-" + apiRequestInfo.url; //getApiRequestInfo is a function and name will be used as unique key
+        fetcher = () => api(apiRequestInfo);
+    }
+    else {
+        key = "api-request";
+    }
+
+
+    const swr = useSWR(shouldFetch ? key : null, fetcher, {
         shouldRetryOnError: false,
         revalidateOnFocus: false,
-        revalidateOnReconnect: false
+        revalidateOnReconnect: false,
+        revalidateIfStale
     });
 
     const api = async (requestInfo) => {
@@ -33,7 +45,7 @@ const useApi = (apiRequestInfo, shouldFetch = true) => {
         try {
             await swr.mutate(getMutation(mutationApiRequestInfo, swr.data), getMutationOptions(mutationApiRequestInfo, swr.data));
         } catch (error) {
-            console.log(error);
+            console.error(error);
             throw error.response.data.message;
         }
     };

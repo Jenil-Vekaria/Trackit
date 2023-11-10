@@ -1,22 +1,11 @@
-import axios from "axios";
-import AuthService from "./auth-service";
-import { store } from "../store/store";
-import { addTicket, setTicket, setTickets, removeTicket, clearTickets } from "../features/ticketSlice.js";
-
-const API = axios.create({ baseURL: process.env.NEXT_PUBLIC_API_ENDPOINT + "/ticket" });
-
-API.interceptors.request.use((req) => {
-    const { accessToken } = AuthService.getCurrentUser();
-
-    if (accessToken)
-        req.headers["x-access-token"] = accessToken;
-
-    return req;
-});
+import useAuthStore from "@/hooks/useAuth";
 
 const getUserTickets = () => {
-    const { _id } = AuthService.getCurrentUser();
-    return `/ticket/user/${_id}`;
+    const userProfile = useAuthStore.getState().userProfile;
+    return {
+        method: "get",
+        url: `/ticket/user/${userProfile._id}`
+    };
 };
 
 const getProjectTickets = (projectId) => {
@@ -26,8 +15,11 @@ const getProjectTickets = (projectId) => {
     };
 };
 
-const getTicketInfo = async (ticketId) => {
-    return `/ticket/${ticketId}`;
+const getTicketInfo = (ticketId) => {
+    return {
+        method: "get",
+        url: `/ticket/${ticketId}`
+    };
 };
 
 const createTicket = (projectId, data) => {

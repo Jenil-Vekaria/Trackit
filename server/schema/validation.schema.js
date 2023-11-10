@@ -1,12 +1,12 @@
 import * as yup from 'yup';
 
-export const signupSchema = yup.object().shape({
-    firstName: yup.string().required("First name required"),
-    lastName: yup.string().required("Last name required"),
-    email: yup.string().email("Invalid email").required("Required"),
+export const createUserSchema = yup.object().shape({
+    firstName: yup.string().trim().required("First name required"),
+    lastName: yup.string().trim().required("Last name required"),
+    email: yup.string().trim().email("Invalid email").required("Email required"),
     password: yup.string()
         .min(6, "Password must be at least 6 characters long")
-        .required("Required"),
+        .required("Password required"),
     confirmPassword: yup.string().oneOf(
         [yup.ref("password"), null],
         "Passwords must match",

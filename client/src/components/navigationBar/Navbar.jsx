@@ -12,11 +12,13 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiFileText, FiLayers, FiUser } from "react-icons/fi";
 import AuthService from "@/services/auth-service";
+import useApi from "@/hooks/useApi";
+import useAuthStore from "@/hooks/useAuth";
 import { usePermissions } from "@/hooks/usePermissions";
-import { Permissions } from "@/util/Utils";
+import { Permissions, getUserFullname } from "@/util/Utils";
 import logo from "@/assets/Trackit_Plain.png";
 import UpdateUser from "../administration/UpdateUser";
 import NavItem from "./NavItem";
@@ -24,9 +26,17 @@ import NavItem from "./NavItem";
 const Navbar = () => {
   const [navSize, setNavSize] = useState("large");
   const router = useRouter();
-  const user = AuthService.getCurrentUser();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const canManageAdminPage = usePermissions(Permissions.canManageAdminPage);
+  const useAuth = useAuthStore();
+
+  const myUserProfileSWR = useApi(null);
+
+  useEffect(() => {
+    if (myUserProfileSWR.data) {
+      useAuth.setUserProfile(myUserProfileSWR.data);
+    }
+  }, [myUserProfileSWR.data]);
 
   const menuItems = [
     {
@@ -48,6 +58,11 @@ const Navbar = () => {
 
   const onProfileClick = () => {
     onOpen();
+  };
+
+  const onLogout = () => {
+    useAuth.clear();
+    router.reload();
   };
 
   return (
@@ -99,18 +114,21 @@ const Navbar = () => {
           <Menu matchWidth={true}>
             <MenuButton>
               <Flex mt={4} align="center" cursor="pointer">
-                <Avatar size="sm" name={user.firstName + " " + user.lastName} />
+                <Avatar size="sm" name={getUserFullname(useAuth.userProfile)} />
                 <Flex direction="column" ml={4} align="left">
                   <Heading as="h3" size="xs">
-                    {user.firstName} {user.lastName}
+                    {useAuth.userProfile.firstName}{" "}
+                    {useAuth.userProfile.lastName}
                   </Heading>
-                  <Text fontSize="sm">{user.roleId.name || "No Data"}</Text>
+                  <Text fontSize="sm">
+                    {useAuth.userProfile.roleId.name || "No Data"}
+                  </Text>
                 </Flex>
               </Flex>
             </MenuButton>
             <MenuList>
               <MenuItem onClick={onProfileClick}>Profile</MenuItem>
-              <MenuItem onClick={() => AuthService.logout()}>Logout</MenuItem>
+              <MenuItem onClick={onLogout}>Logout</MenuItem>
             </MenuList>
           </Menu>
         </Flex>
@@ -119,8 +137,9 @@ const Navbar = () => {
       <UpdateUser
         isOpen={isOpen}
         closeModal={onClose}
-        viewUser={user}
+        viewUser={useAuth.userProfile}
         isUpdateMyProfile={true}
+        mutateServer={myUserProfileSWR.mutateServer}
       />
     </>
   );
