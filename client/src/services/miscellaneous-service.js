@@ -84,49 +84,40 @@ const deleteTicketType = async (ticketName) => {
     }
 };
 
-const getRoles = async () => {
-    try {
-        const { data } = await API.get("/role");
-        store.dispatch(setRoles(data.roles));
-    } catch (error) {
-        console.error(error);
-    }
+const getRoles = () => {
+    return {
+        url: "/role",
+        method: "get"
+    };
 };
 
-const createRole = async (roleData) => {
-    try {
-        const { data } = await API.post("/role", roleData);
-        store.dispatch(addRole(data.role));
-    } catch (error) {
-        console.error(error);
-    }
+const createRole = (data) => {
+    return {
+        url: "/role",
+        method: "post",
+        data
+    };
 };
 
-const updateRole = async (roleData) => {
-    try {
-        const { data } = await API.patch(`/role/${roleData._id}`, roleData);
-
-        store.dispatch(setRole(data.updatedRole));
-    } catch (error) {
-        console.error(error);
-    }
+const updateRole = (data) => {
+    return {
+        url: `/role/${data._id}`,
+        method: "patch",
+        data
+    };
 };
 
-const deleteRole = async (roleId) => {
-    try {
-        await API.delete(`/role/${roleId}`);
-
-        store.dispatch(removeRole(roleId));
-    } catch (error) {
-        throw error.response.data.message;
-    }
+const deleteRole = (roleId) => {
+    return {
+        url: `/role/${roleId}`,
+        method: "delete"
+    };
 };
 
 const fetchInitialData = async () => {
     try {
         await getTicketType();
         await getUsers();
-        await getRoles();
     } catch (error) {
         console.error(error);
     }

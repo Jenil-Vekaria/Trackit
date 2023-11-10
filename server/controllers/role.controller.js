@@ -5,7 +5,7 @@ export const getRoles = async (req, res) => {
     try {
         const roles = await Role.find({});
 
-        return res.json({ roles });
+        return res.json(roles);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal server issue" });
@@ -24,7 +24,7 @@ export const addRole = async (req, res) => {
 
         const role = await Role.create({ name, permissions });
 
-        return res.json({ role });
+        return res.json(role);
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Internal server issue" });
@@ -57,7 +57,7 @@ export const updateRole = async (req, res) => {
     try {
         const updatedRole = await Role.findOneAndUpdate({ _id: roleId }, { name, permissions }, { new: true });
 
-        return res.json({ updatedRole });
+        return res.json(updatedRole);
 
     } catch (error) {
         console.error(error.message);
