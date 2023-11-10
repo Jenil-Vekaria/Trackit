@@ -33,11 +33,13 @@ const ManageUsers = () => {
       />
       <br />
       <Spacer />
-      <Flex justify="flex-end">
+
+      {/* DISABLING ADD USER BUTTON FOR PROJECT DEMO */}
+      {/* <Flex justify="flex-end">
         <Button colorScheme="blue" pos="right" onClick={() => onOpen()}>
           Add New User
         </Button>
-      </Flex>
+      </Flex> */}
       <UpdateUser
         isOpen={isOpen}
         closeModal={closeModal}

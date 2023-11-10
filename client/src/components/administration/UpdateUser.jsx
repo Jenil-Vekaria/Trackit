@@ -36,7 +36,10 @@ const UpdateUser = ({
   isUpdateMyProfile = false,
   mutateServer,
 }) => {
-  const allRolesSWR = useApi(MiscellaneousService.getRoles());
+  const allRolesSWR = useApi(
+    MiscellaneousService.getRoles(),
+    isOpen && !isUpdateMyProfile
+  );
   const formRef = useRef(null);
   const [error, setError] = useState(null);
   const [userInfo, setUserInfo] = useState(SignUpData);
@@ -170,7 +173,9 @@ const UpdateUser = ({
                   </FormControl>
                 ) : null}
 
-                {!isUpdatingUserProfile ? (
+                {/* DISABLING PASSWORD CHANGE FOR PROJECT DEMO */}
+
+                {/* {!isUpdatingUserProfile ? (
                   <>
                     <FormControl
                       mt={4}
@@ -211,14 +216,16 @@ const UpdateUser = ({
                       </FormErrorMessage>
                     </FormControl>
                   </>
-                ) : null}
+                ) : null} */}
               </Form>
             )}
           </Formik>
         </ModalBody>
 
         <ModalFooter gap={3}>
-          {viewUser ? (
+          {/* DISABLING SAVE AND DELETE BUTTON FOR PROJECT DEMO */}
+
+          {/* {viewUser ? (
             <Tooltip label="Not Implemeted">
               <Button colorScheme="red">Delete</Button>
             </Tooltip>
@@ -229,7 +236,9 @@ const UpdateUser = ({
             onClick={() => formRef.current?.handleSubmit()}
           >
             {!viewUser ? "Create" : "Save"}
-          </Button>
+          </Button> */}
+
+          <Button onClick={closeModal}>Close</Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
