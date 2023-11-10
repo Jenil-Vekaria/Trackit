@@ -22,27 +22,27 @@
 - Project management
 - Ticket management
 - User assignment
-- Statistics
-- Searching
+- Project statistics
+- Advanced searching
 - Commenting
 - Role based organization (Create custom permissions)
-- Ticket Type field (Create custom ticket type)
-- Attachments (Coming soon)
-- Change tracker (Coming soon)
+- Custom field creation
+- Attachments (Not done yte)
+- Change tracker (Not done yet)
 
 <!-- TECHNOLOGY SECTION -->
 
 ## 🛠️Technologies
 
-| **Front-end** | <p align="center"><img src="https://www.rlogical.com/wp-content/uploads/2021/08/Rlogical-Blog-Images-thumbnail-1.png" width="100" height="100" /><br/>NextJs</p>                                                    | <p align="center"><img src="https://avatars.githubusercontent.com/u/54212428?s=200&v=4" width="100" height="100" /><br/>Chakra UI</p>                                                                | <p align="center"><img src="https://axios-http.com/assets/logo.svg" width="100" height="100" /><br/>Axios</p>                                                          | <p align="center"><img src="https://raw.githubusercontent.com/reduxjs/redux/master/logo/logo.png" width="100" height="100" /><br/>Redux</p>      |
+| **Front-end** | <p align="center"><img src="https://www.rlogical.com/wp-content/uploads/2021/08/Rlogical-Blog-Images-thumbnail-1.png" width="100" height="100" /><br/>NextJs</p>                                                    | <p align="center"><img src="https://avatars.githubusercontent.com/u/54212428?s=200&v=4" width="100" height="100" /><br/>Chakra UI</p>                                                                | <p align="center"><img src="https://axios-http.com/assets/logo.svg" width="100" height="100" /><br/>Axios</p>                                                          | <p align="center"><img src="https://img.stackshare.io/service/11559/zustand.png" width="100" height="100" /><br/>Zustand</p>                     |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Back-end**  | <p align="center"><img src="https://images.g2crowd.com/uploads/product/image/large_detail/large_detail_f0b606abb6d19089febc9faeeba5bc05/nodejs-development-services.png" width="100" height="100" /><br/>NodeJs</p> | <p align="center"><img src="https://w7.pngwing.com/pngs/925/447/png-transparent-express-js-node-js-javascript-mongodb-node-js-text-trademark-logo.png" width="100" height="100" /><br/>ExpressJS</p> | <p align="center"><img src="https://cdn.icon-icons.com/icons2/2415/PNG/512/mongodb_original_wordmark_logo_icon_146425.png" width="100" height="100" /><br/>MongoDB</p> | <p align="center"><img src="https://cdn.freebiesupply.com/logos/large/2x/jest-logo-png-transparent.png" width="100" height="100" /><br/>Jest</p> |
+
+##### Project will be dockerized soon
 
 ## 🚀 Quick start
 
 Start developing locally.
-
-**Please pull the project from the "dev" branch, and follow the README to setup locally**
 
 ### Step 1: Download Node.js and MongoDB
 
@@ -73,20 +73,17 @@ cd server & npm install
 
 To run the server, you will need the `.env` variables
 
-- create a new file <b>.env</b> in the root
-- open [.env.EXAMPLE](./server/.env.EXAMPLE)
-- copy the contents and paste it to the .env with valid keys
+Rename [.env.EXAMPLE](./server/.env.EXAMPLE) file to **.env**
 
 ### Step 4: Seed database
 
-Make the following POST request to seed the database
-**Caution**: Seeding clears exisiting DB, so only execute this request once in `production`
+Execute the following command to seed the database
 
 ```sh
-http://localhost:5000/seed
+npm run seed
 ```
 
-##### Login Infos
+##### Login Info
 
 | Email                        | Password | Role      | Permissions                        |
 | ---------------------------- | -------- | --------- | ---------------------------------- |
@@ -107,6 +104,9 @@ Run server application
 ```sh
 nodemon server.js
 ```
+
+**Setup Issue?**
+Create an issue in this repository
 
 ### Give a ⭐, if you liked the project
 
